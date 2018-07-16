@@ -1,0 +1,14 @@
+.comtitle{
+  height: 30px;
+  background-color: cornflowerblue;
+  line-height: 30px;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  padding-left: 10px
+}
+.comMain{
+  padding:20px;
+}
+.marbot{
+  margin-bottom:20px
+}
