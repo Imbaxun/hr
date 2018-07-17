@@ -4,6 +4,7 @@ import './main.css'
 import Company from '../../components/company/company'
 import Department from '../../components/department/department'
 import Duty from '../../components/duty/duty'
+import JobLever from '../../components/jobLever/jobLever'
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -32,6 +33,8 @@ class Main extends Component {
         return ( <Department /> )
       case 'duty':
         return ( <Duty /> )
+      case 'jobLever':
+        return ( <JobLever /> )
       default:
         return ( <Company /> )
     }
@@ -63,7 +66,7 @@ class Main extends Component {
               <Menu.Item onClick={() => this.setState({item:'Company'})} key="3">公司管理</Menu.Item>
               <Menu.Item onClick={() => this.setState({item:'Department'})} key="4">部门管理</Menu.Item>
               <Menu.Item onClick={() => this.setState({item:'duty'})} key="5">职务管理</Menu.Item>
-              <Menu.Item key="6">门店管理</Menu.Item>
+              <Menu.Item onClick={() => this.setState({item:'jobLever'})} key="6">职等管理</Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub2"
