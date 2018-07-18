@@ -5,6 +5,7 @@ import Company from '../../components/company/company'
 import Department from '../../components/department/department'
 import Duty from '../../components/duty/duty'
 import JobLever from '../../components/jobLever/jobLever'
+import Dictionaries from '../../components/dictionaries/dictionaries'
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -35,6 +36,8 @@ class Main extends Component {
         return ( <Duty /> )
       case 'jobLever':
         return ( <JobLever /> )
+      case 'dictionaries':
+        return ( <Dictionaries />)
       default:
         return ( <Company /> )
     }
@@ -75,9 +78,9 @@ class Main extends Component {
               <Menu.Item key="6">Team 1</Menu.Item>
               <Menu.Item key="8">Team 2</Menu.Item>
             </SubMenu>
-            <Menu.Item key="9">
+            <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
               <Icon type="file" />
-              <span>File</span>
+              <span>数据词典</span>
             </Menu.Item>
           </Menu>
         </Sider>
