@@ -125,7 +125,7 @@ class Dictionaries extends Component {
   }
 
   delTable2 = () =>{
-    const {tableRightId,firstTableId} = this.state
+    const {tableRightId} = this.state
     console.log(tableRightId)
     let url = `${IP}${dictionaries}/${tableRightId}`
     deletefun(url).then(res =>{

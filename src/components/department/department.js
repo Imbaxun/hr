@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm,Modal, Select } from 'antd';
+import { Row, Col, Input, Button, Table, Popconfirm,Modal } from 'antd';
 import './department.css'
 import {API} from '../../common/axiosAPI'
-import {getfun} from '../../common/axiosFun'
-const { IP, searchbm} = API
+import {getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
+const { IP, Department} = API
 
 
 
@@ -11,55 +11,60 @@ class department extends Component {
   constructor(porps){
     super(porps)
     this.state = {
-      comName: '',
-      comId: '',
-      region: '',
+      code: '',
+      name: '',
+      chargePersionId: '',
+      chargePersion: '',
+      companyCode: '',
+      companyName: '',
+      addComName: '',
+      addPerId: '',
+      addPerName: '',
+      addDepName: '',
+      changeComName: '',
+      changePerId: '',
+      changePerName: '',
+      changeDepName: '',
       visible: false,
+      visible1: false,
       changeShow: false,
       checkperson: false,
       perId:'',
       perName: '',
       choiceData:[
         {
-          key: '',
-          cid: '',
-          cname: '',
-          pid: '',
-          pname: '',
-          rid: '',
-          tcom: '',
-          isState: ''
+          companyName: '',
+          name: '',
+          chargePersionId: '',
+          chargePersion: ''
         }
       ],
       data: [],
-      columns: [{
-        title: '序号',
-        dataIndex: 'key'
-      },
+      columns: [
       {
         title: '部门编号',
-        dataIndex: 'cid',
+        dataIndex: 'code',
       }, {
         title: '部门名称',
-        dataIndex: 'cname',
+        dataIndex: 'name',
       }, {
         title: '负责人工号',
-        dataIndex: 'pid',
+        dataIndex: 'chargePersionId',
       }, {
         title: '负责人',
-        dataIndex: 'pname',
+        dataIndex: 'chargePersion',
       }, {
-        title: '大区',
-        dataIndex: 'rid',
+        title: '公司编码',
+        dataIndex: 'companyCode',
       }, {
-        title: '上级公司',
-        dataIndex: 'tcom',
+        title: '所属公司',
+        dataIndex: 'companyName',
       }, {
         title: '启用状态',
-        dataIndex: 'isState',
+        dataIndex: 'state',
         render: (text, record) => {
         return (
-          <Popconfirm title="是否修改?" onConfirm={() => this.handleDelete(record.key)}>
+          <Popconfirm title="是否修改?" onConfirm={() => this.handleDelete(record)}>
         <a>{text}</a>
         </Popconfirm>
         )}
@@ -69,53 +74,115 @@ class department extends Component {
   }
 
   componentDidMount() {
-    let url = `${IP}${searchbm}`
-    console.log(url)
+    this.startData()
+  }
+
+  startData = () =>{
+    let url = `${IP}${Department}`
+    // console.log(url)
     getfun(url).then(res => {
       console.log(res)
+      let newArr = []
+      res.content.forEach(item => {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+      // this.setState({data:res.content})
     }).catch(err => {
       console.log(err)
     })
   }
 
-
-  handleDelete = (key) => {
-    const data = [...this.state.data];
-    let aa = data[key-1];
-    if(aa.isState === '已启用') {
-      aa.isState = '已禁用'
-      data.splice(key-1,1,aa)
-      this.setState({data:data})
-    }else{
-      aa.isState = '已启用'
-      data.splice(key-1,1,aa)
-      this.setState({data:data})
-    }
-  }
-
-  addCom = () =>{
-    this.setState({visible: true})
-  }
-
-  changeCom = () =>{
-    const {choiceData} = this.state
-    this.setState({changeShow: true})
-    console.log(choiceData)
-  }
-
-  deletCom = () =>{
-    const {choiceData} = this.state
-    console.log(choiceData)
-  }
-
-  onChangeperId = (e) =>{
-    this.setState({
-      perId: e.target.value
+  upData = () =>{
+    let url = `${IP}${Department}`
+    // console.log(url)
+    getfun(url).then(res => {
+      console.log(res)
+      let newArr = []
+      res.content.forEach(item => {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+      // this.setState({data:res.content})
+    }).catch(err => {
+      console.log(err)
     })
   }
-  onChangeperName = (e) =>{
-    this.setState({
-      perName: e.target.value
+
+  searchData = () =>{
+    const {code, name, chargePersionId, chargePersion, companyCode, companyName} = this.state
+    console.log(this.state)
+    const { IP, Department} = API
+    let url = `${IP}${Department}?code=${code}&name=${name}&chargePersionId=${chargePersionId}&chargePersion=${chargePersion}&companyCode=${companyCode}&companyName=${companyName}`
+    console.log(url)
+    getfun(url).then(res => {
+      console.log(res)
+      let newArr = []
+      res.content.forEach(item=> {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+    }).catch(err => {
+      console.log(err)
+    })  
+  }
+
+  handleDelete = (aa) => {
+    // const data = [...this.state.data];
+    // let aa = data[key-1];
+    console.log(aa)
+    let newState = ''
+    if(aa.state === '未启用') {
+      newState = '1'
+    } else {
+      newState = '0'
+    }
+    let url = `${IP}/department/${aa.id}/state/${newState}`
+    // `${IP}company/${aa.id}/state/${newState}`
+    console.log(url)
+    putfun(url).then(res =>{
+      console.log(res)
+      if(res ==='success'){
+        let newulr = `${IP}${Department}`
+        getfun(newulr).then(res => {
+          console.log(res)
+          let newArr = []
+          res.content.forEach(item => {
+            if(item.state === '0') {
+              item.state = '未启用'
+            }else{
+              item.state = '已启用'
+            }
+            newArr.push(item)
+            // console.log(newArr)
+            this.setState({data: newArr})
+          });
+          // this.setState({data:res.content})
+        }).catch(err => {
+          console.log(err)
+        })
+        this.setState({visible:false})
+      }
+    }).catch(err => {
+      console.log(err)
     })
   }
 
@@ -132,9 +199,77 @@ class department extends Component {
     }
     
   }
+  addDepartment = () => {
+    const {addComName, addDepName, addPerId, addPerName} =this.state
+    const { IP} = API
+    let url = `${IP}/department`
+    let sendData = {
+      companyName: addComName,
+      name: addDepName,
+      parentDeptName: addPerName,
+      parentDeptCode: addPerId
+    }
+    postfun2(url,sendData).then(res =>{
+      console.log(res)
+      if(res ==='success') {
+        this.startData()
+        this.setState({visible: false})
+      }
+    }).catch(err =>{
+      console.log(err)
+    })
+  }
+
+  changeDepartment = () =>{
+    const {changeComName, changeDepName, changePerId, changePerName, choiceData} = this.state
+    let url = `${IP}/department/${choiceData[0].id}`
+    console.log(choiceData)
+    let sendData = {
+      companyName: changeComName === ''? choiceData[0].companyName : changeComName,
+      name: changeDepName === ''? choiceData[0].name : changeDepName,
+      chargePersionId: changePerId === '' ? choiceData[0].chargePersionId : changePerId,
+      chargePersion: changePerName ==='' ? choiceData[0].chargePersion : changeComName,
+      id: choiceData[0].id,
+      isDeleted: '0'
+    }
+    console.log(sendData)
+    putfun(url,sendData).then(res => {
+      console.log(res)
+      if(res === 'success'){
+        this.startData()
+        this.setState({visible1: false})
+      }
+    }).catch( err =>{
+      console.log(err)
+    })
+  }
+
+  deletCom = () =>{
+    const {choiceData} = this.state
+    console.log(choiceData)
+    let newArr = []
+    choiceData.forEach(item =>{
+      let id = item.id
+      newArr.push(id)
+    })
+    console.log(newArr.toString())
+    let idnumber = newArr.toString()
+    const { IP} = API
+    let url = `${IP}/department/${idnumber}`
+    console.log(url)
+    deletefun(url).then(res => {
+      console.log(res)
+      if(res === 'success') {
+        this.startData()
+        this.setState({visible:false})
+      }
+    }).catch(err => {
+      console.log(err)
+    })  
+
+  }
 
   render() {
-    const Option = Select.Option;
     const rowSelection = {
       onChange: (selectedRowKeys,selectedRows) => {
         console.log(selectedRows);
@@ -144,19 +279,56 @@ class department extends Component {
     return (
       <div>
         <div style={{marginBottom:20}}>
-        <Row type="flex" justify="space-around">
-          <Col span="4"><Input value={this.state.comName} onChange={(e) =>{this.setState({comName:e.target.value})}} placeholder="请输入公司名称..." /></Col>
-          <Col span="4"><Input value={this.state.comId} onChange={(e) =>{this.setState({comId:e.target.value})}} placeholder="请输入公司编号..." /></Col>
-          <Col span="4"><Input value={this.state.region} onChange={(e) =>{this.setState({region:e.target.value})}}  placeholder="请输入大区名称..." /></Col>
-          <Col span="4"><Button icon="reload" onClick={()=>this.setState({comName:'',comId: '',region:''})} type="primary">重置</Button>  <Button onClick={() =>{console.log(this.state)}} icon="search" type="primary">查询</Button></Col>
+        <Row type="flex" justify="space-around" style={{marginBottom:20}}>
+          <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >公司名称</Button>  
+              <Input value={this.state.companyName} onChange={(e) =>{this.setState({companyName:e.target.value})}} />
+            </div>
+          </Col>
+          <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >公司编码</Button>  
+              <Input value={this.state.companyCode}  onChange={(e) =>{this.setState({companyCode:e.target.value})}} />
+            </div>
+          </Col>
+          <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >部门名称</Button>  
+              <Input value={this.state.name}  onChange={(e) =>{this.setState({name:e.target.value})}} />
+            </div>
+          </Col>
+        </Row>
+        <Row type="flex" justify="space-around"  style={{marginBottom:20}}>
+        <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >部门编码</Button>  
+              <Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} />
+            </div>
+          </Col>
+          <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >部门负责人</Button>  
+              <Input value={this.state.chargePersionName} onChange={(e) =>{this.setState({chargePersionName:e.target.value})}} />
+            </div>
+          </Col>
+          <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >部门负责人工号</Button>  
+              <Input value={this.state.chargePersionId} onChange={(e) =>{this.setState({chargePersionId:e.target.value})}} />
+            </div>
+          </Col>          
+        </Row>
+        <Row type="flex" justify="center"  style={{marginBottom:10}}>
+          <Col span="5"><Button icon="reload" onClick={()=>this.setState({chargePersionId:'',chargePersionName: '',code:'', name: '', companyCode: '', companyName: ''})} type="primary">重置</Button>  <Button onClick={() =>this.searchData()} icon="search" type="primary">查询</Button></Col>
         </Row>
         </div>
         <hr/>
         <div className="comMain">
           <h3 className="comtitle">部门维护列表</h3>
           <Row type="flex" justify="end">
-            <Col span="2"><Button icon="plus" onClick={()=>this.addCom()}>新增</Button></Col>
-            <Col span="2"><Button icon="edit" onClick={()=>this.changeCom()}>编辑</Button></Col>
+            <Col span="2"><Button icon="plus" onClick={()=>this.setState({visible: true})}>新增</Button></Col>
+            <Col span="2"><Button icon="edit" onClick={()=>this.setState({visible1: true})}>编辑</Button></Col>
             {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
             <Col span="2"><Button icon="delete" onClick={() =>this.deletCom()}>删除</Button></Col>
           </Row>
@@ -168,92 +340,72 @@ class department extends Component {
             rowSelection={rowSelection}
           />
           <Modal
-          title="新增公司"
+          title="新增部门"
           visible={this.state.visible}
-          onOk={() =>this.setState({visible:false})}
+          onOk={() =>this.addDepartment()}
           onCancel={() =>this.setState({visible:false})}
           width={800}
           >
           <Row type="flex" justify="space-around" className="marbot">
-            <Col span="8"><Input  placeholder="请输入公司名称..." /></Col>
-            <Col span="8"><Input placeholder="请输入公司编码..." /></Col>
+            <Col span="8">
+            <div style={{display:'flex'}}>
+              <Button type='primary' >公司名称</Button>  
+              <Input value={this.state.addComName} onChange={(e) =>{this.setState({addComName:e.target.value})}} />
+            </div>
+            </Col>
+            <Col span="8">
+            <div style={{display:'flex'}}>
+              <Button type='primary' >部门名称</Button>  
+              <Input value={this.state.addDepName} onChange={(e) =>{this.setState({addDepName:e.target.value})}} />
+            </div>
+            </Col>
           </Row>
           <Row type="flex" justify="space-around" className="marbot">
             <Col span="8">
               <div style={{display:'flex'}}>
                 <Button type='primary' >负责人</Button>
-                <Input onChange={this.onChangeperId}  style={{width:"90px"}} />
-                <Input onChange={this.onChangeperName} style={{width:"90px"}} />
+                <Input onChange={(e) =>{this.setState({addPerId:e.target.value})}}  style={{width:"90px"}} />
+                <Input onChange={(e) =>{this.setState({addPerName:e.target.value})}} style={{width:"90px"}} />
               </div>
             </Col>
             <Col span="8"><Button type='primary' onClick={() =>this.setState({checkperson:true})} ghost >查询</Button></Col>
           </Row>
           <Row>
             <Col span="20">
-              {this.choicePerson()}
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-around" className="marbot">
-            <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >大区</Button>
-                <Select defaultValue="亚太地区" style={{ width: 180 }}>
-                <Option value="亚太地区">亚太地区</Option>
-                <Option value="欧美地区">欧美地区</Option>
-              </Select>
-              </div>
-            </Col>
-            <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >上级公司</Button>
-                <Select defaultValue="周黑鸭企业发展有限公司" style={{ width: 160 }}>
-                <Option value="周黑鸭食品工业园有限公司">周黑鸭食品工业园有限公司</Option>
-                <Option value="周黑鸭企业发展有限公司">周黑鸭企业发展有限公司</Option>
-              </Select>
-              </div>
+              {/* {this.choicePerson()} */}
             </Col>
           </Row>
           </Modal>
           <Modal
-          title="编辑公司"
-          visible={this.state.changeShow}
-          onOk={() =>this.setState({changeShow:false})}
-          onCancel={() =>this.setState({changeShow:false})}
+          title="编辑部门"
+          visible={this.state.visible1}
+          onOk={() =>this.changeDepartment()}
+          onCancel={() =>this.setState({visible1:false})}
           width={800}
           >
           <Row type="flex" justify="space-around" className="marbot">
-            <Col span="8"><Input placeholder={this.state.choiceData[0].cname}/></Col>
-            <Col span="8"><Input readOnly placeholder={this.state.choiceData[0].cid} /></Col>
+            <Col span="8">
+            <div style={{display:'flex'}}>
+              <Button type='primary' >公司名称</Button>  
+              <Input   onChange={(e) =>{this.setState({changeComName:e.target.value})}} />
+            </div>
+            </Col>
+            <Col span="8">
+            <div style={{display:'flex'}}>
+              <Button type='primary' >部门名称</Button>  
+              <Input  onChange={(e) =>{this.setState({changeDepName:e.target.value})}} />
+            </div>
+            </Col>
           </Row>
           <Row type="flex" justify="space-around" className="marbot">
             <Col span="8">
               <div style={{display:'flex'}}>
-                <Button type='primary' onClick={() =>this.setState({checkperson:true})} >负责人</Button>
-                <Input readOnly placeholder={this.state.choiceData[0].pid} style={{width:"90px"}} />
-                <Input readOnly placeholder={this.state.choiceData[0].pname} style={{width:"90px"}} />
+                <Button type='primary' >负责人</Button>
+                <Input onChange={(e) =>{this.setState({changePerId:e.target.value})}}  style={{width:"90px"}} />
+                <Input onChange={(e) =>{this.setState({changePerName:e.target.value})}} style={{width:"90px"}} />
               </div>
             </Col>
-            <Col span="8"><Button type='primary' onClick={() =>this.setState({checkperson:true})} ghost >查询</Button></Col>
-          </Row>
-          <Row type="flex" justify="space-around" className="marbot">
-            <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >大区</Button>
-                <Select defaultValue={this.state.choiceData[0].rid} style={{ width: 180 }}>
-                <Option value="亚太地区">亚太地区</Option>
-                <Option value="欧美地区">欧美地区</Option>
-              </Select>
-              </div>
-            </Col>
-            <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >上级公司</Button>
-                <Select defaultValue={this.state.choiceData[0].tcom} style={{ width: 160 }}>
-                <Option value="周黑鸭食品工业园有限公司">周黑鸭食品工业园有限公司</Option>
-                <Option value="周黑鸭企业发展有限公司">周黑鸭企业发展有限公司</Option>
-              </Select>
-              </div>
-            </Col>
+            <Col span="8"><Button type='primary'  ghost >查询</Button></Col>
           </Row>
           </Modal>
         </div>
