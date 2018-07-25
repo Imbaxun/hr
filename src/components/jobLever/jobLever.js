@@ -6,26 +6,6 @@ import { getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
 const { IP, joblever} = API
 const { TextArea } = Input
 
-// const getData = (url) => {
-//   getfun(url).then(res => {
-//     console.log(res)
-//     let newArr = []
-//     res.content.forEach(item => {
-//       if(item.state === '0') {
-//         item.state = '未启用'
-//       }else{
-//         item.state = '已启用'
-//       }
-//       newArr.push(item)
-//       // console.log(newArr)
-//       this.setState({data: newArr})
-//     });
-//     // this.setState({data:res.content})
-//   }).catch(err => {
-//     console.log(err)
-//   })
-// }
-
 
 
 class jobLever extends Component {

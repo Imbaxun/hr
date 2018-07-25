@@ -22,7 +22,7 @@ class Login extends Component {
     const { IP, login} = API
     let url = `${IP}${login}`
     // console.log(this.props)
-    this.props.history.push('/main');
+    this.props.history.push('/main/Company');
     let sendData = {
       userId,
       password
@@ -31,7 +31,7 @@ class Login extends Component {
     postfun(url,sendData).then(res => {
       console.log(res)
       if (res.success) {
-        this.props.history.push('/main');
+        this.props.history.push('/main/Company');
       } else {
         alert(res.errorInfo)
       }

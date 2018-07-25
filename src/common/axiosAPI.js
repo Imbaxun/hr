@@ -1,6 +1,7 @@
 
 export const API = {
-    IP : 'http://172.30.50.53:8080',
+    // IP : 'http://172.30.42.225:8080',
+    IP: 'http://172.30.43.116:8080',
     login: '/account/login.do',
     searchbm: '/position',          //部门查询
     addcom: '/company',              //新增公司
@@ -8,5 +9,7 @@ export const API = {
     joblever: '/positionLevel',   //职等
     dictSerch: '/sys/dictType',   //数据词典左
     dictionaries: '/sys/dictionaries',   //数据词典右
-    Department: '/department/search'   //部门管理
+    Department: '/department/search',   //部门管理
+    Employee: '/employee',     //人员
+    Store: '/store'         //门店
 }

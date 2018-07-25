@@ -81,7 +81,7 @@ class department extends Component {
     let url = `${IP}${Department}`
     // console.log(url)
     getfun(url).then(res => {
-      console.log(res)
+      // console.log(res)
       let newArr = []
       res.content.forEach(item => {
         if(item.state === '0') {

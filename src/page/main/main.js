@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { Layout, Menu, Breadcrumb, Icon, Row, Col } from 'antd';
+import {Link } from 'react-router-dom'
 import './main.css'
-import Company from '../../components/company/company'
-import Department from '../../components/department/department'
-import Duty from '../../components/duty/duty'
-import JobLever from '../../components/jobLever/jobLever'
-import Dictionaries from '../../components/dictionaries/dictionaries'
+import *as route from '../../routers';
 const { Header, Content, Footer, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
 
@@ -24,27 +21,10 @@ class Main extends Component {
     this.setState({ collapsed });
   }
 
-  choiceMain = () =>{
-    const { item } = this.state
-    console.log(item)
-    switch(item) {
-      case 'Company':
-        return ( <Company /> )
-      case 'Department':
-        return ( <Department /> )
-      case 'duty':
-        return ( <Duty /> )
-      case 'jobLever':
-        return ( <JobLever /> )
-      case 'dictionaries':
-        return ( <Dictionaries />)
-      default:
-        return ( <Company /> )
-    }
-
-  }
 
   render() {
+    // console.log(this.props)
+    const { match } = this.props
     return (
       <Layout style={{ minHeight: '100vh' }}>
         <Sider
@@ -66,10 +46,12 @@ class Main extends Component {
               key="sub1"
               title={<span><Icon type="user" /><span>组织机构管理</span></span>}
             >
-              <Menu.Item onClick={() => this.setState({item:'Company'})} key="3">公司管理</Menu.Item>
-              <Menu.Item onClick={() => this.setState({item:'Department'})} key="4">部门管理</Menu.Item>
-              <Menu.Item onClick={() => this.setState({item:'duty'})} key="5">职务管理</Menu.Item>
-              <Menu.Item onClick={() => this.setState({item:'jobLever'})} key="6">职等管理</Menu.Item>
+              <Menu.Item  key="3"><Link to={`${match.url}/Company`}>公司管理</Link></Menu.Item>
+              <Menu.Item  key="4"><Link to={`${match.url}/Department`}>部门管理</Link></Menu.Item>
+              <Menu.Item  key="5"><Link to={`${match.url}/Duty`}>职务管理</Link></Menu.Item>
+              <Menu.Item  key="6"><Link to={`${match.url}/JobLever`}>职等管理</Link></Menu.Item>
+              <Menu.Item  key="7"><Link to={`${match.url}/Person`}>人员管理</Link></Menu.Item>
+              <Menu.Item  key="8"><Link to={`${match.url}/Shop`}>门店管理</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub2"
@@ -79,8 +61,10 @@ class Main extends Component {
               <Menu.Item key="8">Team 2</Menu.Item>
             </SubMenu>
             <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
+              <Link to={`${match.url}/Dictionaries`}>
               <Icon type="file" />
               <span>数据词典</span>
+              </Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -96,7 +80,7 @@ class Main extends Component {
             <Breadcrumb style={{ margin: '16px 0' }}>
             </Breadcrumb>
             <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
-              {this.choiceMain()}
+              {route.mainRouters()}
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>

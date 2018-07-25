@@ -90,7 +90,7 @@ class Company extends Component {
   handleDelete = (aa) => {
     // const data = [...this.state.data];
     // let aa = data[key-1];
-    console.log(aa)
+    // console.log(aa)
     let newState = ''
     if(aa.state === '未启用') {
       newState = '1'
@@ -101,11 +101,11 @@ class Company extends Component {
     // `${IP}company/${aa.id}/state/${newState}`
     console.log(url)
     putfun(url).then(res =>{
-      console.log(res)
+      // console.log(res)
       if(res ==='success'){
         let newulr = `${IP}${searchcom}`
         getfun(newulr).then(res => {
-          console.log(res)
+          // console.log(res)
           let newArr = []
           res.content.forEach(item => {
             if(item.state === '0') {
@@ -142,7 +142,7 @@ class Company extends Component {
       parentCompanyName: addparentCompanyName,
       parentCompanyCode: '0002'
     }
-    console.log(sendData)
+    // console.log(sendData)
     postfun2(url,sendData).then(res => {
       console.log(res)
       if(res ==='success'){
