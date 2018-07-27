@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker  } from 'antd';
+import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker, Tree  } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
 import {getfun} from '../../common/axiosFun'
-const { IP, Employee} = API
+const { IP, Employee, PersonThree} = API
 
 const Option = Select.Option;
+const TreeNode = Tree.TreeNode;
 
 
 
@@ -108,12 +109,25 @@ class Person extends Component {
           title: '证件类型',
           dataIndex: 'idType',
         },
-      ]
+        {
+          title: '证件号码',
+          dataIndex: 'typeValue',
+        }
+      ],
+      threeId: '',
+      threeType: '',
+      threeData:[],
+      threeData1:[]
     }
   }
 
   componentDidMount() {
     this.startData()
+    let newUrl = `${IP}${PersonThree}`
+    getfun(newUrl).then(res =>{
+      console.log(res)
+      this.setState({threeData:res.data})
+    }).catch(err => console.log(err))
   }
 
   startData = () =>{
@@ -248,9 +262,69 @@ class Person extends Component {
     this.setState({addpapers: value})
   }
 
+  onSelect = (selectedKeys, info) => {
+    // console.log(selectedKeys[0]);
+    // console.log(info.node.props.type)
+    let title = info.node.props.title
+    let url =''
+    if(title === '全球') {
+      url = `${IP}/employee?bigArea=全球`
+    }else if(info.node.props.type === undefined){
+      let bb = info.node.props.dataRef.type
+      switch (bb) {
+        case "company":
+        url = `${IP}/employee?companyId=${selectedKeys[0]}`
+        break
+        case "department":
+        url = `${IP}/employee?deptId=${selectedKeys[0]}`
+        break
+        default:
+        url = `${IP}/employee?bigArea=${info.node.props.title}`
+      }
+    }else{
+      url = `${IP}/employee?storeId=${selectedKeys[0]}`
+    }
+    console.log(url)
+    getfun(url).then(res =>{
+      console.log(res)
+      let newArr = []
+      res.content.map(item => {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+    }).catch(err => console.log(err))
+
+  }
+
+
+
+  rethree = (item) => {
+    if(item instanceof Array) {
+      return item.map((aa) =>{
+        if (aa.data) {
+          return (
+            <TreeNode title={aa.title} key={aa.id} dataRef={aa}>
+                {this.rethree(aa.data)}
+            </TreeNode>
+          )
+        }
+        return  <TreeNode {...aa}   key={aa.id}/>;
+      })
+    }else{
+      console.log('err')
+    }
+
+  }
+
 
   render() {
-    const {jobs, papersArr} = this.state
+    const {jobs, papersArr, threeData} = this.state
     const rowSelection = {
       onChange: (selectedRowKeys,selectedRows) => {
         console.log(selectedRows);
@@ -262,7 +336,16 @@ class Person extends Component {
     return (
       <div>
         <Row type="flex" justify="space-around">
-          <Col span="5" style={{backgroundColor:'#ccc'}}>Three</Col>
+          <Col span="5">
+            <Tree
+            showLine
+            onSelect={this.onSelect}
+            >
+             <TreeNode title={threeData.title} key={threeData.id} >
+               {this.rethree(threeData.data)}
+             </TreeNode>
+            </Tree>
+          </Col>
           <Col span="18" >
             <Row type="flex" justify="space-around" style={{marginBottom:20}}>
               <Col span="5">
@@ -301,6 +384,7 @@ class Person extends Component {
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
+                  rowKey="id"
                   rowSelection={rowSelection}
                 />
             </div>
@@ -376,6 +460,7 @@ class Person extends Component {
                   columns={this.state.addcolumns}
                   dataSource={this.state.addData}
                   bordered
+                  rowKey="id"
                   size='middle'
                   onRow = {(record, index) =>{
                     return {
