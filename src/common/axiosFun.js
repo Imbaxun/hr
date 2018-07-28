@@ -10,8 +10,7 @@ axios.defaults.baseURL = '/api';
 
 export function postfun(url, zhydata) {
     return new Promise((resolve, reject) => {
-      axios.post(url, qs.stringify(zhydata)
-      ).then(res => {
+      axios.post(url, zhydata).then(res => {
         // console.log(res)
         resolve(res.data)
       }).catch(err => {

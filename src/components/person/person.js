@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker, Tree  } from 'antd';
+import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker, Tree, Upload, message, Icon  } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
-import {getfun} from '../../common/axiosFun'
+import {getfun, postfun, putfun} from '../../common/axiosFun'
 const { IP, Employee, PersonThree} = API
 
 const Option = Select.Option;
@@ -24,9 +24,15 @@ class Person extends Component {
       addJob: '',
       addpapers: '',
       addPapersNumber: '',
-      addDate: '',
+      addDate1: '',
+      addDate2: '',
       addvisibl: false,
+      addvisibl1: false,
+      changeJob:'',
+      changePhone: '',
       delAddIndex: '',
+      dowloadUrl: '',
+      downLoad: '',
       papersArr: [],
       data:[],
       columns: [
@@ -99,7 +105,7 @@ class Person extends Component {
         },
         {
           title: '入职时间',
-          dataIndex: 'entryDate',
+          dataIndex: 'showData',
         },
         {
           title: '手机号码',
@@ -198,14 +204,49 @@ class Person extends Component {
   }
 
   onChangeDate = (date, dateString) => {
-    console.log(date._d.getTime() );
+    console.log(dateString )
     let TIME = date._d.getTime()
-    this.setState({addDate: TIME})
+    this.setState({addDate1: TIME, addDate2:dateString})
   }
+  onChangeDate1 = (date, dateString) => {
+    console.log(dateString )
+    let TIME = date._d.getTime()
+    this.setState({changeDate1: TIME, changeDate2:dateString})
+  }
+
   addPersonEnd = () =>{
     const {addData} =this.state
     console.log(addData)
-
+    let arr = []
+    addData.map(item =>{
+      let aa = {
+        empName: item.empName,
+        empPhone: item.empPhone,
+        entryDate: item.entryDate,
+        idType: item.idType,
+        typeValue: item.typeValue,
+        relationshipList:[
+          {
+            companyId: item.companyId,
+            deptId: item.deptId,
+            positionId: item.positionId,
+            storeId: '1'
+          }
+        ]
+      }
+      arr.push(aa)
+    })
+    console.log(arr)
+    let url = `${IP}${Employee}`
+    postfun(url,arr).then(res =>{
+      console.log(res)
+      if(res ==='success'){
+        alert('新增成功')
+        this.setState({visible:false})
+      }else{
+        alert('新增失败')
+      }
+    }).catch(err => console.log(err))
   }
 
   delAddData = (item) =>{
@@ -221,7 +262,7 @@ class Person extends Component {
   }
 
   addPersonData = () =>{
-    const {addCompanyId, addDeptId, addpapers, addName, addPhone, addPapersNumber, addDate, addJob, addData} = this.state
+    const {addCompanyId, addDeptId, addpapers, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData} = this.state
     // let url = `${IP}${Employee}`
     let sendData = {
       companyId: addCompanyId,
@@ -231,13 +272,13 @@ class Person extends Component {
       empPhone: addPhone,
       idType: addpapers,
       typeValue: addPapersNumber,
-      entryDate: addDate
+      entryDate: addDate1,
+      showData: addDate2
     }
     let newArr = addData
     newArr.push(sendData)
     console.log(newArr)
-    this.setState({addData: newArr})
-    
+    this.setState({addData: newArr})    
   }
   onChangeBm = (value) => {
     console.log(value)
@@ -246,10 +287,22 @@ class Person extends Component {
       addDeptId: value[1]
     })
   }
+  onChangeBm1 = (value) => {
+    console.log(value)
+    this.setState({
+      changeCompanyId: value[0],
+      changeDeptId: value[1]
+    })
+  }
 
   onChangeJob = (value) => {
     console.log(value)
     this.setState({addJob:value})
+  }
+
+  onChangeJob1 = (value) => {
+    console.log(value)
+    this.setState({changeJob:value})
   }
 
   onChangeType = (value) => {
@@ -261,30 +314,42 @@ class Person extends Component {
     console.log(value)
     this.setState({addpapers: value})
   }
+  choicePapers1 = (value) => {
+    console.log(value)
+    this.setState({changepapers: value})
+  }
 
   onSelect = (selectedKeys, info) => {
     // console.log(selectedKeys[0]);
     // console.log(info.node.props.type)
     let title = info.node.props.title
     let url =''
+    let newurl= ''
     if(title === '全球') {
       url = `${IP}/employee?bigArea=全球`
+      newurl = `${IP}/employee/exportEmployee?bigbigArea=全球`
     }else if(info.node.props.type === undefined){
       let bb = info.node.props.dataRef.type
       switch (bb) {
         case "company":
         url = `${IP}/employee?companyId=${selectedKeys[0]}`
+        newurl = `${IP}/employee/exportEmployee?companyId=${selectedKeys[0]}`
         break
         case "department":
         url = `${IP}/employee?deptId=${selectedKeys[0]}`
+        newurl = `${IP}/employee/exportEmployee?deptId=${selectedKeys[0]}`
         break
         default:
         url = `${IP}/employee?bigArea=${info.node.props.title}`
+        newurl = `${IP}/employee/exportEmployee?bigArea=${info.node.props.title}`
       }
     }else{
       url = `${IP}/employee?storeId=${selectedKeys[0]}`
+      newurl = `${IP}/employee/exportEmployee?storeId=${selectedKeys[0]}`
     }
     console.log(url)
+    console.log(newurl)
+    this.setState({dowloadUrl: newurl})
     getfun(url).then(res =>{
       console.log(res)
       let newArr = []
@@ -322,6 +387,24 @@ class Person extends Component {
 
   }
 
+  changePerson = () => {
+    const { changePhone, choiceData} = this.state
+    let aid = choiceData[0].id
+    let sendData = {
+      empPhone: changePhone,
+      id: aid
+    }
+    // let url =`${IP}${Employee}`
+    // putfun()
+  }
+
+  downLoad = () =>{
+    const {dowloadUrl,empCode, empName, levelName} = this.state
+    console.log(dowloadUrl)
+    let url = `${dowloadUrl}&empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    console.log(url)
+    this.setState({downLoad:url})
+  }
 
   render() {
     const {jobs, papersArr, threeData} = this.state
@@ -333,6 +416,25 @@ class Person extends Component {
     }  
     const cityOptions = jobs.map(city => <Option value={city.id} key={city.id}>{city.positionName}</Option>)
     const papersOptions = papersArr.map(city => <Option value={city.dictValue} key={city.id}>{city.dictKey}</Option>)
+    const up = {
+      name: 'file',
+      action: `${IP}/employee/importEmployee`,
+      headers: {
+        authorization: 'authorization-text',
+      },
+      onChange(info) {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully`);
+          message.error(`${info.file.response.msg}`);
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
+    }
+    
     return (
       <div>
         <Row type="flex" justify="space-around">
@@ -387,6 +489,14 @@ class Person extends Component {
                   rowKey="id"
                   rowSelection={rowSelection}
                 />
+                <div>
+                  <Button onClick={this.downLoad}><a href={this.state.downLoad}>导出</a></Button>
+                  <Upload {...up}>
+                    <Button>
+                      <Icon type="upload" /> Click to Upload
+                    </Button>
+                  </Upload>,
+                </div>
             </div>
             <Modal
               title="新增人员"
@@ -460,7 +570,7 @@ class Person extends Component {
                   columns={this.state.addcolumns}
                   dataSource={this.state.addData}
                   bordered
-                  rowKey="id"
+                  rowKey="typeValue"
                   size='middle'
                   onRow = {(record, index) =>{
                     return {
@@ -470,6 +580,30 @@ class Person extends Component {
                     }
                   }}
                 />
+              </Row>
+            </Modal>
+            <Modal
+              title="编辑人员"
+              visible={this.state.addvisible1}
+              onOk={() =>this.changePerson()}
+              onCancel={() =>this.setState({addvisible1:false})}
+              width={800}
+            >
+              <Row type="flex" justify="space-around" style={{marginBottom:20}}>
+                <Col span="10">
+                  {/* <div style={{display:'flex'}}>
+                    <Button type='primary' >选择职务</Button>  
+                    <Select  style={{ width: 120 }} onChange={this.onChangeJob}>
+                     {cityOptions}
+                    </Select>
+                  </div> */}
+                </Col>
+                <Col span='10'>
+                  <div style={{display:'flex'}}>
+                    <Button type='primary' >手机号码</Button>  
+                    <Input  onChange={(e) =>{this.setState({changePhone:e.target.value})}} />
+                  </div>
+                </Col>
               </Row>
             </Modal>
           </Col>
