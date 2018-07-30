@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker, Tree, Upload, message, Icon  } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
-import {getfun, postfun, putfun} from '../../common/axiosFun'
+import {getfun, postfun, putfun,deletefun} from '../../common/axiosFun'
 const { IP, Employee, PersonThree} = API
 
 const Option = Select.Option;
@@ -30,6 +30,9 @@ class Person extends Component {
       addvisibl1: false,
       changeJob:'',
       changePhone: '',
+      changeCompanyId: '',
+      changeDeptId: '',
+      searchUrl: '',
       delAddIndex: '',
       dowloadUrl: '',
       downLoad: '',
@@ -54,11 +57,11 @@ class Person extends Component {
         },
         {
           title: '职务',
-          dataIndex: 'levelName',
+          dataIndex: 'positionName',
         },
         {
           title: '入职时间',
-          dataIndex: 'entryDate',
+          dataIndex: 'entryDateView',
         },
         {
           title: '手机号码',
@@ -66,7 +69,7 @@ class Person extends Component {
         },
         {
           title: '证件类型',
-          dataIndex: 'idType',
+          dataIndex: 'idTypeView',
         },
         {
           title: '证件号码',
@@ -128,11 +131,32 @@ class Person extends Component {
   }
 
   componentDidMount() {
+    const {IP, Employee} = API
     this.startData()
     let newUrl = `${IP}${PersonThree}`
+    console.log(newUrl)
     getfun(newUrl).then(res =>{
       console.log(res)
       this.setState({threeData:res.data})
+    }).catch(err => console.log(err))
+    let url =`${IP}${Employee}/companyInfo`
+    getfun(url).then(res => {
+      // console.log(res)
+      this.setState({options: res})
+    }).catch(err => console.log(err))
+
+    let newUrl2 =`${IP}/position/all`
+    console.log(newUrl2)
+    getfun(newUrl2).then(res => {
+      // console.log(res)
+      this.setState({jobs: res})
+      // this.selectData()
+    }).catch(err => console.log(err))
+
+    let newUrl1 = `${IP}/sys/dictType/idType`
+    getfun(newUrl1).then(res => {
+      console.log(res)
+      this.setState({papersArr: res})
     }).catch(err => console.log(err))
   }
 
@@ -140,7 +164,7 @@ class Person extends Component {
     let url = `${IP}${Employee}`
     // console.log(url)
     getfun(url).then(res => {
-      // console.log(res)
+      console.log(res)
       let newArr = []
       res.content.forEach(item => {
         if(item.state === '0') {
@@ -163,6 +187,7 @@ class Person extends Component {
     const { IP, Employee} = API
     let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&levelName=${levelName}`
     getfun(url).then(res => {
+      console.log(res)
       let newArr = []
       res.content.forEach(item=> {
         if(item.state === '0') {
@@ -181,26 +206,7 @@ class Person extends Component {
 
   addPerson = () =>{
     this.setState({addvisible: true})
-    const {IP, Employee} = API
-    let url =`${IP}${Employee}/companyInfo`
-    getfun(url).then(res => {
-      // console.log(res)
-      this.setState({options: res})
-    }).catch(err => console.log(err))
 
-    let newUrl =`${IP}/position/all`
-    console.log(newUrl)
-    getfun(newUrl).then(res => {
-      // console.log(res)
-      this.setState({jobs: res})
-      // this.selectData()
-    }).catch(err => console.log(err))
-
-    let newUrl1 = `${IP}/sys/dictType/idType`
-    getfun(newUrl1).then(res => {
-      console.log(res)
-      this.setState({papersArr: res})
-    }).catch(err => console.log(err))
   }
 
   onChangeDate = (date, dateString) => {
@@ -249,9 +255,29 @@ class Person extends Component {
     }).catch(err => console.log(err))
   }
 
-  delAddData = (item) =>{
-    console.log(item)
-    this.setState({delAddIndex: item})
+  delAddData = () =>{
+    const {choiceData, searchUrl} = this.state
+    console.log(choiceData)
+    let newArr = []
+    choiceData.map( item =>{
+      let id = item.empRelId
+      newArr.push(id)
+    })
+    console.log(newArr.toString())
+    let idnumber = newArr.toString()
+    let url = `${IP}${Employee}/${idnumber}`
+    console.log(url)
+    let changeUrl = ''
+    searchUrl === '' ? changeUrl = `${IP}/employee/exportEmployee?bigbigArea=全球` : changeUrl = searchUrl
+    deletefun(url).then(res => {
+      console.log(res)
+      if(res === 'success') {
+        console.log(changeUrl)
+        this.startData()
+      }
+    }).catch(err => {
+      console.log(err)
+    })  
   }
 
   delPersonData = () =>{
@@ -349,7 +375,7 @@ class Person extends Component {
     }
     console.log(url)
     console.log(newurl)
-    this.setState({dowloadUrl: newurl})
+    this.setState({dowloadUrl: newurl, searchUrl:url})
     getfun(url).then(res =>{
       console.log(res)
       let newArr = []
@@ -388,14 +414,35 @@ class Person extends Component {
   }
 
   changePerson = () => {
-    const { changePhone, choiceData} = this.state
-    let aid = choiceData[0].id
+    const {changeJob, changeCompanyId,changeDeptId, changePhone, choiceData,searchUrl} = this.state
+    console.log(choiceData)
+    this.setState({addvisible1: true})
     let sendData = {
+      id: choiceData[0].id,
       empPhone: changePhone,
-      id: aid
+      empCode: choiceData[0].empCode,
+      idType : choiceData[0].idType,
+      typeValue : choiceData[0].typeValue,
+      relationshipList: [
+        {
+          companyId: changeCompanyId,
+          deptId: changeDeptId,
+          id: choiceData[0].empRelId,
+          positionId: changeJob
+        }
+      ]
     }
-    // let url =`${IP}${Employee}`
-    // putfun()
+    console.log(sendData)
+    let changeUrl = ''
+    searchUrl === '' ? changeUrl = `${IP}/employee/exportEmployee?bigbigArea=全球` : changeUrl = searchUrl
+    let url =`${IP}${Employee}/${choiceData[0].id}`
+    putfun(url,sendData).then(res =>{
+      console.log(res)
+      if(res === 'success') {
+        console.log(changeUrl)
+        this.startData()
+      }
+    }).catch(err => console.log(err))
   }
 
   downLoad = () =>{
@@ -477,9 +524,9 @@ class Person extends Component {
               <h3 className="comtitle">人员维护列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button icon="plus" onClick={() =>this.addPerson()} >新增</Button></Col>
-                  <Col span="3"><Button icon="edit">编辑</Button></Col>
+                  <Col span="3"><Button icon="edit" onClick={this.changePerson}>编辑</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
-                  <Col span="3"><Button icon="delete">删除</Button></Col>
+                  <Col span="3"><Button icon="delete" onClick={this.delAddData}>删除</Button></Col>
                 </Row>
                 <Table
                   style={{marginTop:20}}
@@ -591,12 +638,22 @@ class Person extends Component {
             >
               <Row type="flex" justify="space-around" style={{marginBottom:20}}>
                 <Col span="10">
-                  {/* <div style={{display:'flex'}}>
+                  <div style={{display:'flex'}}>
+                    <Button type='primary' >选择公司部门</Button>  
+                    <Cascader  options={this.state.options} onChange={this.onChangeBm1} />
+                  </div>
+                </Col>
+                <Col span="10">
+                </Col>
+              </Row>
+              <Row type="flex" justify="space-around" style={{marginBottom:20}}>
+                <Col span="10">
+                  <div style={{display:'flex'}}>
                     <Button type='primary' >选择职务</Button>  
-                    <Select  style={{ width: 120 }} onChange={this.onChangeJob}>
+                    <Select  style={{ width: 120 }} onChange={this.onChangeJob1}>
                      {cityOptions}
                     </Select>
-                  </div> */}
+                  </div>
                 </Col>
                 <Col span='10'>
                   <div style={{display:'flex'}}>
