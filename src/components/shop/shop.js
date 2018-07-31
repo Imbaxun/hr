@@ -3,6 +3,7 @@ import { Row, Col, Input, Button, Table, Popconfirm ,Modal } from 'antd';
 import './shop.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
+import CompanyThree from '../../common/companyThree'
 const { IP, Store} = API
 
 class Shop extends Component {
@@ -184,7 +185,9 @@ class Shop extends Component {
     return (
       <div>
         <Row type="flex" justify="space-around">
-          <Col span="5" style={{backgroundColor:'#ccc'}}>Three</Col>
+          <Col span="5">
+            <CompanyThree />
+          </Col>
           <Col span="18" >
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
             <Col span="5">
@@ -225,6 +228,7 @@ class Shop extends Component {
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
+                  rowKey="code"
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{
