@@ -21,6 +21,7 @@ class Shop extends Component {
       addCoordinate: '',
       changeName:'',
       changeCoordinate: '',
+      selectData: '',
       columns:[
         {
           title: '门店编码',
@@ -179,6 +180,27 @@ class Shop extends Component {
       console.log(err)
     })
   }
+  //树桩查询的方法
+  getThreeData = (item) =>{
+    console.log(item)
+    this.setState({selectData: item})
+    //点击查询的url
+    let searchUrl = `${IP}/employee?${item}`
+    getfun(searchUrl).then(res =>{
+      console.log(res)
+      let newArr = []
+      res.content.map(item => {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+    }).catch(err => console.log(err))
+  }
 
 
   render () {
@@ -186,7 +208,7 @@ class Shop extends Component {
       <div>
         <Row type="flex" justify="space-around">
           <Col span="5">
-            <CompanyThree />
+            <CompanyThree getThreeData= {this.getThreeData}/>
           </Col>
           <Col span="18" >
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>

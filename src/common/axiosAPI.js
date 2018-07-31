@@ -13,5 +13,6 @@ export const API = {
     dictionaries: '/sys/dictionaries',   //数据词典右
     Department: '/department/search',   //部门管理
     Employee: '/employee',     //人员
-    Store: '/store'         //门店
+    Store: '/store',         //门店
+    ClassManageUrl: '/scheduling'   //班次管理
 }

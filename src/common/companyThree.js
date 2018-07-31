@@ -7,8 +7,10 @@ const { IP, PersonThree} = API
 
 class CompanyThree extends Component {
   constructor(props) {
+    console.log(props)
     super()
     this.state = {
+      tofatherData: '',
       threeData:[],
     }
   }
@@ -38,8 +40,9 @@ class CompanyThree extends Component {
     }else{
       selectData = `storeId=${selectedKeys[0]}`
     }
-    console.log(selectData)
-
+    // console.log(selectData)
+    this.setState({tofatherData: selectData})
+    this.props.getThreeData(selectData)
   }
 
   rethree = (item) => {
