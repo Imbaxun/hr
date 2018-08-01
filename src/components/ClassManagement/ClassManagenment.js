@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { Row, Col, Input, Button, Table,DatePicker } from 'antd';
-import{getfun} from '../../common/axiosFun'
+import { Row, Col, Input, Button, Table,DatePicker, Modal ,Calendar, Tag, Tooltip, TimePicker } from 'antd';
+import{getfun, postfun2} from '../../common/axiosFun'
 import {API} from '../../common/axiosAPI'
 import './ClassManage.css'
+import moment from 'moment';
 const { MonthPicker} = DatePicker;
 const { IP, ClassManageUrl} = API
 
@@ -11,8 +12,8 @@ class ClassManage extends Component{
     super(props)
     this.state = {
       schedulingName : '',
-      month: '',
-      year: '',
+      month: '01',
+      year: '2018',
       choiceData: '',
       tableData:[],
       columns: [
@@ -32,7 +33,46 @@ class ClassManage extends Component{
           title: '班次描述',
           dataIndex: 'description',
         }
-      ]
+      ],
+      visible: false,
+      addschedulingName: '',
+      tags: ['休息日:'],
+      addData: [
+        {
+          workStart:1533086040935,
+          workEnd: 1533086050935,
+          isDefault: 1,
+          workStartDate: '8:30',
+          workEndDate: '18:00',
+          day: '',
+          description: ''
+        }
+      ],
+      columns1: [
+        {
+          title: '上班时间',
+          dataIndex: 'workStartDate',
+        },
+        {
+          title: '下班时间',
+          dataIndex: 'workEndDate',
+        },
+        {
+          title: '适用日期',
+          dataIndex: 'day',
+        },
+        {
+          title: '备注',
+          dataIndex: 'description',
+        }
+      ],
+      addTimeStart:'',
+      timeStart: '',
+      addTimeEnd: '',
+      timeEnd: '',
+      addDay: '',
+      description: '',
+      delIndex: ''
     }
 
   }
@@ -44,7 +84,7 @@ class ClassManage extends Component{
   startData = () =>{
     let url = `${IP}${ClassManageUrl}`
     getfun(url).then(res =>{
-      // console.log(res.content)
+      console.log(res)
       let arr = res.content
       arr.forEach(item =>{
         item.resDate = `${item.year}/${item.month}`
@@ -64,7 +104,114 @@ class ClassManage extends Component{
   }
 
   searchData = () =>{
+    const {month, year, schedulingName} =this.state
+    let url = `${IP}${ClassManageUrl}?schedulingName=${schedulingName}&month=${month}&year=${year}`
+    getfun(url).then(res => console.log(res)).catch(err =>console.log(err))
+  }
 
+  onPanelChange= (value, mode) =>{
+    console.log(value._d.getFullYear())
+    this.setState({year:value._d.getFullYear(),month:value._d.getMonth()})
+  }
+
+  selectDate = (item) =>{
+    const {tags} = this.state
+    console.log(tags)
+    let selectDate = item._d.getDate().toString()
+    let newArr = tags.push(selectDate)
+    console.log(newArr)
+    this.setState({tags: tags})
+  }
+
+
+  handleClose = (removedTag) => {
+    const tags = this.state.tags.filter(tag => tag !== removedTag);
+    console.log(tags);
+    this.setState({ tags });
+  }
+
+  startTime = (time, timeString) =>{
+    console.log(timeString)
+    let timeStart = time._d.getTime()
+    this.setState({timeStart: timeString, addTimeStart: timeStart})
+  }
+
+  endTime = (time, timeString) =>{
+    console.log(timeString)
+    let timeEnd = time._d.getTime()
+    this.setState({timeEnd: timeString, addTimeEnd: timeEnd})
+  }
+
+  addDate = (date, dateString) =>{
+    console.log(date._d.getDate())
+    this.setState({addDay:date._d.getDate()})
+  }
+
+  addDayType = () =>{
+    const {description, addDay, timeEnd, addTimeEnd, addTimeStart, timeStart, addData} = this.state
+    let data = {
+      description,
+      workStart:addTimeStart,
+      workEnd: addTimeEnd,
+      isDefault: 0,
+      workStartDate: timeStart,
+      workEndDate: timeEnd,
+      day:addDay
+    }
+    addData.push(data)
+    this.setState({addData:addData})
+  }
+
+  delAddData = () =>{
+    const {addData, delIndex} =this.state
+    let arr = []
+    addData.splice(delIndex,1)
+    console.log(addData)
+    this.setState({addData:addData})
+  }
+
+  addClass = () =>{
+    const {addschedulingName,year,month,tags,addData} = this.state
+    console.log(tags)
+    let arr1 = tags.shift()
+    console.log(tags)
+    let newArr1= []
+    tags.forEach(item =>{
+      let aaa = {
+        day:item,
+        isWorking:0,
+        itemType:0,
+      }
+      newArr1.push(aaa)
+    })
+    console.log(newArr1)
+    let arr2 =[]
+    addData.forEach(item =>{
+      let bbb = {
+        day: item.day,
+        isDefault: 0,
+        workStart: item.workStart,
+        workEnd: item.workEnd,
+        description:item.description
+      }
+      arr2.push(bbb)
+    })
+    let sendData = {
+      schedulingName: addschedulingName,
+      schedulingSource: '人资',
+      year,
+      month,
+      schedulingItemList: newArr1,
+      schedulingRemarkList: arr2
+    }
+    console.log(sendData)
+    let url = `${IP}${ClassManageUrl}`
+    postfun2(url, sendData).then(res => {
+      if(res === 'success') {
+        this.setState({visible: false})
+        this.startData()
+      }
+    }).catch(err => console.log(err))
   }
 
   render() {
@@ -74,6 +221,8 @@ class ClassManage extends Component{
         this.setState({choiceData:selectedRows})
       }
     }  
+
+    const {tags} = this.state
     return (
       <div>
         <div style={{marginTop:20}}>
@@ -97,7 +246,13 @@ class ClassManage extends Component{
         </div>
         <hr/>
         <div className="comMain">
-          <h3 className="comtitle">部门维护列表</h3>
+          <h3 className="comtitle">班次维护列表</h3>
+          <Row type="flex" justify="end">
+            <Col span="2"><Button icon="plus" onClick={() =>this.setState({visible:true})} >新增</Button></Col>
+            <Col span="2"><Button icon="edit" >编辑</Button></Col>
+            {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
+            <Col span="2"><Button icon="delete" >删除</Button></Col>
+          </Row>
           <Table
             style={{marginTop:20}}
             columns={this.state.columns}
@@ -105,6 +260,80 @@ class ClassManage extends Component{
             bordered
             rowSelection={rowSelection}
           />
+          <Modal 
+            title="新增班次"
+            visible={this.state.visible}
+            onOk={() =>this.addClass()}
+            onCancel={() =>this.setState({visible:false})}
+            width={1200}
+          >
+          <Row type="flex" justify="space-around">
+            <Col span="7">
+                <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                  <Button type='primary' >班次名称</Button>
+                  <Input  onChange={(e) => { this.setState({ addschedulingName: e.target.value }) }} />
+                </div>
+              <div style={{ width: 300, border: '1px solid #d9d9d9', borderRadius: 4 }}>
+                <p>请选择当月休息日期：</p>
+                <hr/>
+                <Calendar defaultValue={moment('2018-01-01')} fullscreen={false} onPanelChange={this.onPanelChange} onSelect={this.selectDate}/>
+                <hr/>
+                <div style={{marginLeft:5,marginBottom:3}}>
+                    {tags.map((tag, index) => {
+                      const isLongTag = tag.length > 20;
+                      const tagElem = (
+                        <Tag color="#87d068" style={{marginBottom:2}} key={index} closable={index !== 0} afterClose={() => this.handleClose(tag)}>
+                          {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                        </Tag>
+                      );
+                      return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
+                    })}
+                </div>
+              </div>
+            </Col>
+            <Col span="17">
+              <div>
+                  <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+                    <Col span="14">
+                      <Button type='primary' >班次时间段</Button>
+                      <TimePicker onChange={this.startTime} defaultOpenValue={moment('08:30:00', 'HH:mm:ss')} />——<TimePicker onChange={this.endTime} defaultOpenValue={moment('18:00:00', 'HH:mm:ss')} />,
+                  </Col>
+                    <Col span="8">
+                      <Button type='primary'>适用日期</Button>
+                      <DatePicker onChange={this.addDate} />
+                    </Col>
+                  </Row>
+                  <Row type="flex" justify="space-around">
+                    <Col span='14'>
+                      <div style={{ display: 'flex' }}>
+                        <Button type='primary' >备注</Button>
+                        <Input onChange={(e) => { this.setState({ description: e.target.value }) }} />
+                      </div>
+                    </Col>
+                    <Col span="8">
+                      <Button type='primary' onClick={this.addDayType}>添加</Button>  <Button type='primary' onClick={this.delAddData}>删除</Button>
+                    </Col>
+                  </Row>
+                  <hr />
+                  <Table
+                    style={{ marginTop: 20 }}
+                    columns={this.state.columns1}
+                    dataSource={this.state.addData}
+                    bordered
+                    rowKey='day'
+                    onRow={(record,index) =>{
+                      return {
+                        onClick: () =>{
+                          console.log(index)
+                          this.setState({delIndex: index})
+                        }
+                      }
+                    }}
+                  />
+              </div>
+            </Col>
+          </Row>
+          </Modal>
         </div>
       </div>
     )
