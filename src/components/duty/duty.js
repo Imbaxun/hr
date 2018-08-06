@@ -53,7 +53,7 @@ class duty extends Component {
         dataIndex: 'positionDescription',
       }, {
         title: '职等',
-        dataIndex: 'pname',
+        dataIndex: 'positionLevelName',
       }, {
         title: '启用状态',
         dataIndex: 'state',

@@ -18,6 +18,7 @@ class CompanyThree extends Component {
   componentDidMount() {
     let url = `${IP}${PersonThree}`
     getfun(url).then(res => this.setState({threeData: res.data})).catch(err => console.log(err))
+    console.log(this.state.threeData)
   }
 
   onSelect = (selectedKeys, info) => {

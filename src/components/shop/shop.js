@@ -189,7 +189,7 @@ class Shop extends Component {
     getfun(searchUrl).then(res =>{
       console.log(res)
       let newArr = []
-      res.content.map(item => {
+      res.content.forEach(item => {
         if(item.state === '0') {
           item.state = '未启用'
         }else{

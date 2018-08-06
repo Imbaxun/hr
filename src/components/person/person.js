@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker, Tree, Upload, message, Icon  } from 'antd';
+import { Row, Col, Input, Button, Table, Popconfirm, Modal, Cascader ,Select, DatePicker, Tree, Upload, message, Icon, Radio   } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun, putfun,deletefun} from '../../common/axiosFun'
@@ -7,6 +7,7 @@ const { IP, Employee, PersonThree} = API
 
 const Option = Select.Option;
 const TreeNode = Tree.TreeNode;
+const RadioGroup = Radio.Group
 
 
 
@@ -18,9 +19,15 @@ class Person extends Component {
       empName: '',
       levelName: '',
       addCompanyId: '',
+      addCompanyName: '',
       addDeptId: '',
+      addDeptName: '',
       addName: '',
       addPhone: '',
+      addmainJob: '',
+      showMainJob: '',
+      showJob: '',
+      addindex: 1,
       addJob: '',
       addpapers: '',
       addPapersNumber: '',
@@ -60,6 +67,10 @@ class Person extends Component {
           dataIndex: 'positionName',
         },
         {
+          title: '是否主职',
+          dataIndex: 'positionTypeView'
+        },
+        {
           title: '入职时间',
           dataIndex: 'entryDateView',
         },
@@ -91,20 +102,24 @@ class Person extends Component {
       addData: [],
       addcolumns: [
         {
+          title: '序号',
+          dataIndex: 'index'
+        },
+        {
           title: '姓名',
           dataIndex: 'empName',
         },
         {
           title: '公司',
-          dataIndex: 'companyId',
+          dataIndex: 'showCom',
         },
         {
           title: '部门',
-          dataIndex: 'deptId',
+          dataIndex: 'showDept',
         },
         {
           title: '职务',
-          dataIndex: 'positionId',
+          dataIndex: 'showLever',
         },
         {
           title: '入职时间',
@@ -121,6 +136,10 @@ class Person extends Component {
         {
           title: '证件号码',
           dataIndex: 'typeValue',
+        },
+        {
+          title: '是否主职',
+          dataIndex: 'showJobtype',
         }
       ],
       threeId: '',
@@ -224,7 +243,7 @@ class Person extends Component {
     const {addData} =this.state
     console.log(addData)
     let arr = []
-    addData.map(item =>{
+    addData.forEach(item =>{
       let aa = {
         empName: item.empName,
         empPhone: item.empPhone,
@@ -236,7 +255,8 @@ class Person extends Component {
             companyId: item.companyId,
             deptId: item.deptId,
             positionId: item.positionId,
-            storeId: '1'
+            storeId: '1',
+            positionType:item.positionType
           }
         ]
       }
@@ -249,6 +269,7 @@ class Person extends Component {
       if(res ==='success'){
         alert('新增成功')
         this.setState({visible:false})
+        this.startData()
       }else{
         alert('新增失败')
       }
@@ -259,7 +280,7 @@ class Person extends Component {
     const {choiceData, searchUrl} = this.state
     console.log(choiceData)
     let newArr = []
-    choiceData.map( item =>{
+    choiceData.forEach( item =>{
       let id = item.empRelId
       newArr.push(id)
     })
@@ -288,9 +309,10 @@ class Person extends Component {
   }
 
   addPersonData = () =>{
-    const {addCompanyId, addDeptId, addpapers, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData} = this.state
+    const {addindex,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob} = this.state
     // let url = `${IP}${Employee}`
     let sendData = {
+      index: addindex,
       companyId: addCompanyId,
       deptId: addDeptId,
       positionId: addJob,
@@ -299,18 +321,58 @@ class Person extends Component {
       idType: addpapers,
       typeValue: addPapersNumber,
       entryDate: addDate1,
-      showData: addDate2
+      showData: addDate2,
+      showCom:addCompanyName,
+      showDept:addDeptName,
+      showLever: showJob,
+      positionType: addmainJob,
+      showJobtype: showMainJob
     }
     let newArr = addData
     newArr.push(sendData)
     console.log(newArr)
-    this.setState({addData: newArr})    
+    let aa = []
+    newArr.forEach(item =>{
+      console.log(item.positionType)
+      
+      if(item.positionType === 10){
+        // console.log(666)
+        aa.push(item.empName)
+        console.log(aa)
+        if(aa.length>1){
+          alert('主职只有一个请勿重复勾选')
+          let anewArr = []
+          this.setState({addData: anewArr})
+        }else{
+          let aaddindex = addindex +1
+          this.setState({addData: newArr, addindex: aaddindex})
+        }
+      }
+    })
+    
   }
+
   onChangeBm = (value) => {
+    const {options} = this.state
+    console.log(options)
     console.log(value)
+    let addComname = ''
+    let addDepname = ''
+    options.forEach(item =>{
+      if(item.value === value[0] ){
+        addComname = item.label
+      }
+      item.children.forEach(aa =>{
+        if(aa.value === value[1]){
+          addDepname = aa.label
+        }
+      })
+    })
     this.setState({
       addCompanyId: value[0],
-      addDeptId: value[1]
+      addDeptId: value[1],
+      addCompanyName: addComname,
+      addDeptName: addDepname
     })
   }
   onChangeBm1 = (value) => {
@@ -322,8 +384,15 @@ class Person extends Component {
   }
 
   onChangeJob = (value) => {
+    const {jobs} = this.state
     console.log(value)
-    this.setState({addJob:value})
+    let aa =''
+    jobs.forEach(item => {
+      if(item.id === value) {
+        aa = item.positionName
+      }
+    })
+    this.setState({addJob:value, showJob: aa})
   }
 
   onChangeJob1 = (value) => {
@@ -379,16 +448,16 @@ class Person extends Component {
     getfun(url).then(res =>{
       console.log(res)
       let newArr = []
-      res.content.map(item => {
+      res.content.forEach(item => {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
         newArr.push(item)
-        // console.log(newArr)
-        this.setState({data: newArr})
+        console.log(newArr)
       });
+      this.setState({data: newArr})
     }).catch(err => console.log(err))
 
   }
@@ -416,41 +485,57 @@ class Person extends Component {
   changePerson = () => {
     const {changeJob, changeCompanyId,changeDeptId, changePhone, choiceData,searchUrl} = this.state
     console.log(choiceData)
-    this.setState({addvisible1: true})
-    let sendData = {
-      id: choiceData[0].id,
-      empPhone: changePhone,
-      empCode: choiceData[0].empCode,
-      idType : choiceData[0].idType,
-      typeValue : choiceData[0].typeValue,
-      relationshipList: [
-        {
-          companyId: changeCompanyId,
-          deptId: changeDeptId,
-          id: choiceData[0].empRelId,
-          positionId: changeJob
-        }
-      ]
-    }
-    console.log(sendData)
-    let changeUrl = ''
-    searchUrl === '' ? changeUrl = `${IP}/employee/exportEmployee?bigbigArea=全球` : changeUrl = searchUrl
-    let url =`${IP}${Employee}/${choiceData[0].id}`
-    putfun(url,sendData).then(res =>{
-      console.log(res)
-      if(res === 'success') {
-        console.log(changeUrl)
-        this.startData()
+    if(choiceData !== undefined){
+      this.setState({addvisible1: true})
+      let sendData = {
+        id: choiceData[0].id,
+        empPhone: changePhone,
+        empCode: choiceData[0].empCode,
+        idType : choiceData[0].idType,
+        typeValue : choiceData[0].typeValue,
+        relationshipList: [
+          {
+            companyId: changeCompanyId,
+            deptId: changeDeptId,
+            id: choiceData[0].empRelId,
+            positionId: changeJob,
+            positionType: choiceData[0].positionType
+          }
+        ]
       }
-    }).catch(err => console.log(err))
+      console.log(sendData)
+      let changeUrl = ''
+      searchUrl === '' ? changeUrl = `${IP}/employee/exportEmployee?bigbigArea=全球` : changeUrl = searchUrl
+      let url =`${IP}${Employee}/${choiceData[0].id}`
+      putfun(url,sendData).then(res =>{
+        console.log(res)
+        if(res === 'success') {
+          console.log(changeUrl)
+          // this.setState({addvisible1: false})
+          this.startData()
+        }
+      }).catch(err => console.log(err))
+    }else{
+      alert('请先勾选编辑内容')
+    }
   }
 
   downLoad = () =>{
     const {dowloadUrl,empCode, empName, levelName} = this.state
     console.log(dowloadUrl)
-    let url = `${dowloadUrl}&empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    let url = `${IP}/employee/exportEmployee?${empCode}&empName=${empName}&levelName=${levelName}`
     console.log(url)
     this.setState({downLoad:url})
+  }
+
+  mainJob =(e) =>{
+    console.log(e.target.value)
+    if(e.target.value === 10) {
+      this.setState({addmainJob: e.target.value, showMainJob: '是'})
+    }else{
+      this.setState({addmainJob: e.target.value, showMainJob: '否'})
+    }
+
   }
 
   render() {
@@ -607,22 +692,32 @@ class Person extends Component {
                 </Col>
                 <Col span='10'>
                   <div style={{display:'flex'}}>
-                    <Button type='primary' onClick={this.addPersonData}  style={{marginRight:20}}>添加</Button>  
-                    <Button type="default" onClick={this.delPersonData}>删除</Button>
+                    <Button type='primary'>是否主职</Button>   
+                    <RadioGroup onChange={this.mainJob}>
+                      <Radio value={10}>是</Radio>
+                      <Radio value={20}>否</Radio>
+                    </RadioGroup>
                   </div>
                 </Col>
+              </Row>
+              <Row type="flex" justify="space-around" style={{marginBottom:20}}>
+                <Col span='10'>
+                <Button type='primary' onClick={this.addPersonData} style={{ marginRight: 20 }}>添加</Button>
+                <Button type="default" onClick={this.delPersonData}>删除</Button>
+                </Col>
+                <Col span='10'></Col>
               </Row>
               <Row type="flex" justify="space-around" >
                 <Table
                   columns={this.state.addcolumns}
                   dataSource={this.state.addData}
                   bordered
-                  rowKey="typeValue"
-                  size='middle'
+                  rowKey="index"
+                  size='small'
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{
-                        this.delAddData(index)
+                        this.setState({delAddIndex: index})
                       }
                     }
                   }}

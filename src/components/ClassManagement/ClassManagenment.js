@@ -164,7 +164,6 @@ class ClassManage extends Component{
 
   delAddData = () =>{
     const {addData, delIndex} =this.state
-    let arr = []
     addData.splice(delIndex,1)
     console.log(addData)
     this.setState({addData:addData})
@@ -172,8 +171,6 @@ class ClassManage extends Component{
 
   addClass = () =>{
     const {addschedulingName,year,month,tags,addData} = this.state
-    console.log(tags)
-    let arr1 = tags.shift()
     console.log(tags)
     let newArr1= []
     tags.forEach(item =>{

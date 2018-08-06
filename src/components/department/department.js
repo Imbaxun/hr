@@ -3,6 +3,9 @@ import { Row, Col, Input, Button, Table, Popconfirm,Modal } from 'antd';
 import './department.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
+
+import CompanySearch from '../../common/searchPage/companySearch'
+import PersonSearch from '../../common/searchPage/personSearch'
 const { IP, Department} = API
 
 
@@ -22,6 +25,7 @@ class department extends Component {
       addPerName: '',
       addDepName: '',
       changeComName: '',
+      addCompanyCode: '',
       changePerId: '',
       changePerName: '',
       changeDepName: '',
@@ -186,29 +190,22 @@ class department extends Component {
     })
   }
 
-  choicePerson = () =>{
-    const {checkperson} = this.state
-    if(checkperson) {
-      return (
-        <Table
-            columns={this.state.columns}
-            dataSource={this.state.data}
-            bordered
-          />
-      )
-    }
-    
-  }
+
   addDepartment = () => {
-    const {addComName, addDepName, addPerId, addPerName} =this.state
+    const {addComName, addDepName, addPerId, addPerName, addCompanyCode} =this.state
+    console.log(addPerName)
     const { IP} = API
     let url = `${IP}/department`
     let sendData = {
       companyName: addComName,
+      companyCode: addCompanyCode,
       name: addDepName,
       parentDeptName: addPerName,
-      parentDeptCode: addPerId
+      parentDeptCode: addPerId,
+      chargePersion: addPerName,   
+      chargePersionId: addPerId
     }
+    console.log(sendData)
     postfun2(url,sendData).then(res =>{
       console.log(res)
       if(res ==='success') {
@@ -267,6 +264,16 @@ class department extends Component {
       console.log(err)
     })  
 
+  }
+
+  choicedCompany = (item) =>{
+    console.log(item)
+    this.setState({addComName:item.name,addCompanyCode:item.code})
+  }
+
+  choicedPerson = (item) =>{
+    console.log(item)
+    this.setState({addPerId:item.code, addPerName:item.name})
   }
 
   render() {
@@ -337,6 +344,7 @@ class department extends Component {
             columns={this.state.columns}
             dataSource={this.state.data}
             bordered
+            rowKey='code'
             rowSelection={rowSelection}
           />
           <Modal
@@ -350,7 +358,8 @@ class department extends Component {
             <Col span="8">
             <div style={{display:'flex'}}>
               <Button type='primary' >公司名称</Button>  
-              <Input value={this.state.addComName} onChange={(e) =>{this.setState({addComName:e.target.value})}} />
+              {/* <Input value={this.state.addComName} onChange={(e) =>{this.setState({addComName:e.target.value})}} /> */}
+              <CompanySearch  choicedCompany={this.choicedCompany}/>
             </div>
             </Col>
             <Col span="8">
@@ -360,16 +369,7 @@ class department extends Component {
             </div>
             </Col>
           </Row>
-          <Row type="flex" justify="space-around" className="marbot">
-            <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >负责人</Button>
-                <Input onChange={(e) =>{this.setState({addPerId:e.target.value})}}  style={{width:"90px"}} />
-                <Input onChange={(e) =>{this.setState({addPerName:e.target.value})}} style={{width:"90px"}} />
-              </div>
-            </Col>
-            <Col span="8"><Button type='primary' onClick={() =>this.setState({checkperson:true})} ghost >查询</Button></Col>
-          </Row>
+          <PersonSearch  btnshow='负责人' choicedPerson={this.choicedPerson}/>
           <Row>
             <Col span="20">
               {/* {this.choicePerson()} */}

@@ -3,6 +3,9 @@ import { Row, Col, Input, Button, Table, Popconfirm,Modal, Select } from 'antd';
 import './company.css'
 import { API } from '../../common/axiosAPI'
 import { getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
+import BigAreaSearch from '../../common/searchPage/bigAreaSearch'
+import CompanySearch from '../../common/searchPage/companySearch'
+import PersonSearch from '../../common/searchPage/personSearch'
 const { IP, searchcom, addcom} = API
 
 
@@ -19,6 +22,7 @@ class Company extends Component {
       addchargePersionId: '',
       addchargePersionName: '',
       addparentCompanyName: '',
+      addparentCompanyCode: '',
       changename: '',
       changebigArea: '',
       changechargePersionId: '',
@@ -87,6 +91,10 @@ class Company extends Component {
     })
   }
 
+  getArea = () =>{
+    console.log(666)
+  }
+
   handleDelete = (aa) => {
     // const data = [...this.state.data];
     // let aa = data[key-1];
@@ -132,7 +140,7 @@ class Company extends Component {
     this.setState({visible: true})
   }
   addCompany = () =>{
-    const {addname, addbigArea, addchargePersionId, addchargePersionName, addparentCompanyName} = this.state
+    const {addname, addbigArea,addparentCompanyCode, addchargePersionId, addchargePersionName, addparentCompanyName} = this.state
     let url = `${IP}${addcom}`
     let sendData = {
       name: addname,
@@ -140,9 +148,9 @@ class Company extends Component {
       chargePersionId: addchargePersionId,
       chargePersion: addchargePersionName,
       parentCompanyName: addparentCompanyName,
-      parentCompanyCode: '0002'
+      parentCompanyCode: addparentCompanyCode
     }
-    // console.log(sendData)
+    console.log(sendData)
     postfun2(url,sendData).then(res => {
       console.log(res)
       if(res ==='success'){
@@ -311,6 +319,7 @@ class Company extends Component {
             columns={this.state.columns}
             dataSource={this.state.data}
             bordered
+            rowKey='code'
             size="small"
             onRow={(record) => ({
               onClick: () => {
@@ -322,6 +331,21 @@ class Company extends Component {
       )
     }
     
+  }
+
+  choicedArea = (item) =>{
+    console.log(item)
+    this.setState({addbigArea:item})
+  }
+
+  choicedCompany = (item) =>{
+    console.log(item)
+    this.setState({addparentCompanyName:item.name,addparentCompanyCode:item.code})
+  }
+
+  choicedPerson = (item) =>{
+    console.log(item)
+    this.setState({addchargePersionId:item.code, addchargePersionName:item.name})
   }
 
   render() {
@@ -356,6 +380,7 @@ class Company extends Component {
             columns={this.state.columns}
             dataSource={this.state.data}
             bordered
+            rowKey='code'
             rowSelection={rowSelection}
           />
           <Modal
@@ -374,16 +399,7 @@ class Company extends Component {
             </Col>
             <Col span="8"></Col>
           </Row>
-          <Row type="flex" justify="space-around" className="marbot">
-            <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >负责人</Button>
-                <Input onChange={(e) =>{this.setState({addchargePersionId:e.target.value})}}  style={{width:"90px"}} />
-                <Input onChange={(e) =>{this.setState({addchargePersionName:e.target.value})}} style={{width:"90px"}} />
-              </div>
-            </Col>
-            <Col span="8"><Button type='primary' onClick={() =>this.setState({checkperson:true})} ghost >查询</Button></Col>
-          </Row>
+          <PersonSearch  btnshow='负责人' choicedPerson={this.choicedPerson}/>
           <Row type="flex" justify="space-around">
             <Col span="20">
               {/* {this.choicePerson()} */}
@@ -391,21 +407,12 @@ class Company extends Component {
           </Row>
           <Row type="flex" justify="space-around" className="marbot">
             <Col span="8">
-              <div style={{display:'flex'}}>
-                <Button type='primary' >大区</Button>
-                <Select  onChange={(e) =>{this.setState({addbigArea:`${e}`})}} style={{ width: 180 }}>
-                <Option value="亚太地区">亚太地区</Option>
-                <Option value="欧美地区">欧美地区</Option>
-              </Select>
-              </div>
+              <BigAreaSearch  choicedArea={this.choicedArea}/>
             </Col>
             <Col span="8">
               <div style={{display:'flex'}}>
                 <Button type='primary' >上级公司</Button>
-                <Select defaultValue="周黑鸭企业发展有限公司" onChange={(e) =>{this.setState({addparentCompanyName:`${e}`})}} style={{ width: 160 }}>
-                <Option value="周黑鸭食品工业园有限公司">周黑鸭食品工业园有限公司</Option>
-                <Option value="周黑鸭企业发展有限公司">周黑鸭企业发展有限公司</Option>
-              </Select>
+                <CompanySearch  choicedCompany={this.choicedCompany}/>
               </div>
             </Col>
           </Row>

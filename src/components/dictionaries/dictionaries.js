@@ -43,10 +43,10 @@ class Dictionaries extends Component {
           title: 'key',
           dataIndex: 'dictKey',
         },
-        {
-          title: 'ID',
-          dataIndex: 'dictTypeId',
-        },
+        // {
+        //   title: 'ID',
+        //   dataIndex: 'dictTypeId',
+        // },
         {
           title: '描述',
           dataIndex: 'description',
