@@ -17,4 +17,5 @@ export const API = {
     ClassManageUrl: '/scheduling',   //班次管理
     bigArea : '/sys/dictType/bigArea',    //大区查询
     allcompany: '/company/s',     //所有公司查询
+    ClassSearchUrl: '/employeeScheduling', //班次查询
 }

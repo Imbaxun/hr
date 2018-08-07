@@ -181,7 +181,7 @@ class ClassManage extends Component{
       }
       newArr1.push(aaa)
     })
-    console.log(newArr1)
+    console.log(newArr1.slice(1))
     let arr2 =[]
     addData.forEach(item =>{
       let bbb = {
@@ -198,7 +198,7 @@ class ClassManage extends Component{
       schedulingSource: '人资',
       year,
       month,
-      schedulingItemList: newArr1,
+      schedulingItemList: newArr1.slice(1),
       schedulingRemarkList: arr2
     }
     console.log(sendData)

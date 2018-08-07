@@ -58,7 +58,7 @@ class Main extends Component {
               title={<span><Icon type="team" /><span>排版管理</span></span>}
             >
               <Menu.Item key="1"><Link to={`${match.url}/ClassManage`}>班次管理</Link></Menu.Item>
-              <Menu.Item key="8">Team 2</Menu.Item>
+              <Menu.Item key="2"><Link to={`${match.url}/ClassSearch`}>班次查询</Link></Menu.Item>
             </SubMenu>
             <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
               <Link to={`${match.url}/Dictionaries`}>

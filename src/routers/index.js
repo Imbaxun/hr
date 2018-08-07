@@ -16,6 +16,7 @@ import Shop from '../components/shop/shop'
 
 //班次管理
 import ClassManage from '../components/ClassManagement/ClassManagenment';
+import ClassSearch from '../components/ClassSearch/ClassSearch'
 
 
 
@@ -42,6 +43,7 @@ export const mainRouters = () => {
       <Route path='/main/Dictionaries' component={Dictionaries} />
       <Route path='/main/Shop' component={Shop} />
       <Route path='/main/ClassManage' component={ClassManage} />
+      <Route path='/main/ClassSearch' component={ClassSearch} />
     </div>
   )
 }
