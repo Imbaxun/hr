@@ -111,7 +111,7 @@ class ClassManage extends Component{
 
   onPanelChange= (value, mode) =>{
     console.log(value._d.getFullYear())
-    this.setState({year:value._d.getFullYear(),month:value._d.getMonth()})
+    this.setState({year:value._d.getFullYear(),month:value._d.getMonth()+1})
   }
 
   selectDate = (item) =>{

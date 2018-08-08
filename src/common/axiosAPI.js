@@ -1,6 +1,6 @@
 
 export const API = {
-    IP : 'http://172.30.42.225:8080',
+    IP : 'http://172.30.42.225:80',
     // IP: 'http://172.30.43.116:8080',
     // IP : 'http://172.30.43.53:8080',
     login: '/account/login.do',

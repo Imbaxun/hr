@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal} from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio} from 'antd'
 import './ClassSearch.css'
-import {getfun} from '../../common/axiosFun'
+import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 
 const { IP, ClassSearchUrl} = API
+const Option = Select.Option
+const RadioGroup = Radio.Group
 
 const { MonthPicker } = DatePicker;
 const mydate = new Date()
@@ -57,16 +59,27 @@ class ClassSearch extends Component{
       visible1: false,
       visible2: false,
       visible3: false,
+      choiceData: [],
+      perClass: [],
+      perClassYear: '',
+      perClassMonth: '',
+      perAdd: '',
+      addperData: [],
+      overtimeType: '',
+      isCover: '',
+      perClassName: ''
     }
   }
 
   componentDidMount() {
     this.startData()
+    
   }
 
   startData = () =>{
-    let url = `${IP}${ClassSearchUrl}`
-    getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
+    const{searchyear,searchmonth}=this.state
+    let url = `${IP}${ClassSearchUrl}?year=${searchyear}&month=${searchmonth}`
+    getfun(url).then(res =>this.setState({data:res.content})).catch(err => console.log(err))
   }
 
   searchData = () =>{
@@ -91,16 +104,81 @@ class ClassSearch extends Component{
   onChangeMonth = (date, dateString) =>{
     // console.log(date._d.getFullYear() + date._d.getMonth()) 
     this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+  }
 
+  onChangePerClassMonth = (date, dateString) =>{
+    this.setState({perClassYear: date._d.getFullYear(),perClassMonth:date._d.getMonth()+1})
+  }
 
+  personClass = () =>{
+    this.setState({visible3: true})
+    const {searchmonth, searchyear} = this.state
+    let perUrl = `${IP}/employeeScheduling/${searchyear}/${searchmonth}`
+    // console.log(perUrl)
+    getfun(perUrl).then(res => this.setState({perClass:res})).catch(err =>console.log(err))
+    let addperUrl = `${IP}/sys/dictType/SchedulingOvertimeType`
+    console.log(addperUrl)
+    getfun(addperUrl).then(res => this.setState({addperData: res})).catch(err =>console.log(err))
+  }
+
+  choicePerClass = (value) =>{
+    console.log(value)
+    this.setState({perClassName: value})
+  }
+  onChangePerADD = (e) =>{
+    console.log(e.target.value)
+    this.setState({overtimeType: e.target.value})
+  }
+  onChangecover = (e) =>{
+    console.log(e.target.value)
+    this.setState({isCover: e.target.value})
+  }
+  perClassPb = () =>{
+    const {perClassYear, perClassMonth, choiceData, perClassName, overtimeType, isCover} =this.state
+    let arr = []
+    choiceData.forEach( item =>{
+      arr.push(item.empId)
+    })
+    let sendData ={
+      isCover,
+      month:perClassMonth,
+      year: perClassYear,
+      overtimeType,
+      schedulingId:perClassName,
+      userIds:arr
+    }
+    let postUrl = `${IP}/employeeScheduling/employee`
+    postfun2(postUrl,sendData).then(res => {
+      console.log(res)
+      if(res ==='success'){
+        this.setState({visible3: false})
+        this.startData()
+      }
+    }).catch(err=> console.log(err))
 
   }
+
   render(){
+    const {choiceData, perClass, addperData} =this.state
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        console.log(selectedRows)
+        this.setState({choiceData: selectedRows})
       }
     } 
+    const TagArr = []
+    choiceData.forEach(item =>{
+      TagArr.push(<Tag key={item.id} color="#2db7f5">{item.empName}</Tag>)
+    })
+    const perClassArr = []
+    // console.log(perClass)
+    perClass.forEach(item =>{
+      perClassArr.push(<Option key={item.id} value={item.id}>{item.schedulingName}</Option>)
+    })
+    const addPerData = []
+    addperData.forEach(item =>{
+      addPerData.push(<Radio key={item.id} value={item.dictValue}>{item.dictKey}</Radio>)
+    })
     return(
       <div>
         <Row type="flex" justify="space-around">
@@ -152,7 +230,7 @@ class ClassSearch extends Component{
                   <Col span="3"><Button  >批量排班</Button></Col>
                   <Col span="3"><Button  >部门排班</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
-                  <Col span="3"><Button  >人员排班</Button></Col>
+                  <Col span="3"><Button onClick={this.personClass} >人员排班</Button></Col>
                 </Row>
                 <Table
                   style={{marginTop:20}}
@@ -189,10 +267,50 @@ class ClassSearch extends Component{
         <Modal
           visible = {this.state.visible3}
           title="人员排班"
-          onOk={() =>this.setState({visible3:false})}
+          onOk={this.perClassPb}
           onCancel={() =>this.setState({visible3:false})}
           width={800}
-        ></Modal>
+        >
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+            <Col span='5'><Button type='primary'>排班人员</Button></Col>
+            <Col span='10'>
+              <div>
+              {TagArr}
+              </div>
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+            <Col span='5'><Button type='primary'>班次名称</Button></Col>
+            <Col span='10'>
+            <Select  style={{ width: 120 }} onChange={this.choicePerClass}>
+              {perClassArr}
+            </Select>
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+            <Col span='5'><Button type='primary'>排班月份</Button></Col>
+            <Col span='10'>
+            <MonthPicker onChange={this.onChangePerClassMonth} placeholder="Select month" />
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+            <Col span='10'>
+              <RadioGroup onChange={this.onChangePerADD}>
+                {addPerData}
+              </RadioGroup>
+            </Col>
+            <Col span="5"></Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+          <Col span='5'><Button type='primary'>是否覆盖本部门排班</Button></Col>
+          <Col span='10'>
+              <RadioGroup onChange={this.onChangecover}>
+              <Radio  value={0}>是</Radio>
+              <Radio  value={1}>否</Radio>
+              </RadioGroup>
+          </Col>
+          </Row>
+        </Modal>
       </div>
     )
   }

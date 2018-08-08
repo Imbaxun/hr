@@ -17,6 +17,10 @@ import Shop from '../components/shop/shop'
 //班次管理
 import ClassManage from '../components/ClassManagement/ClassManagenment';
 import ClassSearch from '../components/ClassSearch/ClassSearch'
+import BurshCard from '../components/BurshCard/BurshCard'
+import Leave from '../components/leave/leave'
+import Travel from '../components/Travel/Travel'
+import WorkOverTime from '../components/WorkOverTime/WorkOverTime'
 
 
 
@@ -44,6 +48,10 @@ export const mainRouters = () => {
       <Route path='/main/Shop' component={Shop} />
       <Route path='/main/ClassManage' component={ClassManage} />
       <Route path='/main/ClassSearch' component={ClassSearch} />
+      <Route path='/main/BurshCard' component={BurshCard} />
+      <Route path='/main/Leave' component={Leave} />
+      <Route path='/main/Travel' component={Travel} />
+      <Route path='/main/WorkOverTime' component={WorkOverTime} />
     </div>
   )
 }

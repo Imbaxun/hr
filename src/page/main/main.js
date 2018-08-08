@@ -55,10 +55,19 @@ class Main extends Component {
             </SubMenu>
             <SubMenu
               key="sub2"
-              title={<span><Icon type="team" /><span>排版管理</span></span>}
+              title={<span><Icon type="team" /><span>考勤管理</span></span>}
             >
-              <Menu.Item key="1"><Link to={`${match.url}/ClassManage`}>班次管理</Link></Menu.Item>
-              <Menu.Item key="2"><Link to={`${match.url}/ClassSearch`}>班次查询</Link></Menu.Item>
+              <Menu.Item key="12"><Link to={`${match.url}/BurshCard`}>补刷卡管理</Link></Menu.Item>
+              <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
+              <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item>
+              <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
+            </SubMenu>
+            <SubMenu
+              key="sub3"
+              title={<span><Icon type="team" /><span>排班管理</span></span>}
+            >
+              <Menu.Item key="10"><Link to={`${match.url}/ClassManage`}>班次管理</Link></Menu.Item>
+              <Menu.Item key="11"><Link to={`${match.url}/ClassSearch`}>班次查询</Link></Menu.Item>
             </SubMenu>
             <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
               <Link to={`${match.url}/Dictionaries`}>
