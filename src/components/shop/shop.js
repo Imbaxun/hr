@@ -204,6 +204,11 @@ class Shop extends Component {
 
 
   render () {
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      }
+    }
     return (
       <div>
         <Row type="flex" justify="space-around">
@@ -250,6 +255,7 @@ class Shop extends Component {
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
+                  rowSelection={rowSelection}
                   rowKey="code"
                   onRow = {(record, index) =>{
                     return {

@@ -148,7 +148,8 @@ class Company extends Component {
       chargePersionId: addchargePersionId,
       chargePersion: addchargePersionName,
       parentCompanyName: addparentCompanyName,
-      parentCompanyCode: addparentCompanyCode
+      pid: addparentCompanyCode,
+      
     }
     console.log(sendData)
     postfun2(url,sendData).then(res => {
@@ -340,7 +341,7 @@ class Company extends Component {
 
   choicedCompany = (item) =>{
     console.log(item)
-    this.setState({addparentCompanyName:item.name,addparentCompanyCode:item.code})
+    this.setState({addparentCompanyName:item.name,addparentCompanyCode:item.id})
   }
 
   choicedPerson = (item) =>{

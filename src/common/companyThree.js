@@ -58,10 +58,7 @@ class CompanyThree extends Component {
         }
         return  <TreeNode {...aa}   key={aa.id}/>;
       })
-    }else{
-      console.log('err')
     }
-
   }
 
   render() {

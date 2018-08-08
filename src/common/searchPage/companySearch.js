@@ -29,13 +29,13 @@ class CompanySearch extends Component{
       const {bigAreaData} = this.state
       let comName = ''
       bigAreaData.forEach(item =>{
-        if(item.code === value){
+        if(item.id === value){
           comName = item.name
         }
       })
       // console.log(comName)
       let comData = {
-        code: value,
+        id: value,
         name: comName
       }
 
@@ -48,7 +48,7 @@ class CompanySearch extends Component{
     const {bigAreaData} = this.state
     const children =[]
     bigAreaData.forEach(item =>{
-      children.push(<Option key={item.code}>{item.name}</Option>)
+      children.push(<Option key={item.id}>{item.name}</Option>)
     })
 
     return (

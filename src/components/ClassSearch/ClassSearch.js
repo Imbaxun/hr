@@ -8,6 +8,7 @@ import { API } from '../../common/axiosAPI'
 const { IP, ClassSearchUrl} = API
 
 const { MonthPicker } = DatePicker;
+const mydate = new Date()
 
 
 class ClassSearch extends Component{
@@ -16,7 +17,42 @@ class ClassSearch extends Component{
     this.state={
       name: '',
       code: '',
-      columns: [],
+      searchyear: mydate.getFullYear(),
+      searchmonth: mydate.getMonth()+1,
+      columns: [
+        {
+        title: '工号',
+        dataIndex: 'empCode'
+        },
+        {
+          title: '姓名',
+          dataIndex: 'empName'
+        },   
+        {
+          title: '公司',
+          dataIndex: 'companyName'
+        },
+        {
+          title: '部门',
+          dataIndex: 'departmentName'
+        }, 
+        {
+          title: '班次名称',
+          dataIndex: 'schedulingName'
+        }, 
+        {
+          title: '班次月份',
+          dataIndex: 'month'
+        }, 
+        {
+          title: '班次来源',
+          dataIndex: 'schedulingSource'
+        },  
+        {
+          title: '排班详情',
+          dataIndex: 'description'
+        } 
+      ],
       data: [],
       visible1: false,
       visible2: false,
@@ -30,22 +66,46 @@ class ClassSearch extends Component{
 
   startData = () =>{
     let url = `${IP}${ClassSearchUrl}`
-    getfun(url).then(res => console.log(res)).catch(err => console.log(err))
+    getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
   }
 
   searchData = () =>{
 
   }
 
+    //树桩查询的方法
+    getThreeData = (item) =>{
+      const{searchmonth, searchyear} =this.state
+      // console.log(searchmonth.toString())
+      let ayear = searchyear.toString()
+      let amonth = searchmonth.toString()
+      console.log(item)
+      this.setState({selectData: item})
+      //点击查询的url
+      let searchUrl = `${IP}${ClassSearchUrl}?${item}&year=${ayear}&month=${amonth}`
+      console.log(searchUrl)
+      getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
+
+    }
+
   onChangeMonth = (date, dateString) =>{
-    console.log(dateString)
+    // console.log(date._d.getFullYear() + date._d.getMonth()) 
+    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+
+
+
   }
   render(){
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      }
+    } 
     return(
       <div>
         <Row type="flex" justify="space-around">
           <Col span="5">
-            <CompanyThree />
+            <CompanyThree   getThreeData= {this.getThreeData}/>
           </Col>
           <Col span="18">
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
@@ -99,7 +159,8 @@ class ClassSearch extends Component{
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
-                  rowKey="code"
+                  rowSelection={rowSelection}
+                  rowKey="empCode"
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{

@@ -85,7 +85,7 @@ class department extends Component {
     let url = `${IP}${Department}`
     // console.log(url)
     getfun(url).then(res => {
-      // console.log(res)
+      console.log(res)
       let newArr = []
       res.content.forEach(item => {
         if(item.state === '0') {
@@ -198,7 +198,7 @@ class department extends Component {
     let url = `${IP}/department`
     let sendData = {
       companyName: addComName,
-      companyCode: addCompanyCode,
+      companyId: addCompanyCode,
       name: addDepName,
       parentDeptName: addPerName,
       parentDeptCode: addPerId,
@@ -268,7 +268,7 @@ class department extends Component {
 
   choicedCompany = (item) =>{
     console.log(item)
-    this.setState({addComName:item.name,addCompanyCode:item.code})
+    this.setState({addComName:item.name,addCompanyCode:item.id})
   }
 
   choicedPerson = (item) =>{
