@@ -4,6 +4,7 @@ import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio} f
 import './ClassSearch.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
+import DepSearch from '../../common/searchPage/depSearch'
 
 const { IP, ClassSearchUrl} = API
 const Option = Select.Option
@@ -19,6 +20,7 @@ class ClassSearch extends Component{
     this.state={
       name: '',
       code: '',
+      schedulingName: '',
       searchyear: mydate.getFullYear(),
       searchmonth: mydate.getMonth()+1,
       columns: [
@@ -36,7 +38,7 @@ class ClassSearch extends Component{
         },
         {
           title: '部门',
-          dataIndex: 'departmentName'
+          dataIndex: 'deptName'
         }, 
         {
           title: '班次名称',
@@ -67,7 +69,11 @@ class ClassSearch extends Component{
       addperData: [],
       overtimeType: '',
       isCover: '',
-      perClassName: ''
+      perClassName: '',
+      depClassName: '',
+      depClassYear: '',
+      depClassMonth: '',
+      depId: ''
     }
   }
 
@@ -83,7 +89,9 @@ class ClassSearch extends Component{
   }
 
   searchData = () =>{
-
+    const{searchmonth,searchyear,name,code,schedulingName} = this.state
+    let url = `${IP}${ClassSearchUrl}?empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}`
+    getfun(url).then(res =>console.log(res)).catch(err =>console.log(err))
   }
 
     //树桩查询的方法
@@ -109,9 +117,22 @@ class ClassSearch extends Component{
   onChangePerClassMonth = (date, dateString) =>{
     this.setState({perClassYear: date._d.getFullYear(),perClassMonth:date._d.getMonth()+1})
   }
+  onChangeDepClassMonth = (date, dateString) =>{
+    this.setState({depClassYear: date._d.getFullYear(),depClassMonth:date._d.getMonth()+1})
+  }
 
   personClass = () =>{
     this.setState({visible3: true})
+    const {searchmonth, searchyear} = this.state
+    let perUrl = `${IP}/employeeScheduling/${searchyear}/${searchmonth}`
+    // console.log(perUrl)
+    getfun(perUrl).then(res => this.setState({perClass:res})).catch(err =>console.log(err))
+    let addperUrl = `${IP}/sys/dictType/SchedulingOvertimeType`
+    console.log(addperUrl)
+    getfun(addperUrl).then(res => this.setState({addperData: res})).catch(err =>console.log(err))
+  }
+  depClass = () =>{
+    this.setState({visible2: true})
     const {searchmonth, searchyear} = this.state
     let perUrl = `${IP}/employeeScheduling/${searchyear}/${searchmonth}`
     // console.log(perUrl)
@@ -124,6 +145,10 @@ class ClassSearch extends Component{
   choicePerClass = (value) =>{
     console.log(value)
     this.setState({perClassName: value})
+  }
+  choiceDepClass = (value) =>{
+    console.log(value)
+    this.setState({depClassName:value})
   }
   onChangePerADD = (e) =>{
     console.log(e.target.value)
@@ -156,6 +181,31 @@ class ClassSearch extends Component{
       }
     }).catch(err=> console.log(err))
 
+  }
+  choicedDep =(item) =>{
+    console.log(item)
+    this.setState({depId:item.depId})
+  }
+  depEnd = () =>{
+    const {depClassName,depClassYear,depClassMonth, overtimeType,isCover,depId}=this.state
+    let sendData ={
+      isCover,
+      month:depClassMonth,
+      year: depClassYear,
+      overtimeType,
+      schedulingId:depClassName,
+      deptId:depId
+    }
+    console.log(sendData)
+    let postUrl = `${IP}/employeeScheduling/department`
+    postfun2(postUrl,sendData).then(res => {
+      console.log(res)
+      if(res ==='success'){
+      
+        this.startData()
+        this.setState({visible2: false})
+      }
+    }).catch(err=> console.log(err))
   }
 
   render(){
@@ -202,7 +252,7 @@ class ClassSearch extends Component{
               <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >班次名称</Button>
-                  <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }) }} />
+                  <Input value={this.state.schedulingName} onChange={(e) => { this.setState({ schedulingName: e.target.value }) }} />
                 </div>
               </Col>
               <Col span="5">
@@ -217,7 +267,7 @@ class ClassSearch extends Component{
             <Button>去组织架构</Button>
             </Col>
             <Col span='5'>
-            <Button icon="reload" onClick={()=>this.setState({code:'',name:''})}  type="primary">重置</Button>  
+            <Button icon="reload" onClick={()=>this.setState({code:'',name:'',schedulingName:'',searchyear: mydate.getFullYear(),searchmonth: mydate.getMonth()+1,})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
             <Button  icon="search" onClick={() =>this.searchData()} type="primary">查询</Button>
@@ -228,7 +278,7 @@ class ClassSearch extends Component{
               <h3 className="comtitle">排班查询列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button  >批量排班</Button></Col>
-                  <Col span="3"><Button  >部门排班</Button></Col>
+                  <Col span="3"><Button  onClick={this.depClass}>部门排班</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
                   <Col span="3"><Button onClick={this.personClass} >人员排班</Button></Col>
                 </Row>
@@ -260,10 +310,48 @@ class ClassSearch extends Component{
         <Modal
           visible = {this.state.visible2}
           title="部门排班"
-          onOk={() =>this.setState({visible2:false})}
+          onOk={this.depEnd}
           onCancel={() =>this.setState({visible2:false})}
           width={800}
-        ></Modal>
+        >
+          <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
+            <Col span='5'><Button type='primary'>排班部门</Button></Col>
+            <Col span='10'>
+              <DepSearch choicedDep={this.choicedDep}/>
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
+            <Col span='5'><Button type='primary'>班次名称</Button></Col>
+            <Col span='10'>
+              <Select style={{ width: 120 }} onChange={this.choiceDepClass}>
+                {perClassArr}
+              </Select>
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
+            <Col span='5'><Button type='primary'>排班月份</Button></Col>
+            <Col span='10'>
+              <MonthPicker onChange={this.onChangeDepClassMonth} placeholder="Select month" />
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+            <Col span='10'>
+              <RadioGroup onChange={this.onChangePerADD}>
+                {addPerData}
+              </RadioGroup>
+            </Col>
+            <Col span="5"></Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{marginBottom:10}}>
+          <Col span='5'><Button type='primary'>是否覆盖本部门排班</Button></Col>
+          <Col span='10'>
+              <RadioGroup onChange={this.onChangecover}>
+              <Radio  value={0}>是</Radio>
+              <Radio  value={1}>否</Radio>
+              </RadioGroup>
+          </Col>
+          </Row>
+        </Modal>
         <Modal
           visible = {this.state.visible3}
           title="人员排班"
