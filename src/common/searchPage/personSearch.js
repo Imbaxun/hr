@@ -67,6 +67,7 @@ class PersonSearch extends Component{
                 name: record.empName
               }
               this.props.choicedPerson(perData)
+              this.setState({tableShow:false})
             }
           }
         }} 

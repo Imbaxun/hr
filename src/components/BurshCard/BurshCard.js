@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal} from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal,Calendar, Tag, Tooltip, TimePicker, Select } from 'antd'
 import './BurshCard.css'
+import moment from 'moment';
 import {getfun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
+import PersonSearch from '../../common/searchPage/personSearch'
 
 const { IP, ClassSearchUrl} = API
-
+const { TextArea } = Input;
 const { MonthPicker } = DatePicker;
+const Option = Select.Option;
 const mydate = new Date()
 
 class BurshCard extends Component{
@@ -18,6 +21,7 @@ constructor(props) {
     code: '',
     searchyear: mydate.getFullYear(),
     searchmonth: mydate.getMonth()+1,
+    tags: ['补刷卡日期:'],
     columns: [
       {
       title: '工号',
@@ -88,12 +92,43 @@ startData = () =>{
     this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
   }
 
+  choicedPerson = (item) =>{
+    console.log(item)
+    // this.setState({addPerId:item.code, addPerName:item.name})
+  }
+
+  onPanelChange= (value, mode) =>{
+    console.log(value._d.getFullYear())
+    this.setState({year:value._d.getFullYear(),month:value._d.getMonth()+1})
+  }
+
+  selectDate = (item) =>{
+    const {tags} = this.state
+    console.log(tags)
+    let selectDate = item._d.getDate().toString()
+    let newArr = tags.push(selectDate)
+    console.log(newArr)
+    this.setState({tags: tags})
+  }
+  handleClose = (removedTag) => {
+    const tags = this.state.tags.filter(tag => tag !== removedTag);
+    console.log(tags);
+    this.setState({ tags });
+  }
+  bqtype = (item) =>{
+    console.log(item)
+  }
+  bskType = (item) =>{
+    console.log(item)
+  }
+
 render() {
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
     }
   } 
+  const {tags} = this.state
   return(
     <div>
         <Row type="flex" justify="space-around">
@@ -136,7 +171,7 @@ render() {
             <div className="comMain">
               <h3 className="comtitle">补刷卡管理列表</h3>
                 <Row type="flex" justify='space-end'>
-                  <Col span="3"><Button  >新增</Button></Col>
+                  <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
                   <Col span="3"><Button  >编辑</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
                   <Col span="3"><Button  >删除</Button></Col>
@@ -161,11 +196,58 @@ render() {
         </Row>
         <Modal
           visible = {this.state.visible1}
-          title="批量排班"
+          title="新增补刷卡处理"
           onOk={() =>this.setState({visible1:false})}
           onCancel={() =>this.setState({visible1:false})}
-          width={800}
-        ></Modal>
+          width={1000}
+        >
+        <Row>
+          <Col span="14">
+          <PersonSearch  btnshow='人员姓名' choicedPerson={this.choicedPerson}/>
+          <div style={{ width: 300, border: '1px solid #d9d9d9', borderRadius: 4, marginLeft:50 }}>
+                <p>请选择当月休息日期：</p>
+                <hr/>
+                <Calendar defaultValue={moment('2018-01-01')} fullscreen={false} onPanelChange={this.onPanelChange} onSelect={this.selectDate}/>
+                <hr/>
+                <div style={{marginLeft:5,marginBottom:3}}>
+                    {tags.map((tag, index) => {
+                      const isLongTag = tag.length > 20;
+                      const tagElem = (
+                        <Tag color="#87d068" style={{marginBottom:2}} key={index} closable={index !== 0} afterClose={() => this.handleClose(tag)}>
+                          {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                        </Tag>
+                      );
+                      return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
+                    })}
+                </div>
+              </div>
+          </Col>
+          <Col span="8">
+            <div style={{ display: 'flex',marginBottom:20 }}>
+            <Button type='primary' >补签类型</Button>
+              <Select  style={{ width: 120 }} onChange={this.bqtype}>
+                <Option value="jack">补签到</Option>
+                <Option value="lucy">补签退</Option>
+              </Select>
+            </div>
+            <div style={{ display: 'flex',marginBottom:20 }}>
+            <Button type='primary' >补刷卡类型</Button>
+              <Select  style={{ width: 120 }} onChange={this.bskType}>
+                <Option value="1">培训拓展</Option>
+                <Option value="2">停电</Option>
+                <Option value="3">外出办事</Option>
+                <Option value="4">网络故障</Option>
+                <Option value="5">忘刷卡</Option>
+                <Option value="6">因公外出</Option>
+              </Select>
+            </div>
+            <div style={{ display: 'flex',marginBottom:20 }}>
+            <Button type='primary' >补刷卡事由</Button>
+              <TextArea autosize={{ minRows: 4, maxRows: 6 }}/>
+            </div>
+          </Col>
+        </Row>
+        </Modal>
         <Modal
           visible = {this.state.visible2}
           title="部门排班"

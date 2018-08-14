@@ -44,7 +44,6 @@ class BigAreaSearch extends Component{
         <Select defaultValue="" style={{ width: 120 }} onChange={this.handleChange}>
           {children}
         </Select>
-
       </div>
     )
   }
