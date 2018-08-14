@@ -210,15 +210,27 @@ render() {
                 <Calendar defaultValue={moment('2018-01-01')} fullscreen={false} onPanelChange={this.onPanelChange} onSelect={this.selectDate}/>
                 <hr/>
                 <div style={{marginLeft:5,marginBottom:3}}>
-                    {tags.map((tag, index) => {
-                      const isLongTag = tag.length > 20;
-                      const tagElem = (
-                        <Tag color="#87d068" style={{marginBottom:2}} key={index} closable={index !== 0} afterClose={() => this.handleClose(tag)}>
-                          {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                        </Tag>
-                      );
-                      return isLongTag ? <Tooltip title={tag} key={tag}>{tagElem}</Tooltip> : tagElem;
-                    })}
+                {tags.map((tag, index) => {
+                  const isLongTag = tag.length > 20;
+                  const tagElem = (
+                    <Tag
+                      key={tag}
+                      color="#87d068"
+                      style={{marginBottom:2}}
+                      closable={index !== 0}
+                      afterClose={() => this.handleClose(tag)}
+                    >
+                      {isLongTag ? `${tag.slice(0, 20)}...` : tag}
+                    </Tag>
+                  );
+                  return isLongTag ? (
+                    <Tooltip title={tag} key={tag}>
+                      {tagElem}
+                    </Tooltip>
+                  ) : (
+                      tagElem
+                    );
+                })}
                 </div>
               </div>
           </Col>
