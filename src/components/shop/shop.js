@@ -17,11 +17,14 @@ class Shop extends Component {
       choiceData: {},
       visible: false,
       visible1: false,
+      addArea: '',
       addName:'',
       addCoordinate: '',
       changeName:'',
       changeCoordinate: '',
       selectData: '',
+      depData: '',
+      changeArea: '',
       columns:[
         {
           title: '门店编码',
@@ -99,12 +102,13 @@ class Shop extends Component {
   }
 
   addShop = () =>{
-    const {addCoordinate, addName} = this.state
+    const {addCoordinate, addName,addArea, depData} = this.state
     let url = `${IP}${Store}`
     let sendData = {
       coordinate: addCoordinate,
       name: addName,
-      departmentId: '123'
+      departmentId: depData.id,
+      area: addArea
     }
     postfun2(url, sendData).then(res =>{
       console.log(res)
@@ -121,16 +125,16 @@ class Shop extends Component {
 
 
   changeShop = () =>{
-    const {changeCoordinate, changeName, choiceData} = this.state
+    const {changeCoordinate, changeName, choiceData,depData, changeArea} = this.state
     let choiceId = choiceData.id
     let url =`${IP}${Store}/${choiceId}`
     console.log(choiceData)
     let sendData = {
       coordinate: changeCoordinate,
       name: changeName,
-      departmentId: '123',
+      departmentId: depData.id,
       id:choiceId,
-      area: choiceData.area,
+      area: changeArea,
       code: choiceData.code,
       createTime: choiceData.createTime,
       isDeleted: choiceData.isDeleted,
@@ -201,6 +205,18 @@ class Shop extends Component {
       });
     }).catch(err => console.log(err))
   }
+  addShopStart = () =>{
+    const{selectData} = this.state
+    let aa=selectData.substring(0,1)
+    if(aa ==='d'){
+      this.setState({visible:true})
+      let url= `${IP}/department/${selectData.substr(7)}`
+      console.log(url)
+      getfun(url).then(res =>this.setState({depData:res})).catch(err =>console.log(err))
+    }else{
+      alert('请选择正确部门添加')
+    }
+  }
 
 
   render () {
@@ -245,7 +261,7 @@ class Shop extends Component {
             <div className="comMain">
               <h3 className="comtitle">门店维护列表</h3>
                 <Row type="flex" justify='space-end'>
-                  <Col span="3"><Button icon="plus" onClick={() =>this.setState({visible: true})} >新增</Button></Col>
+                  <Col span="3"><Button icon="plus" onClick={this.addShopStart} >新增</Button></Col>
                   <Col span="3"><Button icon="edit" onClick={() =>this.setState({visible1: true})}>编辑</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
                   <Col span="3"><Button icon="delete" onClick={this.deletChoice}>删除</Button></Col>
@@ -256,7 +272,7 @@ class Shop extends Component {
                   dataSource={this.state.data}
                   bordered
                   rowSelection={rowSelection}
-                  rowKey="code"
+                  rowKey="id"
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{
@@ -289,6 +305,30 @@ class Shop extends Component {
               </div>
             </Col>
           </Row>
+          <Row  type="flex" justify="space-around"className="marbot">
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >部门名称</Button>
+                <Input value={this.state.depData.name} readOnly style={{width:"300px"}} />
+              </div>
+          </Col>
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >部门账号</Button>
+                <Input value={this.state.depData.code} readOnly style={{width:"300px"}} />
+              </div>
+          </Col>
+          </Row>
+          <Row  type="flex" justify="space-around"className="marbot">
+            <Col span="8">
+            <div style={{display:'flex'}}>
+            <Button type='primary' >区域</Button>
+            <Input onChange={(e) =>{this.setState({addArea:e.target.value})}} style={{width:"300px"}} />
+            </div>
+            </Col>
+            <Col span='8'></Col>
+          </Row>
+        
           </Modal>
           <Modal
           title="编辑门店"
@@ -310,6 +350,29 @@ class Shop extends Component {
                 <Input  onChange={(e) =>{this.setState({changeCoordinate:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
+          </Row>
+          <Row  type="flex" justify="space-around"className="marbot">
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >部门名称</Button>
+                <Input value={this.state.depData.name} readOnly style={{width:"300px"}} />
+              </div>
+          </Col>
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >部门账号</Button>
+                <Input value={this.state.depData.code} readOnly style={{width:"300px"}} />
+              </div>
+          </Col>
+          </Row>
+          <Row  type="flex" justify="space-around"className="marbot">
+            <Col span="8">
+            <div style={{display:'flex'}}>
+            <Button type='primary' >区域</Button>
+            <Input onChange={(e) =>{this.setState({changeArea:e.target.value})}} style={{width:"300px"}} />
+            </div>
+            </Col>
+            <Col span='8'></Col>
           </Row>
           </Modal>
       </div>

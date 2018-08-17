@@ -64,9 +64,10 @@ class PersonSearch extends Component{
               this.setState({code:record.empCode,aname:record.empName})
               let perData ={
                 code: record.empCode,
-                name: record.empName
+                name: record.empName,
+                id: record.id
               }
-              this.props.choicedPerson(perData)
+              this.props.choicedPerson(perData, record)
               this.setState({tableShow:false})
             }
           }

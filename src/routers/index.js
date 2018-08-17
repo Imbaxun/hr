@@ -10,7 +10,6 @@ import Department from '../components/department/department'
 import Duty from '../components/duty/duty'
 import JobLever from '../components/jobLever/jobLever'
 import Person from '../components/person/person'
-import Dictionaries from '../components/dictionaries/dictionaries'
 import Shop from '../components/shop/shop'
 
 
@@ -22,6 +21,15 @@ import Leave from '../components/leave/leave'
 import Travel from '../components/Travel/Travel'
 import WorkOverTime from '../components/WorkOverTime/WorkOverTime'
 
+//后台功能需求
+import Dictionaries from '../components/dictionaries/dictionaries'
+import CheckingData from '../components/CheckingData/CheckingData'
+import CheckSolr from '../components/CheckSolr/CheckSolr'
+
+
+//高级设置
+import HolidaySeting from '../components/HolidaySeting/HolidaySeting'
+import TimeTacking from '../components/TimeTacking/TimeTacking'
 
 
 
@@ -52,6 +60,10 @@ export const mainRouters = () => {
       <Route path='/main/Leave' component={Leave} />
       <Route path='/main/Travel' component={Travel} />
       <Route path='/main/WorkOverTime' component={WorkOverTime} />
+      <Route path='/main/CheckingData' component={CheckingData} />
+      <Route path='/main/CheckSolr' component={CheckSolr} />
+      <Route path='/main/HolidaySeting' component={HolidaySeting} />
+      <Route path='/main/TimeTacking' component={TimeTacking} />
     </div>
   )
 }

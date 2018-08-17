@@ -21,6 +21,7 @@ class department extends Component {
       companyCode: '',
       companyName: '',
       addComName: '',
+      addId: '',
       addPerId: '',
       addPerName: '',
       addDepName: '',
@@ -53,10 +54,10 @@ class department extends Component {
         dataIndex: 'name',
       }, {
         title: '负责人工号',
-        dataIndex: 'chargePersionId',
+        dataIndex: 'chargePersionCode',
       }, {
         title: '负责人',
-        dataIndex: 'chargePersion',
+        dataIndex: 'chargePersionName',
       }, {
         title: '公司编码',
         dataIndex: 'companyCode',
@@ -192,7 +193,7 @@ class department extends Component {
 
 
   addDepartment = () => {
-    const {addComName, addDepName, addPerId, addPerName, addCompanyCode} =this.state
+    const {addId,addComName, addDepName, addPerId, addPerName, addCompanyCode} =this.state
     console.log(addPerName)
     const { IP} = API
     let url = `${IP}/department`
@@ -203,7 +204,7 @@ class department extends Component {
       parentDeptName: addPerName,
       parentDeptCode: addPerId,
       chargePersion: addPerName,   
-      chargePersionId: addPerId
+      chargePersionId: addId
     }
     console.log(sendData)
     postfun2(url,sendData).then(res =>{
@@ -273,7 +274,7 @@ class department extends Component {
 
   choicedPerson = (item) =>{
     console.log(item)
-    this.setState({addPerId:item.code, addPerName:item.name})
+    this.setState({addId:item.id,addPerId:item.code, addPerName:item.name})
   }
 
   render() {

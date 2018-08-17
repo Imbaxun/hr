@@ -18,4 +18,7 @@ export const API = {
     bigArea : '/sys/dictType/bigArea',    //大区查询
     allcompany: '/company/s',     //所有公司查询
     ClassSearchUrl: '/employeeScheduling', //班次查询
+    BurshCardUrl: '/checkWorkHandle/search',  //补刷卡考勤查询
+    HolidaySet: '/tHolidaySetting',  //假日设置
+    Tacking: '/checkWorkType'   //考勤处理类型
 }

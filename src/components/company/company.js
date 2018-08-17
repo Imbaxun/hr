@@ -18,6 +18,7 @@ class Company extends Component {
       code: '',
       bigArea: '',
       addname: '',
+      addId: '',
       addbigArea: '',
       addchargePersionId: '',
       addchargePersionName: '',
@@ -44,16 +45,16 @@ class Company extends Component {
         dataIndex: 'name',
       }, {
         title: '负责人工号',
-        dataIndex: 'chargePersionId',
+        dataIndex: 'chargePersionCode',
       }, {
         title: '负责人',
-        dataIndex: 'chargePersion',
+        dataIndex: 'chargePersionName',
       }, {
         title: '大区',
         dataIndex: 'bigArea',
       }, {
         title: '上级公司',
-        dataIndex: 'parentCompanyName',
+        dataIndex: 'pName',
       }, {
         title: '启用状态',
         dataIndex: 'state',
@@ -140,16 +141,16 @@ class Company extends Component {
     this.setState({visible: true})
   }
   addCompany = () =>{
-    const {addname, addbigArea,addparentCompanyCode, addchargePersionId, addchargePersionName, addparentCompanyName} = this.state
+    const {addId,addname, addbigArea,addparentCompanyCode, addchargePersionName, addparentCompanyName} = this.state
     let url = `${IP}${addcom}`
     let sendData = {
       name: addname,
       bigArea: addbigArea,
-      chargePersionId: addchargePersionId,
+      // chargePersionId: addchargePersionId,
+      chargePersionId: addId,
       chargePersion: addchargePersionName,
       parentCompanyName: addparentCompanyName,
-      pid: addparentCompanyCode,
-      
+      pid: addparentCompanyCode
     }
     console.log(sendData)
     postfun2(url,sendData).then(res => {
@@ -346,7 +347,7 @@ class Company extends Component {
 
   choicedPerson = (item) =>{
     console.log(item)
-    this.setState({addchargePersionId:item.code, addchargePersionName:item.name})
+    this.setState({addchargePersionId:item.code, addchargePersionName:item.name, addId:item.id})
   }
 
   render() {

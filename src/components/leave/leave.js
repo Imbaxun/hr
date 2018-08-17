@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal,Calendar, Tag, Tooltip, TimePicker, Select} from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal, Select } from 'antd'
 import './leave.css'
 import moment from 'moment';
-import {getfun} from '../../common/axiosFun'
+import {getfun, postfun2,deletefun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import PersonSearch from '../../common/searchPage/personSearch'
+import ChoicePerson from '../../common/searchPage/choicePerson'
 
-const { IP, ClassSearchUrl} = API
-
-const { MonthPicker } = DatePicker;
+const { IP,BurshCardUrl} = API
 const { TextArea } = Input;
+const { MonthPicker, RangePicker } = DatePicker;
 const Option = Select.Option;
 const mydate = new Date()
+const monthFormat = 'YYYY/MM';
 
 class Leave extends Component{
 constructor(props) {
@@ -20,9 +21,13 @@ constructor(props) {
   this.state={
     name: '',
     code: '',
+    empId: '',
+    totalLength: '',
+    selectTree: '',
     searchyear: mydate.getFullYear(),
-    searchmonth: mydate.getMonth()+1,
-    tags: ['请假日期:'],
+    searchmonth: mydate.getMonth()+1<10 ? `0${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+    stringDate: '',
+    tags: ['补刷卡日期:'],
     columns: [
       {
       title: '工号',
@@ -38,51 +43,76 @@ constructor(props) {
       },
       {
         title: '部门',
-        dataIndex: 'departmentName'
+        dataIndex: 'deptName'
       }, 
       {
-        title: '班次名称',
-        dataIndex: 'schedulingName'
+        title: '门店',
+        dataIndex: 'storeName'
+      },
+      {
+        title: '请假类型',
+        dataIndex: 'checkWorkTypeName'
       }, 
       {
-        title: '班次月份',
-        dataIndex: 'month'
-      }, 
-      {
-        title: '班次来源',
-        dataIndex: 'schedulingSource'
+        title: '开始日期',
+        dataIndex: 'startDate'
       },  
       {
-        title: '排班详情',
-        dataIndex: 'description'
-      } 
+        title: '结束日期',
+        dataIndex: 'endDate'
+      },
+      {
+        title: '请假天数',
+        dataIndex: 'days'
+      }, 
+      {
+        title: '事由',
+        dataIndex: 'reason'
+      }, 
+      {
+        title: '来源',
+        dataIndex: 'source'
+      }
     ],
     data: [],
     visible1: false,
     visible2: false,
     visible3: false,
+    visible4: false,
+    addDate: '',
+    addbqType: '',
+    addReason: '',
+    typeArr:[],
+    addperData: '',
+    addDateStart: '',
+    addDateEnd: '',
+    choiceTable: [],
+    charDays: ''
   }
 }
 
 componentDidMount() {
   this.startData()
+  let url = `${IP}/checkWorkType/son/3`
+  getfun(url).then(res => this.setState({typeArr: res})).catch(err =>console.log(err))
 }
 
 startData = () =>{
-  let url = `${IP}${ClassSearchUrl}`
-  getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
+  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&page=0&size=10`
+  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
 }
 
     //树桩查询的方法
     getThreeData = (item) =>{
       const{searchmonth, searchyear} =this.state
       // console.log(searchmonth.toString())
+      let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
       let ayear = searchyear.toString()
-      let amonth = searchmonth.toString()
+      // let amonth = searchmonth.toString()
       console.log(item)
-      this.setState({selectData: item})
+      this.setState({selectTree: item})
       //点击查询的url
-      let searchUrl = `${IP}${ClassSearchUrl}?${item}&year=${ayear}&month=${amonth}`
+      let searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=3&month=${ayear}/${amonth}`
       console.log(searchUrl)
       getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
 
@@ -93,14 +123,22 @@ startData = () =>{
     this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
   }
 
-  choicedPerson = (item) =>{
-    console.log(item)
-    // this.setState({addPerId:item.code, addPerName:item.name})
+  choicedPerson = (item, record) =>{
+    console.log(record)
+    this.setState({addPerId:item.empId, addPerName:item.name, addperData:record})
   }
 
   onPanelChange= (value, mode) =>{
-    console.log(value._d.getFullYear())
+    console.log(mode)
     this.setState({year:value._d.getFullYear(),month:value._d.getMonth()+1})
+  }
+
+  changePage = (page, pageSize) =>{
+    const {code, aname,recordTimeStart, recordTimeEnd} =this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}/basePunchRecord?page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
+    getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
@@ -112,25 +150,107 @@ startData = () =>{
     this.setState({tags: tags})
   }
   handleClose = (removedTag) => {
-    console.log(removedTag)
-    const tags = this.state.tags.filter(tag => tag !== removedTag)
+    const tags = this.state.tags.filter(tag => tag !== removedTag);
     console.log(tags);
-    this.setState({ tags: tags });
+    this.setState({ tags });
   }
   bqtype = (item) =>{
     console.log(item)
+    this.setState({addbqType:item})
   }
-  bskType = (item) =>{
+  // bskType = (item) =>{
+  //   console.log(item)
+  //   this.setState({addbskType: item})
+  // }
+  choiceShop = (item) =>{
     console.log(item)
   }
 
+  getpepple = (item) =>{
+    console.log(item)
+    this.setState({code:item.empCode,name:item.empName, empId:item.empId})
+  }
+  searchData = () =>{
+    const {empId, searchyear,searchmonth, selectTree} = this.state
+    let amonth =searchmonth<10? `${searchmonth}` : `${searchmonth}`
+    let ayear = searchyear.toString()
+    let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    console.log(url)
+    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
+  }
+
+  addBSdate = (date, dateString) =>{
+    console.log(date)
+    console.log(dateString)
+    let year = date[0]._d.getFullYear()
+    let month =  date[0]._d.getMonth()+1<10 ? `0${ date[0]._d.getMonth()+1}`: date[0]._d.getMonth()+1
+    let day = date[0]._d.getDate()<10 ? `0${ date[0]._d.getDate()}`: date[0]._d.getDate()
+    let start = `${year}/${month}/${day}`
+    let year1 = date[1]._d.getFullYear()
+    let month1 =  date[1]._d.getMonth()+1<10 ? `0${ date[1]._d.getMonth()+1}`: date[1]._d.getMonth()+1
+    let day1 = date[1]._d.getDate()<10 ? `0${ date[1]._d.getDate()}`: date[1]._d.getDate()
+    let end = `${year1}/${month1}/${day1}`
+    // console.log(aa)
+    let aa = date[1]._d.getTime()-date[0]._d.getTime()
+    let bb = parseInt(aa/(1000*60*60*24),10)
+    console.log(bb)
+    this.setState({addDateStart:start,addDateEnd:end,charDays:bb})
+  }
+  addBS = () =>{
+    this.setState({visible1:true})
+    const {addDateStart,addDateEnd, charDays, addbqType ,addReason, addperData}= this.state
+    let sendData ={
+      reason:addReason,
+      empId:addperData.empId,
+      companyId: addperData.companyId,
+      deptId: addperData.deptId,
+      days:charDays,
+      source:'人资',
+      startDate:addDateStart,
+      endDate:addDateEnd,
+      month:addDateStart,
+      storeId: addperData.storeId,
+      checkWorkTypeId:3,
+      checkWorkTypeSonId:addbqType
+    }
+    let url =`${IP}/checkWorkHandle`
+    postfun2(url, sendData).then(res =>{
+      if(res ==='success'){
+        this.startData()
+      }
+    }).catch(err => console.log(err))
+  }
+
+  delTbale = () =>{
+    const {choiceTable} =this.state
+    let newArr = []
+    choiceTable.forEach(item =>{
+      let id = item.id
+      newArr.push(id)
+    })
+    let idnumber = newArr.toString()
+    let url = `${IP}/checkWorkHandle/${idnumber}`
+    deletefun(url).then(res =>{
+      if(res === 'success'){
+        this.startData()
+      }
+    }).catch(err =>console.log(err))
+  }
+
 render() {
+  const {typeArr} =this.state
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      this.setState({choiceTable:selectedRows})
     }
   } 
-  const {tags} = this.state
+  const newTypeArr = []
+  typeArr.forEach(item =>{
+    newTypeArr.push(
+      <Option key={item.id} value={item.id}>{item.name}</Option>
+    )
+  })
   return(
     <div>
         <Row type="flex" justify="space-around">
@@ -140,21 +260,12 @@ render() {
           <Col span="18">
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
               <Col span="5">
-                <div style={{ display: 'flex' }}>
-                  <Button type='primary' >工号</Button>
-                  <Input value={this.state.name} onChange={(e) => { this.setState({ name: e.target.value }) }} />
-                </div>
-              </Col>
-              <Col span="5">
-                <div style={{ display: 'flex' }}>
-                  <Button type='primary' >人员姓名</Button>
-                  <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }) }} />
-                </div>
+              <ChoicePerson getpepple={this.getpepple} />
               </Col>
               <Col span="8">
                 <div style={{ display: 'flex' }}>
-                  <Button type='primary' >补刷卡月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} placeholder="Select month" />
+                  <Button type='primary' >请假月份</Button>
+                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
                 </div>
               </Col>
           </Row>
@@ -166,25 +277,33 @@ render() {
             <Button icon="reload" onClick={()=>this.setState({code:'',name:''})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
-            <Button  icon="search" onClick={() =>this.searchData()} type="primary">查询</Button>
+            <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
             </Col>
           </Row>
           <hr />
             <div className="comMain">
               <h3 className="comtitle">请假管理列表</h3>
                 <Row type="flex" justify='space-end'>
-                  <Col span="3"><Button  onClick={() => this.setState({visible1:true})}>新增</Button></Col>
-                  <Col span="3"><Button  >编辑</Button></Col>
+                  <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
+                  {/* <Col span="3"><Button  >编辑</Button></Col> */}
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
-                  <Col span="3"><Button  >删除</Button></Col>
+                  <Col span="3"><Button onClick={this.delTbale} >删除</Button></Col>
                 </Row>
                 <Table
                   style={{marginTop:20}}
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
+                  scroll={{ x: 1300 }}
                   rowSelection={rowSelection}
-                  rowKey="empCode"
+                  rowKey="id"
+                  pagination={{  // 分页
+                    simple: false,
+                    pageSize: 10 ,
+                    // current: this.state.current,
+                    total: this.state.totalLength,
+                    onChange: this.changePage,
+                  }}
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{
@@ -199,75 +318,34 @@ render() {
         <Modal
           visible = {this.state.visible1}
           title="新增请假处理"
-          onOk={() =>this.setState({visible1:false})}
+          onOk={this.addBS}
           onCancel={() =>this.setState({visible1:false})}
           width={1000}
         >
         <Row>
           <Col span="14">
           <PersonSearch  btnshow='人员姓名' choicedPerson={this.choicedPerson}/>
-          <div style={{ width: 300, border: '1px solid #d9d9d9', borderRadius: 4, marginLeft:50 }}>
-                <p>请选择当月请假日期：</p>
-                <hr/>
-                <Calendar defaultValue={moment('2018-01-01')} fullscreen={false} onPanelChange={this.onPanelChange} onSelect={this.selectDate}/>
-                <hr/>
-                <div style={{marginLeft:5,marginBottom:3}}>
-                    {/* {tags.map((tag, index) => {
-                      const isLongTag = tag.length > 20;
-                      console.log(tag)
-                      const tagElem = (
-                        <Tag color="#87d068" style={{marginBottom:2}} key={index} closable={index !== 0} onClose={() => this.handleClose(tag)}>
-                          {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                        </Tag>
-                      );
-                    return isLongTag ? (<Tooltip title={tag} key={tag}>{tagElem}</Tooltip> ): (tagElem);
-                    })} */}
-                {tags.map((tag, index) => {
-                  const isLongTag = tag.length > 20;
-                  const tagElem = (
-                    <Tag
-                      key={tag}
-                      color="#87d068"
-                      style={{marginBottom:2}}
-                      closable={index !== 0}
-                      afterClose={() => this.handleClose(tag)}
-                    >
-                      {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-                    </Tag>
-                  );
-                  return isLongTag ? (
-                    <Tooltip title={tag} key={tag}>
-                      {tagElem}
-                    </Tooltip>
-                  ) : (
-                      tagElem
-                    );
-                })}
-                </div>
-              </div>
+          <Row type="flex" justify="space-around">
+            <Col span='12'>
+            <div style={{ display: 'flex' }}>
+            <Button type='primary' >请选择</Button>
+            {/* <DatePicker onChange={this.addBSdate} /> */}
+            <RangePicker onChange={this.addBSdate} />
+            </div>
+            </Col>
+            <Col span='4'></Col>
+          </Row>
           </Col>
           <Col span="8">
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >补签类型</Button>
+            <Button type='primary' >请假类型</Button>
               <Select  style={{ width: 120 }} onChange={this.bqtype}>
-                <Option value="jack">补签到</Option>
-                <Option value="lucy">补签退</Option>
+                {newTypeArr}
               </Select>
             </div>
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >补刷卡类型</Button>
-              <Select  style={{ width: 120 }} onChange={this.bskType}>
-                <Option value="1">培训拓展</Option>
-                <Option value="2">停电</Option>
-                <Option value="3">外出办事</Option>
-                <Option value="4">网络故障</Option>
-                <Option value="5">忘刷卡</Option>
-                <Option value="6">因公外出</Option>
-              </Select>
-            </div>
-            <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >补刷卡事由</Button>
-              <TextArea autosize={{ minRows: 4, maxRows: 6 }}/>
+            <Button type='primary' >请假事由</Button>
+              <TextArea onChange={(e) =>{this.setState({addReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
             </div>
           </Col>
         </Row>

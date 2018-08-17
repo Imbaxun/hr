@@ -34,14 +34,6 @@ class Main extends Component {
         >
           <div className="logo" />
           <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            <Menu.Item key="1">
-              <Icon type="pie-chart" />
-              <span>Option 1</span>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Icon type="desktop" />
-              <span>Option 2</span>
-            </Menu.Item>
             <SubMenu
               key="sub1"
               title={<span><Icon type="user" /><span>组织机构管理</span></span>}
@@ -59,7 +51,7 @@ class Main extends Component {
             >
               <Menu.Item key="12"><Link to={`${match.url}/BurshCard`}>补刷卡管理</Link></Menu.Item>
               <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
-              <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item>
+              {/* <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item> */}
               <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
             </SubMenu>
             <SubMenu
@@ -75,6 +67,20 @@ class Main extends Component {
               <span>数据词典</span>
               </Link>
             </Menu.Item>
+            <SubMenu
+              key="sub4"
+              title={<span><Icon type="team" /><span>考勤数据管理</span></span>}
+            >
+              <Menu.Item key="16"><Link to={`${match.url}/CheckingData`}>考勤数据</Link></Menu.Item>
+              <Menu.Item key="17"><Link to={`${match.url}/CheckSolr`}>考勤数据Solr</Link></Menu.Item>
+            </SubMenu>
+            <SubMenu
+              key="sub5"
+              title={<span><Icon type="setting" /><span>高级设置</span></span>}
+            >
+              <Menu.Item key="18"><Link to={`${match.url}/HolidaySeting`}>假日设置</Link></Menu.Item>
+              <Menu.Item key="19"><Link to={`${match.url}/TimeTacking`}>考勤处理类型</Link></Menu.Item>
+            </SubMenu>
           </Menu>
         </Sider>
         <Layout>
