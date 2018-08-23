@@ -32,6 +32,7 @@ class Company extends Component {
       visible: false,
       changeShow: false,
       checkperson: false,
+      totalLength: '',
       perId:'',
       perName: '',
       choiceData:[],
@@ -70,7 +71,7 @@ class Company extends Component {
   }
 
   componentDidMount() {
-    let url = `${IP}${searchcom}`
+    let url = `${IP}${searchcom}?page=0&size=10`
     console.log(url)
     getfun(url).then(res => {
       console.log(res)
@@ -86,7 +87,7 @@ class Company extends Component {
         // console.log(newArr)
         this.setState({data: newArr})
       });
-      this.setState({data:res.content})
+      this.setState({data:res.content,totalLength:res.totalElements})
     }).catch(err => {
       console.log(err)
     })
@@ -217,7 +218,7 @@ class Company extends Component {
             }
             newArr.push(item)
             // console.log(newArr)
-            this.setState({data: newArr})
+            this.setState({data: newArr,totalLength:res.totalElements})
           });
           // this.setState({data:res.content})
         }).catch(err => {
@@ -350,6 +351,14 @@ class Company extends Component {
     this.setState({addchargePersionId:item.code, addchargePersionName:item.name, addId:item.id})
   }
 
+  changePage = (page, pageSize) =>{
+    const {code, name,bigArea} =this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}${searchcom}?page=${page-1}&size=${pageSize}?name=${name}&code=${code}&bigArea=${bigArea}`
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  }
+
   render() {
     const Option = Select.Option;
     const rowSelection = {
@@ -384,6 +393,13 @@ class Company extends Component {
             bordered
             rowKey='code'
             rowSelection={rowSelection}
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 10 ,
+              // current: this.state.current,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
           />
           <Modal
           title="新增公司"

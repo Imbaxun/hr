@@ -27,6 +27,7 @@ class jobLever extends Component {
       checkperson: false,
       perId:'',
       perName: '',
+      totalLength: '',
       choiceData:[
         {
           key: '',
@@ -65,7 +66,7 @@ class jobLever extends Component {
   }
 
   componentDidMount() {
-    let url = `${IP}${joblever}`
+    let url = `${IP}${joblever}?page=0&size=10`
     console.log(url)
     getfun(url).then(res => {
       console.log(res)
@@ -78,7 +79,7 @@ class jobLever extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
       // this.setState({data:res.content})
     }).catch(err => {
@@ -203,7 +204,7 @@ class jobLever extends Component {
             }
             newArr.push(item)
             // console.log(newArr)
-            this.setState({data: newArr})
+            this.setState({data: newArr,totalLength:res.totalElements})
           });
           // this.setState({data:res.content})
         }).catch(err => {
@@ -250,6 +251,29 @@ class jobLever extends Component {
     }).catch(err => {
       console.log(err)
     })  
+  }
+
+  changePage = (page, pageSize) =>{
+    const {levelName,levelCode,description} = this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}${joblever}?page=${page-1}&size=${pageSize}&levelName=${levelName}&levelCode=${levelCode}&description=${description}`
+    getfun(url).then(res => {
+      console.log(res)
+      let newArr = []
+      res.content.forEach(item=> {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+    }).catch(err => {
+      console.log(err)
+    }) 
   }
 
   changeDuty = () =>{
@@ -350,7 +374,15 @@ class jobLever extends Component {
             columns={this.state.columns}
             dataSource={this.state.data}
             bordered
+            rowKey = 'id'
             rowSelection={rowSelection}
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 10 ,
+              // current: this.state.current,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
           />
           <Modal
           title="新增职务"

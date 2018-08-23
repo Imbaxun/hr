@@ -31,7 +31,9 @@ import CheckSolr from '../components/CheckSolr/CheckSolr'
 import HolidaySeting from '../components/HolidaySeting/HolidaySeting'
 import TimeTacking from '../components/TimeTacking/TimeTacking'
 
-
+//考勤管理
+import Attendance from '../components/attendance/attendance'
+import StatisticalForm from '../components/statisticalForm/statisticalForm'
 
 export const routFirst = () =>{
   return (
@@ -64,6 +66,8 @@ export const mainRouters = () => {
       <Route path='/main/CheckSolr' component={CheckSolr} />
       <Route path='/main/HolidaySeting' component={HolidaySeting} />
       <Route path='/main/TimeTacking' component={TimeTacking} />
+      <Route path='/main/Attendance' component={Attendance} />
+      <Route path='/main/StatisticalForm' component={StatisticalForm} />
     </div>
   )
 }

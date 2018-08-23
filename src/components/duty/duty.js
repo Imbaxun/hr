@@ -28,6 +28,7 @@ class duty extends Component {
       checkperson: false,
       perId:'',
       perName: '',
+      totalLength: '',
       choiceData:[
         {
           key: '',
@@ -69,7 +70,7 @@ class duty extends Component {
   }
 
   componentDidMount() {
-    let url = `${IP}${searchbm}`
+    let url = `${IP}${searchbm}?page=0&size=10`
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
@@ -82,7 +83,7 @@ class duty extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
       // this.setState({data:res.content})
     }).catch(err => {
@@ -181,7 +182,7 @@ class duty extends Component {
             }
             newArr.push(item)
             // console.log(newArr)
-            this.setState({data: newArr})
+            this.setState({data: newArr,totalLength:res.totalElements})
           });
           // this.setState({data:res.content})
         }).catch(err => {
@@ -229,6 +230,30 @@ class duty extends Component {
       console.log(err)
     })  
   }
+
+  changePage = (page, pageSize) =>{
+    const {positionName,positionCode,positionDescription} = this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}${searchbm}?page=${page-1}&size=${pageSize}&positionName=${positionName}&positionCode=${positionCode}&positionDescription=${positionDescription}`
+    getfun(url).then(res => {
+      console.log(res)
+      let newArr = []
+      res.content.forEach(item=> {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
 
   changeDuty = () =>{
     const {choiceData,changepositionDescription,changepositionName,changepositionLevelId} = this.state
@@ -336,6 +361,13 @@ class duty extends Component {
             dataSource={this.state.data}
             bordered
             rowSelection={rowSelection}
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 10 ,
+              // current: this.state.current,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
           />
           <Modal
           title="新增公司"

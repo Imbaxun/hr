@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tree } from 'antd';
+import { Tree ,Icon } from 'antd';
 import {API} from './axiosAPI'
 import {getfun} from './axiosFun'
 const TreeNode = Tree.TreeNode;
@@ -49,14 +49,15 @@ class CompanyThree extends Component {
   rethree = (item) => {
     if(item instanceof Array) {
       return item.map((aa) =>{
+        // console.log(aa)
         if (aa.data) {
           return (
-            <TreeNode title={aa.title} key={aa.id} dataRef={aa}>
+            <TreeNode icon={<Icon type={aa.icon} />} title={aa.title} key={aa.id} dataRef={aa}>
                 {this.rethree(aa.data)}
             </TreeNode>
           )
         }
-        return  <TreeNode {...aa}   key={aa.id}/>;
+        return  <TreeNode {...aa}  icon={<Icon type={aa.icon} />}  key={aa.id}/>;
       })
     }
   }
@@ -67,9 +68,10 @@ class CompanyThree extends Component {
       <div>
         <Tree
         showLine
+        showIcon
         onSelect={this.onSelect}
         >
-          <TreeNode title={threeData.title} key={threeData.id} >
+          <TreeNode icon={<Icon type={threeData.icon} />} title={threeData.title} key={threeData.id} >
             {this.rethree(threeData.data)}
           </TreeNode>
         </Tree>

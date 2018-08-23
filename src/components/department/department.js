@@ -73,7 +73,8 @@ class department extends Component {
         <a>{text}</a>
         </Popconfirm>
         )}
-      }]
+      }],
+      totalLength: '',
     }
 
   }
@@ -83,7 +84,7 @@ class department extends Component {
   }
 
   startData = () =>{
-    let url = `${IP}${Department}`
+    let url = `${IP}${Department}?page=0&size=10`
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
@@ -96,7 +97,7 @@ class department extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
       // this.setState({data:res.content})
     }).catch(err => {
@@ -277,6 +278,29 @@ class department extends Component {
     this.setState({addId:item.id,addPerId:item.code, addPerName:item.name})
   }
 
+  changePage = (page, pageSize) =>{
+    const {code, name, chargePersionId, chargePersion, companyCode, companyName} = this.state
+    console.log(page)
+    console.log(pageSize)
+    let url = `${IP}${Department}?page=${page-1}&size=${pageSize}&code=${code}&name=${name}&chargePersionId=${chargePersionId}&chargePersion=${chargePersion}&companyCode=${companyCode}&companyName=${companyName}`
+    getfun(url).then(res => {
+      console.log(res)
+      let newArr = []
+      res.content.forEach(item=> {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr})
+      });
+    }).catch(err => {
+      console.log(err)
+    })  
+  }
+
   render() {
     const rowSelection = {
       onChange: (selectedRowKeys,selectedRows) => {
@@ -347,6 +371,13 @@ class department extends Component {
             bordered
             rowKey='code'
             rowSelection={rowSelection}
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 10 ,
+              // current: this.state.current,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
           />
           <Modal
           title="新增部门"

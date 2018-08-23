@@ -76,6 +76,13 @@ class Main extends Component {
             </SubMenu>
             <SubMenu
               key="sub5"
+              title={<span><Icon type="setting" /><span>考勤管理</span></span>}
+            >
+              <Menu.Item key="20"><Link to={`${match.url}/Attendance`}>考勤查询</Link></Menu.Item>
+              <Menu.Item key="21"><Link to={`${match.url}/StatisticalForm`}>统计报表</Link></Menu.Item>
+            </SubMenu>
+            <SubMenu
+              key="sub6"
               title={<span><Icon type="setting" /><span>高级设置</span></span>}
             >
               <Menu.Item key="18"><Link to={`${match.url}/HolidaySeting`}>假日设置</Link></Menu.Item>

@@ -25,6 +25,7 @@ class Shop extends Component {
       selectData: '',
       depData: '',
       changeArea: '',
+      totalLength: '',
       columns:[
         {
           title: '门店编码',
@@ -59,7 +60,7 @@ class Shop extends Component {
   }
 
   startData = () =>{
-    let url = `${IP}${Store}/search`
+    let url = `${IP}${Store}/search?page=0&size=10`
     // console.log(url)
     getfun(url).then(res => {
       // console.log(res)
@@ -72,7 +73,7 @@ class Shop extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
       // this.setState({data:res.content})
     }).catch(err => {
@@ -95,11 +96,20 @@ class Shop extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
     }).catch(err => console.log(err))
 
   }
+
+  changePage = (page, pageSize) =>{
+    const {name, code} = this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}${Store}?page=${page-1}&size=${pageSize}&code=${code}&name=${name}`
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  }
+
 
   addShop = () =>{
     const {addCoordinate, addName,addArea, depData} = this.state
@@ -273,6 +283,13 @@ class Shop extends Component {
                   bordered
                   rowSelection={rowSelection}
                   rowKey="id"
+                  pagination={{  // 分页
+                    simple: false,
+                    pageSize: 10 ,
+                    // current: this.state.current,
+                    total: this.state.totalLength,
+                    onChange: this.changePage,
+                  }}
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{

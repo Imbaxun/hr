@@ -5,6 +5,7 @@ import './ClassSearch.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import DepSearch from '../../common/searchPage/depSearch'
+import PersonSearch from '../../common/searchPage/personSearch'
 
 const { IP, ClassSearchUrl} = API
 const Option = Select.Option
@@ -73,7 +74,10 @@ class ClassSearch extends Component{
       depClassName: '',
       depClassYear: '',
       depClassMonth: '',
-      depId: ''
+      depId: '',
+      addId: '',
+      addPerId: '',
+      addPerName: ''
     }
   }
 
@@ -157,6 +161,10 @@ class ClassSearch extends Component{
   onChangecover = (e) =>{
     console.log(e.target.value)
     this.setState({isCover: e.target.value})
+  }
+  choicedPerson = (item) =>{
+    console.log(item)
+    this.setState({addId:item.id,addPerId:item.code, addPerName:item.name})
   }
   perClassPb = () =>{
     const {perClassYear, perClassMonth, choiceData, perClassName, overtimeType, isCover} =this.state
@@ -359,8 +367,9 @@ class ClassSearch extends Component{
           onCancel={() =>this.setState({visible3:false})}
           width={800}
         >
+          <PersonSearch  btnshow='人员排班' choicedPerson={this.choicedPerson}/>
           <Row type="flex" justify="space-around" style={{marginBottom:10}}>
-            <Col span='5'><Button type='primary'>排班人员</Button></Col>
+            <Col span='5'></Col>
             <Col span='10'>
               <div>
               {TagArr}

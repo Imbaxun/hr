@@ -145,7 +145,8 @@ class Person extends Component {
       threeId: '',
       threeType: '',
       threeData:[],
-      threeData1:[]
+      threeData1:[],
+      totalLength: '',
     }
   }
 
@@ -180,7 +181,7 @@ class Person extends Component {
   }
 
   startData = () =>{
-    let url = `${IP}${Employee}`
+    let url = `${IP}${Employee}?page=0&size=10`
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
@@ -193,7 +194,7 @@ class Person extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
       // this.setState({data:res.content})
     }).catch(err => {
@@ -216,7 +217,30 @@ class Person extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: newArr,totalLength:res.totalElements})
+      });
+    }).catch(err => {
+      console.log(err)
+    })  
+  }
+
+  changePage = (page, pageSize) =>{
+    const {empCode, empName, levelName} =this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}${Employee}?page=${page-1}&size=${pageSize}empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    getfun(url).then(res => {
+      console.log(res)
+      let newArr = []
+      res.content.forEach(item=> {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+        this.setState({data: newArr,totalLength:res.totalElements})
       });
     }).catch(err => {
       console.log(err)
@@ -620,6 +644,13 @@ class Person extends Component {
                   bordered
                   rowKey="id"
                   rowSelection={rowSelection}
+                  pagination={{  // 分页
+                    simple: false,
+                    pageSize: 10 ,
+                    // current: this.state.current,
+                    total: this.state.totalLength,
+                    onChange: this.changePage,
+                  }}
                 />
                 <div>
                   <Button onClick={this.downLoad}><a href={this.state.downLoad}>导出</a></Button>
@@ -627,7 +658,7 @@ class Person extends Component {
                     <Button>
                       <Icon type="upload" /> Click to Upload
                     </Button>
-                  </Upload>,
+                  </Upload>
                 </div>
             </div>
             <Modal
