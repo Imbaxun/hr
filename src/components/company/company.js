@@ -56,16 +56,18 @@ class Company extends Component {
       }, {
         title: '上级公司',
         dataIndex: 'pName',
-      }, {
-        title: '启用状态',
-        dataIndex: 'state',
-        render: (text, record) => {
-        return (
-          <Popconfirm title="是否修改?" onConfirm={() => this.handleDelete(record)}>
-        <a>{text}</a>
-        </Popconfirm>
-        )}
-      }]
+      }
+      // ,{
+      //   title: '启用状态',
+      //   dataIndex: 'state',
+      //   render: (text, record) => {
+      //   return (
+      //     <Popconfirm title="是否修改?" onConfirm={() => this.handleDelete(record)}>
+      //   <a>{text}</a>
+      //   </Popconfirm>
+      //   )}
+      // }
+    ]
     }
 
   }
@@ -380,12 +382,11 @@ class Company extends Component {
         <hr/>
         <div className="comMain">
           <h3 className="comtitle">公司维护列表</h3>
-          <Row type="flex" justify="end">
+          {/* <Row type="flex" justify="end">
             <Col span="2"><Button icon="plus" onClick={()=>this.addCom()}>新增</Button></Col>
             <Col span="2"><Button icon="edit" onClick={()=>this.changeCom()}>编辑</Button></Col>
-            {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
             <Col span="2"><Button icon="delete" onClick={() =>this.deletCom()}>删除</Button></Col>
-          </Row>
+          </Row> */}
           <Table
             style={{marginTop:20}}
             columns={this.state.columns}
