@@ -370,7 +370,7 @@ class department extends Component {
             columns={this.state.columns}
             dataSource={this.state.data}
             bordered
-            rowKey='code'
+            rowKey='id'
             rowSelection={rowSelection}
             pagination={{  // 分页
               simple: false,

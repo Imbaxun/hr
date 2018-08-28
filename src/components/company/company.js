@@ -357,7 +357,7 @@ class Company extends Component {
     const {code, name,bigArea} =this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${searchcom}?page=${page-1}&size=${pageSize}?name=${name}&code=${code}&bigArea=${bigArea}`
+    let url =`${IP}${searchcom}?page=${page-1}&size=${pageSize}&name=${name}&code=${code}&bigArea=${bigArea}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
