@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm,Modal, Select } from 'antd';
+import { Row, Col, Input, Button, Table, Modal, Select } from 'antd';
 import './duty.css'
 import { API } from '../../common/axiosAPI'
 import { getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'

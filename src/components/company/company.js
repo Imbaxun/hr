@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm,Modal, Select } from 'antd';
+import { Row, Col, Input, Button, Table, Modal, Select } from 'antd';
 import './company.css'
 import { API } from '../../common/axiosAPI'
 import { getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
@@ -44,13 +44,16 @@ class Company extends Component {
       }, {
         title: '公司名称',
         dataIndex: 'name',
-      }, {
-        title: '负责人工号',
-        dataIndex: 'chargePersionCode',
-      }, {
-        title: '负责人',
-        dataIndex: 'chargePersionName',
-      }, {
+      },
+      //  {
+      //   title: '负责人工号',
+      //   dataIndex: 'chargePersionCode',
+      // }, 
+      // {
+      //   title: '负责人',
+      //   dataIndex: 'chargePersionName',
+      // }, 
+      {
         title: '大区',
         dataIndex: 'bigArea',
       }, {

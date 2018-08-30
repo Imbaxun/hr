@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm,Modal } from 'antd';
+import { Row, Col, Input, Button, Table,Modal } from 'antd';
 import './department.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
@@ -52,13 +52,15 @@ class department extends Component {
       }, {
         title: '部门名称',
         dataIndex: 'name',
-      }, {
-        title: '负责人工号',
-        dataIndex: 'chargePersionCode',
-      }, {
-        title: '负责人',
-        dataIndex: 'chargePersionName',
-      }, {
+      }, 
+      // {
+      //   title: '负责人工号',
+      //   dataIndex: 'chargePersionCode',
+      // }, {
+      //   title: '负责人',
+      //   dataIndex: 'chargePersionName',
+      // }, 
+      {
         title: '公司编码',
         dataIndex: 'companyCode',
       }, {
@@ -332,8 +334,14 @@ class department extends Component {
               <Input value={this.state.name}  onChange={(e) =>{this.setState({name:e.target.value})}} />
             </div>
           </Col>
+          <Col span="5">
+          <div style={{display:'flex'}}>
+              <Button type='primary' >部门编码</Button>  
+              <Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} />
+            </div>
+          </Col>
         </Row>
-        <Row type="flex" justify="space-around"  style={{marginBottom:20}}>
+        {/* <Row type="flex" justify="space-around"  style={{marginBottom:20}}>
         <Col span="5">
           <div style={{display:'flex'}}>
               <Button type='primary' >部门编码</Button>  
@@ -352,7 +360,7 @@ class department extends Component {
               <Input value={this.state.chargePersionId} onChange={(e) =>{this.setState({chargePersionId:e.target.value})}} />
             </div>
           </Col>          
-        </Row>
+        </Row> */}
         <Row type="flex" justify="center"  style={{marginBottom:10}}>
           <Col span="5"><Button icon="reload" onClick={()=>this.setState({chargePersionId:'',chargePersionName: '',code:'', name: '', companyCode: '', companyName: ''})} type="primary">重置</Button>  <Button onClick={() =>this.searchData()} icon="search" type="primary">查询</Button></Col>
         </Row>

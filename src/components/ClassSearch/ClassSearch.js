@@ -5,7 +5,7 @@ import './ClassSearch.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import DepSearch from '../../common/searchPage/depSearch'
-import PersonSearch from '../../common/searchPage/personSearch'
+// import PersonSearch from '../../common/searchPage/personSearch'
 
 const { IP, ClassSearchUrl} = API
 const Option = Select.Option
@@ -77,7 +77,10 @@ class ClassSearch extends Component{
       depId: '',
       addId: '',
       addPerId: '',
-      addPerName: ''
+      addPerName: '',
+      choiceTable: '',
+      showName: '',
+      showId: ''
     }
   }
 
@@ -126,7 +129,13 @@ class ClassSearch extends Component{
   }
 
   personClass = () =>{
-    this.setState({visible3: true})
+    const {showId} = this.state
+    if(showId === ''){
+      alert('请勾选人员') 
+    }else {
+      this.setState({visible3: true})
+    }
+  
     const {searchmonth, searchyear} = this.state
     let perUrl = `${IP}/employeeScheduling/${searchyear}/${searchmonth}`
     // console.log(perUrl)
@@ -134,6 +143,7 @@ class ClassSearch extends Component{
     let addperUrl = `${IP}/sys/dictType/SchedulingOvertimeType`
     console.log(addperUrl)
     getfun(addperUrl).then(res => this.setState({addperData: res})).catch(err =>console.log(err))
+    
   }
   depClass = () =>{
     this.setState({visible2: true})
@@ -167,11 +177,9 @@ class ClassSearch extends Component{
     this.setState({addId:item.id,addPerId:item.code, addPerName:item.name})
   }
   perClassPb = () =>{
-    const {perClassYear, perClassMonth, choiceData, perClassName, overtimeType, isCover} =this.state
+    const {perClassYear, perClassMonth, choiceTable, perClassName, overtimeType, isCover} =this.state
     let arr = []
-    choiceData.forEach( item =>{
-      arr.push(item.empId)
-    })
+    arr.push(choiceTable.empId)
     let sendData ={
       isCover,
       month:perClassMonth,
@@ -216,14 +224,19 @@ class ClassSearch extends Component{
     }).catch(err=> console.log(err))
   }
 
+  choiceShop = (record) =>{
+    console.log(record)
+    this.setState({choiceTable:record,showId:record.empCode, showName:record.empName})
+  }
+
   render(){
     const {choiceData, perClass, addperData} =this.state
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        console.log(selectedRows)
-        this.setState({choiceData: selectedRows})
-      }
-    } 
+    // const rowSelection = {
+    //   onChange: (selectedRowKeys, selectedRows) => {
+    //     console.log(selectedRows)
+    //     this.setState({choiceData: selectedRows})
+    //   }
+    // } 
     const TagArr = []
     choiceData.forEach(item =>{
       TagArr.push(<Tag key={item.id} color="#2db7f5">{item.empName}</Tag>)
@@ -295,8 +308,7 @@ class ClassSearch extends Component{
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
-                  rowSelection={rowSelection}
-                  rowKey="empCode"
+                  rowKey="id"
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{
@@ -331,7 +343,7 @@ class ClassSearch extends Component{
           <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
             <Col span='5'><Button type='primary'>班次名称</Button></Col>
             <Col span='10'>
-              <Select style={{ width: 120 }} onChange={this.choiceDepClass}>
+              <Select style={{ width: 300 }} onChange={this.choiceDepClass}>
                 {perClassArr}
               </Select>
             </Col>
@@ -367,19 +379,23 @@ class ClassSearch extends Component{
           onCancel={() =>this.setState({visible3:false})}
           width={800}
         >
-          <PersonSearch  btnshow='人员排班' choicedPerson={this.choicedPerson}/>
+
+          {/* <PersonSearch  btnshow='人员排班' choicedPerson={this.choicedPerson}/> */}
           <Row type="flex" justify="space-around" style={{marginBottom:10}}>
-            <Col span='5'></Col>
+            <Col span='5'>
+            <Button type='primary' >排班人员</Button>
+            </Col>
             <Col span='10'>
-              <div>
-              {TagArr}
-              </div>
+            <div style={{ display: 'flex' }}>
+                <Input readOnly value={this.state.showId} />
+                <Input readOnly value={this.state.showName} />
+                </div>
             </Col>
           </Row>
           <Row type="flex" justify="space-around" style={{marginBottom:10}}>
             <Col span='5'><Button type='primary'>班次名称</Button></Col>
             <Col span='10'>
-            <Select  style={{ width: 120 }} onChange={this.choicePerClass}>
+            <Select  style={{ width: 300 }} onChange={this.choicePerClass}>
               {perClassArr}
             </Select>
             </Col>
@@ -402,8 +418,8 @@ class ClassSearch extends Component{
           <Col span='5'><Button type='primary'>是否覆盖本部门排班</Button></Col>
           <Col span='10'>
               <RadioGroup onChange={this.onChangecover}>
-              <Radio  value={0}>是</Radio>
-              <Radio  value={1}>否</Radio>
+              <Radio  value={20}>是</Radio>
+              <Radio  value={0}>否</Radio>
               </RadioGroup>
           </Col>
           </Row>

@@ -40,19 +40,11 @@ class Main extends Component {
             >
               <Menu.Item  key="3"><Link to={`${match.url}/Company`}>公司管理</Link></Menu.Item>
               <Menu.Item  key="4"><Link to={`${match.url}/Department`}>部门管理</Link></Menu.Item>
-              <Menu.Item  key="5"><Link to={`${match.url}/Duty`}>职务管理</Link></Menu.Item>
-              <Menu.Item  key="6"><Link to={`${match.url}/JobLever`}>职等管理</Link></Menu.Item>
-              <Menu.Item  key="7"><Link to={`${match.url}/Person`}>人员管理</Link></Menu.Item>
               <Menu.Item  key="8"><Link to={`${match.url}/Shop`}>门店管理</Link></Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub2"
-              title={<span><Icon type="team" /><span>考勤管理</span></span>}
-            >
-              <Menu.Item key="12"><Link to={`${match.url}/BurshCard`}>补刷卡管理</Link></Menu.Item>
-              <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
-              {/* <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item> */}
-              <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
+              {/* <Menu.Item  key="5"><Link to={`${match.url}/Duty`}>职务管理</Link></Menu.Item>
+              <Menu.Item  key="6"><Link to={`${match.url}/JobLever`}>职等管理</Link></Menu.Item> */}
+              <Menu.Item  key="7"><Link to={`${match.url}/Person`}>人员管理</Link></Menu.Item>
+              
             </SubMenu>
             <SubMenu
               key="sub3"
@@ -61,12 +53,22 @@ class Main extends Component {
               <Menu.Item key="10"><Link to={`${match.url}/ClassManage`}>班次管理</Link></Menu.Item>
               <Menu.Item key="11"><Link to={`${match.url}/ClassSearch`}>班次查询</Link></Menu.Item>
             </SubMenu>
-            <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
-              <Link to={`${match.url}/Dictionaries`}>
-              <Icon type="file" />
-              <span>数据词典</span>
-              </Link>
-            </Menu.Item>
+            <SubMenu
+              key="sub5"
+              title={<span><Icon type="setting" /><span>考勤管理</span></span>}
+            >
+              <Menu.Item key="20"><Link to={`${match.url}/Attendance`}>考勤查询</Link></Menu.Item>
+              <Menu.Item key="21"><Link to={`${match.url}/StatisticalForm`}>统计报表</Link></Menu.Item>
+            </SubMenu>           
+            <SubMenu
+              key="sub2"
+              title={<span><Icon type="team" /><span>考勤处理</span></span>}
+            >
+              <Menu.Item key="12"><Link to={`${match.url}/BurshCard`}>补刷卡管理</Link></Menu.Item>
+              <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
+              {/* <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item> */}
+              <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
+            </SubMenu>
             <SubMenu
               key="sub4"
               title={<span><Icon type="team" /><span>考勤数据管理</span></span>}
@@ -75,19 +77,18 @@ class Main extends Component {
               <Menu.Item key="17"><Link to={`${match.url}/CheckSolr`}>考勤数据Solr</Link></Menu.Item>
             </SubMenu>
             <SubMenu
-              key="sub5"
-              title={<span><Icon type="setting" /><span>考勤管理</span></span>}
-            >
-              <Menu.Item key="20"><Link to={`${match.url}/Attendance`}>考勤查询</Link></Menu.Item>
-              <Menu.Item key="21"><Link to={`${match.url}/StatisticalForm`}>统计报表</Link></Menu.Item>
-            </SubMenu>
-            <SubMenu
               key="sub6"
               title={<span><Icon type="setting" /><span>高级设置</span></span>}
             >
               <Menu.Item key="18"><Link to={`${match.url}/HolidaySeting`}>假日设置</Link></Menu.Item>
               <Menu.Item key="19"><Link to={`${match.url}/TimeTacking`}>考勤处理类型</Link></Menu.Item>
             </SubMenu>
+            <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
+              <Link to={`${match.url}/Dictionaries`}>
+              <Icon type="file" />
+              <span>数据词典</span>
+              </Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout>

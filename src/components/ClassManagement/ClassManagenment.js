@@ -72,7 +72,14 @@ class ClassManage extends Component{
       timeEnd: '',
       addDay: '',
       description: '',
-      delIndex: ''
+      delIndex: '',
+      visible1: false,
+      freeClassName: '',
+      freeDays: '',
+      freeYear: '',
+      freeMonth: '',
+      workStart: '',
+      workEnd: ''
     }
 
   }
@@ -211,6 +218,45 @@ class ClassManage extends Component{
     }).catch(err => console.log(err))
   }
 
+  freeChangeMonth = (date, dateString) =>{
+    console.log(date)
+    let year = date._d.getFullYear()
+    let month = date._d.getMonth() + 1 >9? date._d.getMonth() + 1: `0${date._d.getMonth() + 1}`
+    this.setState({freeYear:year, freeMonth:month})
+  }
+  startFree = (time, timeString) =>{
+    console.log(timeString)
+    this.setState({workStart:timeString})
+  }
+  endFree = (time, timeString) =>{
+    console.log(timeString)
+    this.setState({workEnd:timeString})
+  }
+  addFreeClass = () =>{
+    const{freeClassName,workStart,workEnd,freeYear,freeDays,freeMonth} =this.state
+    let sendData= {
+      description: "",
+      endDate: workEnd,
+      isDefault: 0,
+      month: freeMonth,
+      schedulingName: freeClassName,
+      schedulingSource: "人资",
+      schedulingType: "store",
+      startDate: workStart,
+      workingDays: freeDays,
+      year: freeYear
+    }
+    console.log(sendData)
+    let url = `${IP}${ClassManageUrl}`
+    postfun2(url, sendData).then(res => {
+      if(res === 'success') {
+        this.setState({visible1: false})
+        this.startData()
+      }
+    }).catch(err => console.log(err))
+
+  }
+
   render() {
     const rowSelection = {
       onChange: (selectedRowKeys,selectedRows) => {
@@ -246,6 +292,7 @@ class ClassManage extends Component{
           <h3 className="comtitle">班次维护列表</h3>
           <Row type="flex" justify="end">
             <Col span="2"><Button icon="plus" onClick={() =>this.setState({visible:true})} >新增</Button></Col>
+            <Col span="4"><Button icon="plus" onClick={() =>this.setState({visible1:true})} >新增自由班次</Button></Col>
             <Col span="2"><Button icon="edit" >编辑</Button></Col>
             {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
             <Col span="2"><Button icon="delete" >删除</Button></Col>
@@ -255,6 +302,7 @@ class ClassManage extends Component{
             columns={this.state.columns}
             dataSource={this.state.tableData}
             bordered
+            rowKey='id'
             rowSelection={rowSelection}
           />
           <Modal 
@@ -329,7 +377,7 @@ class ClassManage extends Component{
                     columns={this.state.columns1}
                     dataSource={this.state.addData}
                     bordered
-                    rowKey='day'
+                    rowKey='id'
                     onRow={(record,index) =>{
                       return {
                         onClick: () =>{
@@ -339,6 +387,40 @@ class ClassManage extends Component{
                       }
                     }}
                   />
+              </div>
+            </Col>
+          </Row>
+          </Modal>
+          <Modal 
+            title="新增自由班次"
+            visible={this.state.visible1}
+            onOk={() =>this.addFreeClass()}
+            onCancel={() =>this.setState({visible1:false})}
+            width={1200}
+          >
+          <Row type="flex" justify="space-around">
+            <Col span='10'>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                  <Button type='primary' >班次名称</Button>
+                  <Input  onChange={(e) => { this.setState({ freeClassName: e.target.value }) }} />
+              </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                <Button type='primary' >班次月份</Button>
+                <MonthPicker onChange={this.freeChangeMonth} placeholder="Select month" />
+              </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                  <Button type='primary' >天数</Button>
+                  <Input  onChange={(e) => { this.setState({ freeDays: e.target.value }) }} />
+              </div>
+            </Col>
+            <Col span='10'>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                <Button type='primary' >上班时间</Button>
+                <TimePicker onChange={this.startFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+              </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                <Button type='primary' >下班时间</Button>
+                <TimePicker onChange={this.endFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
               </div>
             </Col>
           </Row>
