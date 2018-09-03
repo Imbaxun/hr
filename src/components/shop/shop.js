@@ -116,7 +116,7 @@ class Shop extends Component {
     const {name, code} = this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${Store}?page=${page-1}&size=${pageSize}&code=${code}&name=${name}`
+    let url =`${IP}${Store}/search?page=${page-1}&size=${pageSize}&code=${code}&name=${name}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
