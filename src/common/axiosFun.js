@@ -11,9 +11,10 @@ axios.defaults.baseURL = '/api';
 export function postfun(url, zhydata) {
     return new Promise((resolve, reject) => {
       axios.post(url, zhydata).then(res => {
-        // console.log(res)
+        console.log(res)
         resolve(res.data)
       }).catch(err => {
+        // alert(err.response.data)
         reject(err)
       })
     })
@@ -26,6 +27,7 @@ export function postfun(url, zhydata) {
         // console.log(res)
         resolve(res.data)
       }).catch(err => {
+        // alert(err.response.data)
         reject(err)
       })
     })
@@ -35,9 +37,10 @@ export function postfun(url, zhydata) {
     return new Promise((resolve, reject) => {
       axios.delete(url, qs.parse(zhydata)
       ).then(res => {
-        // console.log(res)
+        console.log(res)
         resolve(res.data)
       }).catch(err => {
+        // alert(err.response.data)
         reject(err)
       })
     })
@@ -47,9 +50,10 @@ export function postfun(url, zhydata) {
     return new Promise((resolve, reject) => {
       axios.post(url, qs.parse(zhydata)
       ).then(res => {
-        // console.log(res)
+        console.log(res)
         resolve(res.data)
       }).catch(err => {
+        // alert(err.response.data)
         reject(err)
       })
     })
@@ -61,6 +65,7 @@ export function postfun(url, zhydata) {
         // console.log(res)
         resolve(res.data)
       }).catch(err => {
+        // alert(err.response.data)
         reject(err)
       })
     })

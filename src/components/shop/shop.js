@@ -26,6 +26,12 @@ class Shop extends Component {
       depData: '',
       changeArea: '',
       totalLength: '',
+      addAddress: '',
+      addLongitude: '',
+      addLatitude: '',
+      changeLatitude: '',
+      changeLongitude: '',
+      changeAddress: '',
       columns:[
         {
           title: '门店编码',
@@ -36,8 +42,12 @@ class Shop extends Component {
           dataIndex: 'name',
         },
         {
-          title: '经纬度',
-          dataIndex: 'coordinate',
+          title: '精度',
+          dataIndex: 'longitude',
+        },
+        {
+          title: '维度',
+          dataIndex: 'latitude',
         },
         {
           title: '启用状态',
@@ -112,13 +122,16 @@ class Shop extends Component {
 
 
   addShop = () =>{
-    const {addCoordinate, addName,addArea, depData} = this.state
+    const {addCoordinate, addName,addArea, depData, addLongitude, addLatitude, addAddress} = this.state
     let url = `${IP}${Store}`
     let sendData = {
       coordinate: addCoordinate,
       name: addName,
       departmentId: depData.id,
-      area: addArea
+      area: addArea,
+      longitude: addLongitude,
+      latitude: addLatitude, 
+      address: addAddress,
     }
     postfun2(url, sendData).then(res =>{
       console.log(res)
@@ -135,7 +148,7 @@ class Shop extends Component {
 
 
   changeShop = () =>{
-    const {changeCoordinate, changeName, choiceData,depData, changeArea} = this.state
+    const {changeCoordinate, changeName, choiceData,depData, changeArea, changeAddress, changeLatitude, changeLongitude} = this.state
     let choiceId = choiceData.id
     let url =`${IP}${Store}/${choiceId}`
     console.log(choiceData)
@@ -150,6 +163,9 @@ class Shop extends Component {
       isDeleted: choiceData.isDeleted,
       sort: choiceData.sort,
       state: choiceData.state,
+      address: changeAddress === ''? choiceData.address : changeAddress,
+      longitude: changeLongitude === '' ? choiceData.longitude : changeLongitude,
+      latitude: changeLatitude === '' ? choiceData.latitude : changeLatitude,
       updateTime: choiceData.updateTime
     }
     console.log(sendData)
@@ -317,8 +333,8 @@ class Shop extends Component {
             </Col>
             <Col span="8">
             <div style={{display:'flex'}}>
-                <Button type='primary' >经纬度</Button>
-                <Input  onChange={(e) =>{this.setState({addCoordinate:e.target.value})}} style={{width:"300px"}} />
+                <Button type='primary' >地址</Button>
+                <Input  onChange={(e) =>{this.setState({addAddress:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -333,6 +349,20 @@ class Shop extends Component {
           <div style={{display:'flex'}}>
                 <Button type='primary' >部门账号</Button>
                 <Input value={this.state.depData.code} readOnly style={{width:"300px"}} />
+              </div>
+          </Col>
+          </Row>
+          <Row  type="flex" justify="space-around"className="marbot">
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >经度</Button>
+                <Input onChange={(e) =>{this.setState({addLongitude:e.target.value})}} style={{width:"300px"}} />
+              </div>
+          </Col>
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >维度</Button>
+                <Input onChange={(e) =>{this.setState({addLatitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           </Row>
@@ -363,8 +393,8 @@ class Shop extends Component {
             </Col>
             <Col span="8">
             <div style={{display:'flex'}}>
-                <Button type='primary' >经纬度</Button>
-                <Input  onChange={(e) =>{this.setState({changeCoordinate:e.target.value})}} style={{width:"300px"}} />
+                <Button type='primary' >地址</Button>
+                <Input  onChange={(e) =>{this.setState({changeAddress:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -379,6 +409,20 @@ class Shop extends Component {
           <div style={{display:'flex'}}>
                 <Button type='primary' >部门账号</Button>
                 <Input value={this.state.depData.code} readOnly style={{width:"300px"}} />
+              </div>
+          </Col>
+          </Row>
+          <Row  type="flex" justify="space-around"className="marbot">
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >经度</Button>
+                <Input onChange={(e) =>{this.setState({changeLongitude:e.target.value})}} style={{width:"300px"}} />
+              </div>
+          </Col>
+          <Col span="8">
+          <div style={{display:'flex'}}>
+                <Button type='primary' >维度</Button>
+                <Input onChange={(e) =>{this.setState({changeLatitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           </Row>

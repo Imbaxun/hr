@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Row, Col, Input, Button, Table,DatePicker, Modal ,Calendar, Tag, Tooltip, TimePicker } from 'antd';
-import{getfun, postfun2} from '../../common/axiosFun'
+import{getfun, postfun2, deletefun, putfun} from '../../common/axiosFun'
 import {API} from '../../common/axiosAPI'
 import './ClassManage.css'
 import moment from 'moment';
@@ -29,6 +29,10 @@ class ClassManage extends Component{
           title: '班次来源',
           dataIndex: 'schedulingSource',
         }, 
+        {
+          title: '工作天数',
+          dataIndex: 'workingDays',
+        },
         {
           title: '班次描述',
           dataIndex: 'description',
@@ -79,7 +83,16 @@ class ClassManage extends Component{
       freeYear: '',
       freeMonth: '',
       workStart: '',
-      workEnd: ''
+      workEnd: '',
+      choiceTable: '',
+      visible2: false,
+      changefreeClassName: '',
+      changefreeDays: '',
+      changefreeYear: '',
+      changefreeMonth: '',
+      changeworkEnd: '',
+      changewofkStart: '',
+      changeDescription: '',
     }
 
   }
@@ -119,6 +132,25 @@ class ClassManage extends Component{
   onPanelChange= (value, mode) =>{
     console.log(value._d.getFullYear())
     this.setState({year:value._d.getFullYear(),month:value._d.getMonth()+1})
+  }
+
+  delTable = () =>{
+    const {choiceTable} = this.state
+    console.log(choiceTable)
+    if(choiceTable === ''){
+      alert('请选中删除的班次')
+    }else{
+      let url =`${IP}/scheduling/${choiceTable.id}`
+      deletefun(url).then(res =>{
+        console.log(res)
+        if(res === 'success'){
+          this.startData()
+        }else{
+          alert(res)
+        }
+      }).catch(err => console.log(err))
+    }
+  
   }
 
   selectDate = (item) =>{
@@ -214,6 +246,8 @@ class ClassManage extends Component{
       if(res === 'success') {
         this.setState({visible: false})
         this.startData()
+      }else{
+        alert(res)
       }
     }).catch(err => console.log(err))
   }
@@ -224,18 +258,29 @@ class ClassManage extends Component{
     let month = date._d.getMonth() + 1 >9? date._d.getMonth() + 1: `0${date._d.getMonth() + 1}`
     this.setState({freeYear:year, freeMonth:month})
   }
+  changefreeChangeMonth = (date) =>{
+    let year = date._d.getFullYear()
+    let month = date._d.getMonth() + 1 >9? date._d.getMonth() + 1: `0${date._d.getMonth() + 1}`
+    this.setState({changefreeYear:year, changefreeMonth:month})
+  }
   startFree = (time, timeString) =>{
     console.log(timeString)
     this.setState({workStart:timeString})
+  }
+  changestartFree = (time, timeString) =>{
+    this.setState({changeworkStart:timeString})
   }
   endFree = (time, timeString) =>{
     console.log(timeString)
     this.setState({workEnd:timeString})
   }
+  changeendFree = (time, timeString) =>{
+    this.setState({changeworkEnd:timeString})
+  }
   addFreeClass = () =>{
-    const{freeClassName,workStart,workEnd,freeYear,freeDays,freeMonth} =this.state
+    const{freeClassName,workStart,workEnd,freeYear,freeDays,freeMonth,description} =this.state
     let sendData= {
-      description: "",
+      description: description,
       endDate: workEnd,
       isDefault: 0,
       month: freeMonth,
@@ -256,14 +301,39 @@ class ClassManage extends Component{
     }).catch(err => console.log(err))
 
   }
+  changeFreeData = () =>{
+    const{choiceTable} = this.state
+    if(choiceTable === '') {
+      alert('请选择需要编辑的班次')
+    }else{
+      this.setState({visible2:true})
+    }
+  }
+
+  changeFreeClass = () =>{
+    const {choiceTable,changefreeMonth, changefreeYear, changefreeDays, changefreeClassName, changeworkEnd, changewofkStart, changeDescription} =this.state
+    let sendData = {
+      description: changeDescription ===''? choiceTable.description : changeDescription,
+      endDate: changeworkEnd ===''? choiceTable.endDate : changeworkEnd,
+      month: changefreeMonth ===''? choiceTable.month : changefreeMonth,
+      schedulingName: changefreeClassName ===''? choiceTable.schedulingName : changefreeClassName,
+      startDate: changewofkStart ===''? choiceTable.startDate : changewofkStart,
+      workingDays: changefreeDays ===''? choiceTable.workingDays : changefreeDays,
+      year: changefreeYear ===''? choiceTable.year : changefreeYear,
+      id:choiceTable.id
+    }
+    console.log(sendData)
+    let url = `${IP}/scheduling/${choiceTable.id}`
+    putfun(url, sendData).then(res =>{
+      if(res === 'success'){
+        this.setState({visible1: false})
+        this.startData()
+      }else{console.log(res)}
+    }).catch(err =>console.log(err))
+  } 
 
   render() {
-    const rowSelection = {
-      onChange: (selectedRowKeys,selectedRows) => {
-        console.log(selectedRows);
-        this.setState({choiceData:selectedRows})
-      }
-    }  
+
 
     const {tags} = this.state
     return (
@@ -291,11 +361,11 @@ class ClassManage extends Component{
         <div className="comMain">
           <h3 className="comtitle">班次维护列表</h3>
           <Row type="flex" justify="end">
-            <Col span="2"><Button icon="plus" onClick={() =>this.setState({visible:true})} >新增</Button></Col>
+            {/* <Col span="2"><Button icon="plus" onClick={() =>this.setState({visible:true})} >新增</Button></Col> */}
             <Col span="4"><Button icon="plus" onClick={() =>this.setState({visible1:true})} >新增自由班次</Button></Col>
-            <Col span="2"><Button icon="edit" >编辑</Button></Col>
+            <Col span="2"><Button icon="edit" onClick={this.changeFreeData} >编辑</Button></Col>
             {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
-            <Col span="2"><Button icon="delete" >删除</Button></Col>
+            <Col span="2"><Button icon="delete" onClick={this.delTable}>删除</Button></Col>
           </Row>
           <Table
             style={{marginTop:20}}
@@ -303,7 +373,14 @@ class ClassManage extends Component{
             dataSource={this.state.tableData}
             bordered
             rowKey='id'
-            rowSelection={rowSelection}
+            onRow={(record,index) =>{
+              return {
+                onClick: () =>{
+                  console.log(record)
+                  this.setState({choiceTable: record})
+                }
+              }
+            }}
           />
           <Modal 
             title="新增班次"
@@ -422,6 +499,60 @@ class ClassManage extends Component{
                 <Button type='primary' >下班时间</Button>
                 <TimePicker onChange={this.endFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
               </div>
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around">
+            <Col span='10'>
+              <div style={{ display: 'flex' }}>
+                <Button type='primary' >备注</Button>
+                <Input onChange={(e) => { this.setState({ description: e.target.value }) }} />
+              </div>
+            </Col>
+            <Col  span='10'>
+            </Col>
+          </Row>
+          </Modal>
+          <Modal 
+            title="编辑自由班次"
+            visible={this.state.visible2}
+            onOk={() =>this.changeFreeClass()}
+            onCancel={() =>this.setState({visible2:false})}
+            width={1200}
+          >
+          <Row type="flex" justify="space-around">
+            <Col span='10'>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                  <Button type='primary' >班次名称</Button>
+                  <Input defaultValue={this.state.choiceTable === '' ? '' : this.state.choiceTable.schedulingName}  onChange={(e) => { this.setState({ changefreeClassName: e.target.value }) }} />
+              </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                <Button type='primary' >班次月份</Button>
+                <MonthPicker onChange={this.changefreeChangeMonth} placeholder="Select month" />
+              </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                  <Button type='primary' >天数</Button>
+                  <Input defaultValue={this.state.choiceTable === '' ? '' : this.state.choiceTable.workingDays}  onChange={(e) => { this.setState({ changefreeDays: e.target.value }) }} />
+              </div>
+            </Col>
+            <Col span='10'>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                <Button type='primary' >上班时间</Button>
+                <TimePicker onChange={this.changestartFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+              </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                <Button type='primary' >下班时间</Button>
+                <TimePicker onChange={this.changeendFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+              </div>
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around">
+            <Col span='10'>
+              <div style={{ display: 'flex' }}>
+                <Button type='primary' >备注</Button>
+                <Input defaultValue={this.state.choiceTable === '' ? '' : this.state.choiceTable.description} onChange={(e) => { this.setState({ changeDescription: e.target.value }) }} />
+              </div>
+            </Col>
+            <Col  span='10'>
             </Col>
           </Row>
           </Modal>

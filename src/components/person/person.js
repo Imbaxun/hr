@@ -653,11 +653,11 @@ class Person extends Component {
                 />
                 <div>
                   <Button onClick={this.downLoad}><a href={this.state.downLoad}>导出</a></Button>
-                  <Upload {...up}>
+                  {/* <Upload {...up}>
                     <Button>
                       <Icon type="upload" /> Click to Upload
                     </Button>
-                  </Upload>
+                  </Upload> */}
                 </div>
             </div>
             <Modal
