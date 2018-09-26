@@ -25,7 +25,7 @@ constructor(props) {
     totalLength: '',
     selectTree: '',
     searchyear: mydate.getFullYear(),
-    searchmonth: mydate.getMonth()+1<10 ? `0${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+    searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
     stringDate: '',
     tags: ['补刷卡日期:'],
     columns: [
@@ -87,7 +87,8 @@ constructor(props) {
     addDateStart: '',
     addDateEnd: '',
     choiceTable: [],
-    charDays: ''
+    charDays: '',
+    clearDate: false
   }
 }
 
@@ -114,7 +115,7 @@ startData = () =>{
       //点击查询的url
       let searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=3&month=${ayear}/${amonth}`
       console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
 
     }
 
@@ -134,10 +135,10 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {code, aname,recordTimeStart, recordTimeEnd} =this.state
+    const {code, aname,recordTimeStart, recordTimeEnd,selectTree} =this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}/basePunchRecord?page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
+    let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
     getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
@@ -172,7 +173,7 @@ startData = () =>{
   }
   searchData = () =>{
     const {empId, searchyear,searchmonth, selectTree} = this.state
-    let amonth =searchmonth<10? `${searchmonth}` : `${searchmonth}`
+    let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     console.log(url)
@@ -216,6 +217,7 @@ startData = () =>{
     let url =`${IP}/checkWorkHandle`
     postfun2(url, sendData).then(res =>{
       if(res ==='success'){
+        alert('新增成功')
         this.startData()
       }
     }).catch(err => console.log(err))
@@ -232,6 +234,7 @@ startData = () =>{
     let url = `${IP}/checkWorkHandle/${idnumber}`
     deletefun(url).then(res =>{
       if(res === 'success'){
+        alert('删除成功')
         this.startData()
       }
     }).catch(err =>console.log(err))
@@ -260,7 +263,7 @@ render() {
           <Col span="18">
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
               <Col span="5">
-              <ChoicePerson getpepple={this.getpepple} />
+              <ChoicePerson getpepple={this.getpepple} clearDate= {this.state.clearDate} />
               </Col>
               <Col span="8">
                 <div style={{ display: 'flex' }}>
@@ -274,7 +277,7 @@ render() {
             <Button>去组织架构</Button>
             </Col>
             <Col span='5'>
-            <Button icon="reload" onClick={()=>this.setState({code:'',name:''})}  type="primary">重置</Button>  
+            <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
             <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>

@@ -40,6 +40,7 @@ class ChoicePerson extends Component{
     let url = `${IP}${Employee}`
     console.log(url)
     getfun(url).then(res => this.setState({data: res.content})).catch(err =>console.log(err))
+    console.log(this.props.clearDate)
   }
 
   searchPerson = () =>{
@@ -50,13 +51,22 @@ class ChoicePerson extends Component{
     getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
   }
 
+  // clearData = (item) =>{
+  //   console.log(item)
+  //   if(item) {
+  //     this.setState({code: '',aname:''})
+  //   }
+  // }
+
   render() {
+    // console.log(this.props.clearDate)
+    // this.clearData(this.props.clearDate)
     return(
       <div>
         <div style={{display:'flex'}}>
             <Button type='primary'>人员</Button>
-            <Input value={this.state.code} readOnly style={{ width:100}}  />
-            <Input value={this.state.aname} readOnly style={{ width:100, marginRight:10}} />
+            <Input value={this.props.clearDate ? '': this.state.code} readOnly style={{ width:100}}  />
+            <Input value={this.props.clearDate ? '': this.state.aname} readOnly style={{ width:100, marginRight:10}} />
             <Button onClick={() => this.setState({visible:true})}>查询</Button>
         </div>
         <Modal

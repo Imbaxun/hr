@@ -16,7 +16,7 @@ class HolidaySeting extends Component{
       schedulingName : '',
       month: '',
       year: '',
-      choiceData: '',
+      choiceData: [],
       tableData:[],
       columns: [
         {
@@ -57,6 +57,8 @@ class HolidaySeting extends Component{
       changeDateStart: '',
       changeDateEnd: '',
       changeDays: '',
+      choiceName: '',
+      choiceReson: ''
     }
 
   }
@@ -77,7 +79,7 @@ class HolidaySeting extends Component{
   onChangeMonth= (date, dateString) =>{
     // console.log(date._d.getFullYear())
     let year = date._d.getFullYear()
-    let month = date._d.getMonth()
+    let month = date._d.getMonth()+1<10 ? `0${date._d.getMonth()+1}` :`${date._d.getMonth()+1}`
     console.log(year)
     console.log(month)
     this.setState({month:month,year:year})
@@ -87,7 +89,13 @@ class HolidaySeting extends Component{
     const {month, year, schedulingName} =this.state
     let url = `${IP}${HolidaySet}/search?name=${schedulingName}&month=${month}&year=${year}`
     console.log(url)
-    getfun(url).then(res => this.setState({tableData:res})).catch(err =>console.log(err))
+    getfun(url).then(res =>{
+      if(res.totalElements === 0){
+        this.setState({tableData:[]})
+      }else{
+        this.setState({tableData:res.content})
+      }
+    } ).catch(err =>console.log(err))
   }
 
   delData = () =>{
@@ -101,6 +109,7 @@ class HolidaySeting extends Component{
     let url = `${IP}${HolidaySet}/${idnumber}`
     deletefun(url).then(res =>{
       if(res === 'success'){
+        alert('删除成功')
         this.startData()
       }
     }).catch(err =>console.log(err))
@@ -157,6 +166,7 @@ class HolidaySeting extends Component{
     let url = `${IP}${HolidaySet}`
     postfun2(url,sendData).then(res =>{
       if(res === 'success'){
+        alert('新增成功')
         this.startData()
       }
     }).catch(err =>console.log(err))
@@ -185,11 +195,20 @@ class HolidaySeting extends Component{
     let  url = `${IP}${HolidaySet}/${choiceData[0].id}`
     putfun(url,sendDate).then(res =>{
       if(res === 'success'){
+        alert('编辑成功')
         this.startData()
       }
     }).catch(err =>console.log(err))
   }
 
+  change = () =>{
+    const{choiceData} = this.state
+    if(choiceData.length === 0){
+      alert('请选择编辑内容')
+    }else{
+      this.setState({visible1:true,choiceName:choiceData[0].name, choiceReson:choiceData[0].remark})
+    }
+  }
 
  
 
@@ -227,7 +246,7 @@ class HolidaySeting extends Component{
           <h3 className="comtitle">假日维护列表</h3>
           <Row type="flex" justify="end">
             <Col span="2"><Button icon="plus" onClick={() =>this.setState({visible:true})} >新增</Button></Col>
-            <Col span="2"><Button icon="edit" onClick={() =>this.setState({visible1:true})}>编辑</Button></Col>
+            <Col span="2"><Button icon="edit" onClick={this.change}>编辑</Button></Col>
             {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
             <Col span="2"><Button icon="delete" onClick={this.delData} >删除</Button></Col>
           </Row>
@@ -276,7 +295,7 @@ class HolidaySeting extends Component{
             <Col span="8">
                 <div style={{ display: 'flex',marginBottom:20,width:300 }}>
                   <Button type='primary' >节假日名称</Button>
-                  <Input  onChange={(e) => { this.setState({ changeName: e.target.value }) }} />
+                  <Input value={this.state.choiceName}   onChange={(e) => { this.setState({ changeName: e.target.value }) }} />
                 </div>
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >节假日日期</Button>
@@ -286,7 +305,7 @@ class HolidaySeting extends Component{
             <Col span='8'>
             <div style={{ display: 'flex',marginBottom:20 }}>
             <Button type='primary' >请假事由</Button>
-              <TextArea onChange={(e) =>{this.setState({changeReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
+              <TextArea value={this.state.choiceReson}  onChange={(e) =>{this.setState({changeReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
             </div>
             </Col>
           </Row>

@@ -1,9 +1,10 @@
 
 export const API = {
-    // IP : 'http://172.30.42.225:8080',
-    IP: 'http://172.30.43.116:8080',
-    // IP : 'http://172.30.41.59:8080',
-    login: '/account/login.do',
+    // IP : 'http://172.30.43.53:9090',
+    // IP: 'http://172.30.43.116:9090',
+    // IP : 'http://172.30.41.59:9090',
+    IP : 'http://119.97.234.253:9090',  //外网IP
+    login: '/sys/login',
     PersonThree: '/organizational/tree',   //人员树状菜单
     searchbm: '/position',          //部门查询
     addcom: '/company',              //新增公司
@@ -20,5 +21,6 @@ export const API = {
     ClassSearchUrl: '/employeeScheduling', //班次查询
     BurshCardUrl: '/checkWorkHandle/search',  //补刷卡考勤查询
     HolidaySet: '/tHolidaySetting',  //假日设置
-    Tacking: '/checkWorkType'   //考勤处理类型
+    Tacking: '/checkWorkType',   //考勤处理类型
+    BatchUrl: '/punchRecordBatch/queryExecuteStateList' //手动批处理
 }

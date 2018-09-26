@@ -27,7 +27,8 @@ class Attendance extends Component{
       downLoad: '',
       totalLength: '',
       empCode: '',
-      totalWidth:''
+      totalWidth:'',
+      clearDate: false
     }
   }
   componentDidMount(){
@@ -38,12 +39,13 @@ class Attendance extends Component{
     const {searchmonth, searchyear} =this.state
     let url =  `${IP}/punchRecord/solr?page=0&size=10&recordYear=${searchyear}&recordMonth=${searchmonth}`
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=原始考勤数据记录`
-    getfun(hurl).then(res => {
-      if(res.msg === "success"){
-        this.setState({columns:res.data})
-        this.getTable(url)
-      }
-    }).catch(err =>console.log(err))
+    // getfun(hurl).then(res => {
+    //   if(res.msg === "success"){
+    //     this.setState({columns:res.data})
+    //     this.getTable(url)
+    //   }
+    // }).catch(err =>console.log(err))
+    this.getHead(url,hurl)
   }
 
   getTable = (url) =>{
@@ -88,7 +90,13 @@ class Attendance extends Component{
 
   onChangeMonth = (date, dateString) =>{
     // console.log(date._d.getFullYear() + date._d.getMonth()) 
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    console.log(date)
+    if(date === null) {
+      console.log('222')
+      this.setState({searchyear: '',searchmonth:''})
+    }else{
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    }
   }
 
   checkType = (item) =>{
@@ -154,7 +162,7 @@ class Attendance extends Component{
       url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
       break
       case "月度考勤汇总":
-      url =`${IP}monthPunchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
       break
       case "年度考勤汇总":
       url =`${IP}/yearPunchRecord/solr?&page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
@@ -194,31 +202,34 @@ class Attendance extends Component{
           </Col>
           <Col span='18'>
             <Row type="flex" justify="space-around" style={{marginBottom:20}}>
-            <Col span="5">
-              <ChoicePerson getpepple={this.getpepple} />
+            <Col span="10">
+              <ChoicePerson getpepple={this.getpepple} clearDate= {this.state.clearDate} />
               </Col>
-              <Col span="5">
+              <Col span="10">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >月份</Button>
                   <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
                 </div>
               </Col>
-              <Col span='5'>
+            </Row>
+            <Row type="flex" justify="space-around">
+            <Col span='10'>
               <div style={{ display: 'flex',marginBottom:20 }}>
                 <Button type='primary' >考勤类型</Button>
-                  <Select  style={{ width: 120 }} onChange={this.checkType}>
+                  <Select  style={{ width: 250}} onChange={this.checkType}>
                     <Option value="1">原始考勤记录</Option>
                     <Option value="2">月度考勤汇总</Option>
                     <Option value="3">年度考勤汇总</Option>
                   </Select>
                 </div>
               </Col>
+              <Col span= '10'></Col>
             </Row>
             <hr />
             <div className="comMain">
               <h3 className="comtitle">{this.state.showData}</h3>
                 <Row type="flex" justify='space-end'>
-                  <Col span="3"><Button >重置</Button></Col>
+                  <Col span="3"><Button onClick = {() => this.setState({clearDate:true})}>重置</Button></Col>
                   <Col span="3"><Button onClick = {this.searchData} >查询</Button></Col>
                 </Row>
                 <Table

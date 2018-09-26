@@ -68,13 +68,15 @@ class Main extends Component {
               <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
               {/* <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item> */}
               <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
+              <Menu.Item key="21"><Link to={`${match.url}/Batch`}>手动批处理</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub4"
               title={<span><Icon type="team" /><span>考勤数据管理</span></span>}
             >
-              <Menu.Item key="16"><Link to={`${match.url}/CheckingData`}>考勤数据</Link></Menu.Item>
-              <Menu.Item key="17"><Link to={`${match.url}/CheckSolr`}>考勤数据Solr</Link></Menu.Item>
+              <Menu.Item key="16"><Link to={`${match.url}/CheckingData`}>考勤数据(工业园)</Link></Menu.Item>
+              <Menu.Item key="17"><Link to={`${match.url}/CheckSolr`}>考勤数据(工业园)Solr</Link></Menu.Item>
+              <Menu.Item key="20"><Link to={`${match.url}/CheckingStore`}>考勤数据(门店)</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub6"

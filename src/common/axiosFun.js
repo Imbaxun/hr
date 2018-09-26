@@ -70,3 +70,27 @@ export function postfun(url, zhydata) {
       })
     })
   }
+
+  export function formfun(url, zhydata) { 
+    return new Promise((resolve, reject) =>{
+      axios({
+        method: 'post',
+        url: url,
+        headers : {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data:zhydata,
+        transformRequest: [function (data) {
+          let ret = ''
+          for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+          }
+          return ret
+        }],
+      }).then(res =>{
+        resolve(res.data)
+      }).catch(err =>{
+        reject(err.data)
+      })
+    })
+   }

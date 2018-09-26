@@ -94,7 +94,7 @@ class Shop extends Component {
   searchData = () =>{
     const {name, code} = this.state
     const { IP, Store} = API
-    let url = `${IP}${Store}/search?code=${code}&name=${name}`
+    let url = `${IP}${Store}/search?page=0&size=10&code=${code}&name=${name}`
     getfun(url).then(res => {
       // console.log(res)
       let newArr = []
@@ -113,11 +113,23 @@ class Shop extends Component {
   }
 
   changePage = (page, pageSize) =>{
-    const {name, code} = this.state
+    const {name, code, selectData} = this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${Store}/search?page=${page-1}&size=${pageSize}&code=${code}&name=${name}`
-    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    let url =`${IP}${Store}/search?page=${page-1}&size=${pageSize}&${selectData}&code=${code}&name=${name}`
+    getfun(url).then(res => {
+      let newArr = []
+      res.content.forEach(item => {
+        if(item.state === '0') {
+          item.state = '未启用'
+        }else{
+          item.state = '已启用'
+        }
+        newArr.push(item)
+        // console.log(newArr)
+      });
+      this.setState({data: newArr,totalLength:res.totalElements})
+    }).catch(err =>console.log(err.message))
   }
 
 
@@ -215,7 +227,7 @@ class Shop extends Component {
     console.log(item)
     this.setState({selectData: item})
     //点击查询的url
-    let searchUrl = `${IP}/employee?${item}`
+    let searchUrl = `${IP}/store/search?${item}&page=0&size=10`
     getfun(searchUrl).then(res =>{
       console.log(res)
       let newArr = []
@@ -227,8 +239,8 @@ class Shop extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
       });
+      this.setState({data: newArr,totalLength:res.totalElements})
     }).catch(err => console.log(err))
   }
   addShopStart = () =>{
@@ -273,9 +285,9 @@ class Shop extends Component {
             </Col>
           </Row>
             <Row type="flex" justify="center"  style={{marginBottom:10}}>
-            <Col span="5">
+            {/* <Col span="5">
             <Button>去组织架构</Button>
-            </Col>
+            </Col> */}
             <Col span='5'>
             <Button icon="reload" onClick={()=>this.setState({code:'',name:''})}  type="primary">重置</Button>  
             </Col>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Row, Col, Input, Icon  } from 'antd'
-import {postfun} from '../../common/axiosFun'
+import {formfun} from '../../common/axiosFun'
 import {API} from '../../common/axiosAPI'
 
 
@@ -12,28 +12,29 @@ class Login extends Component {
   constructor(porps) {
     super(porps)
     this.state ={
-      userId: '',
-      password: ''
+      userName: '',
+      passWorld: ''
     }
   }
 
   login() {    
-    const {userId,password} = this.state
+    const {userName,passWorld} = this.state
     const { IP, login} = API
     let url = `${IP}${login}`
     // console.log(this.props)
-    this.props.history.push('/main/Company');
+    // this.props.history.push('/main/Company');
     let sendData = {
-      userId,
-      password
+      userName,
+      passWorld
     }
     console.log(sendData)
-    postfun(url,sendData).then(res => {
+    console.log(url)
+    formfun(url,sendData).then(res => {
       console.log(res)
-      if (res.success) {
+      if (res.code === 200) {
         this.props.history.push('/main/Company');
       } else {
-        alert(res.errorInfo)
+        alert(res.msg)
       }
     }).catch(err => {
       console.log(err)
@@ -43,14 +44,14 @@ class Login extends Component {
 
   onChangeuserId = (e) =>{
     this.setState({
-      userId: e.target.value
+      userName: e.target.value
     })
     // console.log(this.state.userName)
   }
 
   onChangePassword = (e) =>{
     this.setState({
-      password: e.target.value
+      passWorld: e.target.value
     })
   }
 

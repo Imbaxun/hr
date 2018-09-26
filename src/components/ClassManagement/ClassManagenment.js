@@ -12,9 +12,10 @@ class ClassManage extends Component{
     super(props)
     this.state = {
       schedulingName : '',
-      month: '01',
-      year: '2018',
+      month: '',
+      year: '',
       choiceData: '',
+      totalLength: '',  
       tableData:[],
       columns: [
         {
@@ -32,6 +33,10 @@ class ClassManage extends Component{
         {
           title: '工作天数',
           dataIndex: 'workingDays',
+        },
+        {
+          title: '工作时长',
+          dataIndex: 'workHours',
         },
         {
           title: '班次描述',
@@ -82,6 +87,7 @@ class ClassManage extends Component{
       freeDays: '',
       freeYear: '',
       freeMonth: '',
+      freeTimes: '',
       workStart: '',
       workEnd: '',
       choiceTable: '',
@@ -90,6 +96,7 @@ class ClassManage extends Component{
       changefreeDays: '',
       changefreeYear: '',
       changefreeMonth: '',
+      changefreeTimes: '',
       changeworkEnd: '',
       changewofkStart: '',
       changeDescription: '',
@@ -102,7 +109,7 @@ class ClassManage extends Component{
   }
 
   startData = () =>{
-    let url = `${IP}${ClassManageUrl}`
+    let url = `${IP}${ClassManageUrl}?page=0&size=10`
     getfun(url).then(res =>{
       console.log(res)
       let arr = res.content
@@ -114,10 +121,24 @@ class ClassManage extends Component{
     }).catch(err =>console.log(err))
   }  
 
+  changePage = (page, pageSize) =>{
+    const {ClassManageUrl, month, year, schedulingName} =this.state
+    console.log(page)
+    console.log(pageSize)
+    let url =`${IP}${ClassManageUrl}?page=${page-1}&size=${pageSize}&month=${month}&year=${year}&schedulingName=${schedulingName}`
+    getfun(url).then(res => {
+      console.log(res.content)
+      this.setState({tableData: res.content,totalLength:res.totalElements})
+      console.log('执行到这里')
+    }).catch(err => {
+      console.log(err)
+    })  
+  }
+
   onChangeMonth= (date, dateString) =>{
     // console.log(date._d.getFullYear())
     let year = date._d.getFullYear()
-    let month = date._d.getMonth()
+    let month = date._d.getMonth()+1
     console.log(year)
     console.log(month)
     this.setState({month:month,year:year})
@@ -125,8 +146,8 @@ class ClassManage extends Component{
 
   searchData = () =>{
     const {month, year, schedulingName} =this.state
-    let url = `${IP}${ClassManageUrl}?schedulingName=${schedulingName}&month=${month}&year=${year}`
-    getfun(url).then(res => console.log(res)).catch(err =>console.log(err))
+    let url = `${IP}${ClassManageUrl}?schedulingName=${schedulingName}&month=${month}&year=${year}&page=0&size=10`
+    getfun(url).then(res => this.setState({tableData:res.content})).catch(err =>console.log(err))
   }
 
   onPanelChange= (value, mode) =>{
@@ -144,6 +165,7 @@ class ClassManage extends Component{
       deletefun(url).then(res =>{
         console.log(res)
         if(res === 'success'){
+          alert('删除成功')
           this.startData()
         }else{
           alert(res)
@@ -244,6 +266,7 @@ class ClassManage extends Component{
     let url = `${IP}${ClassManageUrl}`
     postfun2(url, sendData).then(res => {
       if(res === 'success') {
+        alert('新增成功')
         this.setState({visible: false})
         this.startData()
       }else{
@@ -278,7 +301,7 @@ class ClassManage extends Component{
     this.setState({changeworkEnd:timeString})
   }
   addFreeClass = () =>{
-    const{freeClassName,workStart,workEnd,freeYear,freeDays,freeMonth,description} =this.state
+    const{freeClassName,workStart,workEnd,freeYear,freeDays,freeMonth,description,freeTimes} =this.state
     let sendData= {
       description: description,
       endDate: workEnd,
@@ -289,12 +312,14 @@ class ClassManage extends Component{
       schedulingType: "store",
       startDate: workStart,
       workingDays: freeDays,
-      year: freeYear
+      year: freeYear,
+      workHours: freeTimes
     }
     console.log(sendData)
     let url = `${IP}${ClassManageUrl}`
     postfun2(url, sendData).then(res => {
       if(res === 'success') {
+        alert("新增自由班次成功")
         this.setState({visible1: false})
         this.startData()
       }
@@ -311,7 +336,7 @@ class ClassManage extends Component{
   }
 
   changeFreeClass = () =>{
-    const {choiceTable,changefreeMonth, changefreeYear, changefreeDays, changefreeClassName, changeworkEnd, changewofkStart, changeDescription} =this.state
+    const {choiceTable,changefreeMonth, changefreeYear, changefreeDays, changefreeClassName, changeworkEnd, changewofkStart, changeDescription, changefreeTimes} =this.state
     let sendData = {
       description: changeDescription ===''? choiceTable.description : changeDescription,
       endDate: changeworkEnd ===''? choiceTable.endDate : changeworkEnd,
@@ -320,12 +345,14 @@ class ClassManage extends Component{
       startDate: changewofkStart ===''? choiceTable.startDate : changewofkStart,
       workingDays: changefreeDays ===''? choiceTable.workingDays : changefreeDays,
       year: changefreeYear ===''? choiceTable.year : changefreeYear,
+      workHours: changefreeTimes === '' ? choiceTable.workHours : changefreeTimes,
       id:choiceTable.id
     }
     console.log(sendData)
     let url = `${IP}/scheduling/${choiceTable.id}`
     putfun(url, sendData).then(res =>{
       if(res === 'success'){
+        alert("编辑成功")
         this.setState({visible1: false})
         this.startData()
       }else{console.log(res)}
@@ -373,6 +400,13 @@ class ClassManage extends Component{
             dataSource={this.state.tableData}
             bordered
             rowKey='id'
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 10 ,
+              // current: this.state.current,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
             onRow={(record,index) =>{
               return {
                 onClick: () =>{
@@ -499,6 +533,10 @@ class ClassManage extends Component{
                 <Button type='primary' >下班时间</Button>
                 <TimePicker onChange={this.endFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
               </div>
+              <div style={{ display: 'flex',marginBottom:20,width:300 }}>
+                  <Button type='primary' >工作时长</Button>
+                  <Input  onChange={(e) => { this.setState({ freeTimes: e.target.value }) }} />
+              </div>
             </Col>
           </Row>
           <Row type="flex" justify="space-around">
@@ -527,7 +565,7 @@ class ClassManage extends Component{
               </div>
               <div style={{ display: 'flex',marginBottom:20,width:300 }}>
                 <Button type='primary' >班次月份</Button>
-                <MonthPicker onChange={this.changefreeChangeMonth} placeholder="Select month" />
+                <MonthPicker onChange={this.changefreeChangeMonth} placeholder={`${this.state.choiceTable.year}-${this.state.choiceTable.month}`} />
               </div>
               <div style={{ display: 'flex',marginBottom:20,width:300 }}>
                   <Button type='primary' >天数</Button>
@@ -537,11 +575,11 @@ class ClassManage extends Component{
             <Col span='10'>
               <div style={{ display: 'flex',marginBottom:20,width:300 }}>
                 <Button type='primary' >上班时间</Button>
-                <TimePicker onChange={this.changestartFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                <TimePicker onChange={this.changestartFree} placeholder={this.state.choiceTable.startDate} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
               </div>
               <div style={{ display: 'flex',marginBottom:20,width:300 }}>
                 <Button type='primary' >下班时间</Button>
-                <TimePicker onChange={this.changeendFree} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                <TimePicker onChange={this.changeendFree} placeholder={this.state.choiceTable.endDate} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
               </div>
             </Col>
           </Row>

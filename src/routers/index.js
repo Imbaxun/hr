@@ -25,6 +25,7 @@ import WorkOverTime from '../components/WorkOverTime/WorkOverTime'
 import Dictionaries from '../components/dictionaries/dictionaries'
 import CheckingData from '../components/CheckingData/CheckingData'
 import CheckSolr from '../components/CheckSolr/CheckSolr'
+import CheckingStore from '../components/CheckingStore/CheckingStore'
 
 
 //高级设置
@@ -34,6 +35,7 @@ import TimeTacking from '../components/TimeTacking/TimeTacking'
 //考勤管理
 import Attendance from '../components/attendance/attendance'
 import StatisticalForm from '../components/statisticalForm/statisticalForm'
+import Batch from '../components/Batch/Batch'
 
 export const routFirst = () =>{
   return (
@@ -68,6 +70,8 @@ export const mainRouters = () => {
       <Route path='/main/TimeTacking' component={TimeTacking} />
       <Route path='/main/Attendance' component={Attendance} />
       <Route path='/main/StatisticalForm' component={StatisticalForm} />
+      <Route path='/main/CheckingStore' component={CheckingStore} />
+      <Route path='/main/Batch' component={Batch} />
     </div>
   )
 }

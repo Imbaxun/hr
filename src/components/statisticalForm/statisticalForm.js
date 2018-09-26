@@ -43,7 +43,7 @@ class StatisticalFrom extends Component{
     // console.log(date._d.getFullYear() + date._d.getMonth()) 
     this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
   }
-
+  
   choiceType = (item) =>{
     console.log(item)
     this.setState({formUrl:item})
@@ -54,7 +54,7 @@ class StatisticalFrom extends Component{
     if(formUrl === ''){
       alert('请选择导出报表类型')
     }else{
-      let  downurl =`${IP}${formUrl}/${searchyear}/${searchmonth}?${threeData}`
+      let  downurl =`${IP}/${formUrl}/${searchyear}/${searchmonth}?${threeData}`
       console.log(downurl)
       window.open(downurl)
     }

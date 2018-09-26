@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio} from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio,Upload, message, Icon,} from 'antd'
 import './ClassSearch.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
@@ -21,7 +21,9 @@ class ClassSearch extends Component{
     this.state={
       name: '',
       code: '',
+      totalLength: '',
       schedulingName: '',
+      searchUrl: '',
       searchyear: mydate.getFullYear(),
       searchmonth: mydate.getMonth()+1,
       columns: [
@@ -91,30 +93,46 @@ class ClassSearch extends Component{
 
   startData = () =>{
     const{searchyear,searchmonth}=this.state
-    let url = `${IP}${ClassSearchUrl}?year=${searchyear}&month=${searchmonth}`
-    getfun(url).then(res =>this.setState({data:res.content})).catch(err => console.log(err))
+    let url = `${IP}${ClassSearchUrl}?page=0&size=10&year=${searchyear}&month=${searchmonth}`
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err => console.log(err))
   }
 
   searchData = () =>{
     const{searchmonth,searchyear,name,code,schedulingName} = this.state
-    let url = `${IP}${ClassSearchUrl}?empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}`
-    getfun(url).then(res =>console.log(res)).catch(err =>console.log(err))
+    let url = `${IP}${ClassSearchUrl}?page=0&size=10&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}`
+    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
 
-    //树桩查询的方法
-    getThreeData = (item) =>{
-      const{searchmonth, searchyear} =this.state
-      // console.log(searchmonth.toString())
-      let ayear = searchyear.toString()
-      let amonth = searchmonth.toString()
-      console.log(item)
-      this.setState({selectData: item})
-      //点击查询的url
-      let searchUrl = `${IP}${ClassSearchUrl}?${item}&year=${ayear}&month=${amonth}`
-      console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
+  changePage = (page, pageSize) =>{
+    const {searchmonth,searchyear,name,code,schedulingName, searchUrl} =this.state
+    console.log(page)
+    console.log(pageSize)
+    let aa = searchUrl === '' ? `${IP}${ClassSearchUrl}?page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&name=${name}&code=${code}&schedulingName=${schedulingName}` : `${searchUrl}&page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&name=${name}&code=${code}&schedulingName=${schedulingName}`
+    let url = aa
+    getfun(url).then(res => {
+      console.log(res.content)
+      this.setState({data: res.content,totalLength:res.totalElements})
+      console.log('执行到这里')
+    }).catch(err => {
+      console.log(err)
+    })  
+  }
 
-    }
+  //树桩查询的方法
+  getThreeData = (item) =>{
+    const{searchmonth, searchyear} =this.state
+    // console.log(searchmonth.toString())
+    let ayear = searchyear.toString()
+    let amonth = searchmonth.toString()
+    console.log(item)
+    this.setState({selectData: item})
+    //点击查询的url
+    let searchUrl = `${IP}${ClassSearchUrl}?page=0&size=10&${item}&year=${ayear}&month=${amonth}`
+    console.log(searchUrl)
+    this.setState({searchUrl:`${IP}${ClassSearchUrl}?${item}`})
+    getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
+
+  }
 
   onChangeMonth = (date, dateString) =>{
     // console.log(date._d.getFullYear() + date._d.getMonth()) 
@@ -126,6 +144,9 @@ class ClassSearch extends Component{
   }
   onChangeDepClassMonth = (date, dateString) =>{
     this.setState({depClassYear: date._d.getFullYear(),depClassMonth:date._d.getMonth()+1})
+    let perUrl = `${IP}/employeeScheduling/${date._d.getFullYear()}/${date._d.getMonth()+1}`
+    // console.log(perUrl)
+    getfun(perUrl).then(res => this.setState({perClass:res})).catch(err =>console.log(err))
   }
 
   personClass = () =>{
@@ -145,6 +166,7 @@ class ClassSearch extends Component{
     getfun(addperUrl).then(res => this.setState({addperData: res})).catch(err =>console.log(err))
     
   }
+  //部门排班初始
   depClass = () =>{
     this.setState({visible2: true})
     const {searchmonth, searchyear} = this.state
@@ -250,6 +272,27 @@ class ClassSearch extends Component{
     addperData.forEach(item =>{
       addPerData.push(<Radio key={item.id} value={item.dictValue}>{item.dictKey}</Radio>)
     })
+
+    const up = {
+      name: 'file',
+      action: `${IP}/employeeScheduling/inputEmployeeScheduling`,
+      headers: {
+        authorization: 'authorization-text',
+      },
+      onChange(info) {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name} 上传成功`);
+          message.success(`${info.file.response.msg}`);
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} 上传失败.`);
+        }
+      },
+    }
+
+
     return(
       <div>
         <Row type="flex" justify="space-around">
@@ -284,24 +327,28 @@ class ClassSearch extends Component{
               </Col>
           </Row>
             <Row type="flex" justify="center"  style={{marginBottom:10}}>
-            <Col span="5">
-            <Button>去组织架构</Button>
-            </Col>
             <Col span='5'>
             <Button icon="reload" onClick={()=>this.setState({code:'',name:'',schedulingName:'',searchyear: mydate.getFullYear(),searchmonth: mydate.getMonth()+1,})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
-            <Button  icon="search" onClick={() =>this.searchData()} type="primary">查询</Button>
+            <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
             </Col>
           </Row>
           <hr />
             <div className="comMain">
               <h3 className="comtitle">排班查询列表</h3>
                 <Row type="flex" justify='space-end'>
-                  <Col span="3"><Button  >批量排班</Button></Col>
                   <Col span="3"><Button  onClick={this.depClass}>部门排班</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
                   <Col span="3"><Button onClick={this.personClass} >人员排班</Button></Col>
+                  <Col span="5"><a href={`${IP}/批量排班模板.xls`}><Button  >批量排班模板下载</Button></a></Col>
+                  <Col span="3">
+                    <Upload {...up}>
+                      <Button>
+                        <Icon type="upload" />批量排班
+                      </Button>
+                    </Upload>
+                  </Col>
                 </Row>
                 <Table
                   style={{marginTop:20}}
@@ -309,6 +356,13 @@ class ClassSearch extends Component{
                   dataSource={this.state.data}
                   bordered
                   rowKey="id"
+                  pagination={{  // 分页
+                    simple: false,
+                    pageSize: 10 ,
+                    // current: this.state.current,
+                    total: this.state.totalLength,
+                    onChange: this.changePage,
+                  }}
                   onRow = {(record, index) =>{
                     return {
                       onClick: () =>{
@@ -341,17 +395,17 @@ class ClassSearch extends Component{
             </Col>
           </Row>
           <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
+            <Col span='5'><Button type='primary'>排班月份</Button></Col>
+            <Col span='10'>
+              <MonthPicker onChange={this.onChangeDepClassMonth} placeholder="Select month" />
+            </Col>
+          </Row>
+          <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
             <Col span='5'><Button type='primary'>班次名称</Button></Col>
             <Col span='10'>
               <Select style={{ width: 300 }} onChange={this.choiceDepClass}>
                 {perClassArr}
               </Select>
-            </Col>
-          </Row>
-          <Row type="flex" justify="space-around" style={{ marginBottom: 10 }}>
-            <Col span='5'><Button type='primary'>排班月份</Button></Col>
-            <Col span='10'>
-              <MonthPicker onChange={this.onChangeDepClassMonth} placeholder="Select month" />
             </Col>
           </Row>
           <Row type="flex" justify="space-around" style={{marginBottom:10}}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Modal, Cascader ,Select, DatePicker, Tree, Upload, message, Icon, Radio   } from 'antd';
+import { Row, Col, Input, Button, Table, Modal, Cascader ,Select, DatePicker, Tree,   Radio   } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun, putfun,deletefun} from '../../common/axiosFun'
@@ -185,17 +185,7 @@ class Person extends Component {
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
-      res.content.forEach(item => {
-        if(item.state === '0') {
-          item.state = '未启用'
-        }else{
-          item.state = '已启用'
-        }
-        newArr.push(item)
-        // console.log(newArr)
-        this.setState({data: newArr,totalLength:res.totalElements})
-      });
+      this.setState({data: res.content,totalLength:res.totalElements})
       // this.setState({data:res.content})
     }).catch(err => {
       console.log(err)
@@ -205,7 +195,7 @@ class Person extends Component {
   searchData = () =>{
     const {empCode, empName, levelName} = this.state
     const { IP, Employee} = API
-    let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&levelName=${levelName}&page=0&size=10`
     getfun(url).then(res => {
       console.log(res)
       let newArr = []
@@ -225,23 +215,15 @@ class Person extends Component {
   }
 
   changePage = (page, pageSize) =>{
-    const {empCode, empName, levelName} =this.state
+    const {empCode, empName, levelName, searchUrl} =this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${Employee}?page=${page-1}&size=${pageSize}empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    let aa = searchUrl === '' ? `${IP}${Employee}?page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}` : `${searchUrl}&page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    let url = aa
     getfun(url).then(res => {
-      console.log(res)
-      let newArr = []
-      res.content.forEach(item=> {
-        if(item.state === '0') {
-          item.state = '未启用'
-        }else{
-          item.state = '已启用'
-        }
-        newArr.push(item)
-        // console.log(newArr)
-        this.setState({data: newArr,totalLength:res.totalElements})
-      });
+      console.log(res.content)
+      this.setState({data: res.content,totalLength:res.totalElements})
+      console.log('执行到这里')
     }).catch(err => {
       console.log(err)
     })  
@@ -471,17 +453,7 @@ class Person extends Component {
     this.setState({dowloadUrl: newurl, searchUrl:url})
     getfun(url).then(res =>{
       console.log(res)
-      let newArr = []
-      res.content.forEach(item => {
-        if(item.state === '0') {
-          item.state = '未启用'
-        }else{
-          item.state = '已启用'
-        }
-        newArr.push(item)
-        console.log(newArr)
-      });
-      this.setState({data: newArr})
+      this.setState({data: res.content, totalLength:res.totalElements})
     }).catch(err => console.log(err))
 
   }
@@ -564,32 +536,32 @@ class Person extends Component {
 
   render() {
     const {jobs, papersArr, threeData} = this.state
-    const rowSelection = {
-      onChange: (selectedRowKeys,selectedRows) => {
-        console.log(selectedRows);
-        this.setState({choiceData:selectedRows})
-      }
-    }  
+    // const rowSelection = {
+    //   onChange: (selectedRowKeys,selectedRows) => {
+    //     console.log(selectedRows);
+    //     this.setState({choiceData:selectedRows})
+    //   }
+    // }  
     const cityOptions = jobs.map(city => <Option value={city.id} key={city.id}>{city.positionName}</Option>)
     const papersOptions = papersArr.map(city => <Option value={city.dictValue} key={city.id}>{city.dictKey}</Option>)
-    const up = {
-      name: 'file',
-      action: `${IP}/employee/importEmployee`,
-      headers: {
-        authorization: 'authorization-text',
-      },
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
-          message.error(`${info.file.response.msg}`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-      },
-    }
+    // const up = {
+    //   name: 'file',
+    //   action: `${IP}/employee/importEmployee`,
+    //   headers: {
+    //     authorization: 'authorization-text',
+    //   },
+    //   onChange(info) {
+    //     if (info.file.status !== 'uploading') {
+    //       console.log(info.file, info.fileList);
+    //     }
+    //     if (info.file.status === 'done') {
+    //       message.success(`${info.file.name} file uploaded successfully`);
+    //       message.error(`${info.file.response.msg}`);
+    //     } else if (info.file.status === 'error') {
+    //       message.error(`${info.file.name} file upload failed.`);
+    //     }
+    //   },
+    // }
     
     return (
       <div>
@@ -642,7 +614,7 @@ class Person extends Component {
                   dataSource={this.state.data}
                   bordered
                   rowKey="id"
-                  rowSelection={rowSelection}
+                  // rowSelection={rowSelection}
                   pagination={{  // 分页
                     simple: false,
                     pageSize: 10 ,
