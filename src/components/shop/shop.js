@@ -60,7 +60,15 @@ class Shop extends Component {
           )}
         }
       ],
-      data: []
+      data: [],
+      choiceTable: {
+        name:'',
+        address: '',
+        departmentName: '',
+        departmentCode: '',
+        longitude:'',
+        latitude: ''
+      }
     }
   }
 
@@ -256,11 +264,21 @@ class Shop extends Component {
     }
   }
 
+  changeShopStart = () =>{
+    const{choiceTable} = this.state
+    if(choiceTable === []){
+      alert('请勾选需要编辑的对象')
+    }else{
+      this.setState({visible1: true})
+    }
+  }
+
 
   render () {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        console.log(selectedRows);
+        this.setState({choiceTable: selectedRows[0]})
       }
     }
     return (
@@ -300,7 +318,7 @@ class Shop extends Component {
               <h3 className="comtitle">门店维护列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button icon="plus" onClick={this.addShopStart} >新增</Button></Col>
-                  <Col span="3"><Button icon="edit" onClick={() =>this.setState({visible1: true})}>编辑</Button></Col>
+                  <Col span="3"><Button icon="edit" onClick={this.changeShopStart}>编辑</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
                   <Col span="3"><Button icon="delete" onClick={this.deletChoice}>删除</Button></Col>
                 </Row>
@@ -400,13 +418,13 @@ class Shop extends Component {
             <Col span="8">
               <div style={{display:'flex'}}>
                 <Button type='primary' >门店名称</Button>
-                <Input  onChange={(e) =>{this.setState({changeName:e.target.value})}} style={{width:"300px"}} />
+                <Input defaultValue={this.state.choiceTable.name}  onChange={(e) =>{this.setState({changeName:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
             <Col span="8">
             <div style={{display:'flex'}}>
                 <Button type='primary' >地址</Button>
-                <Input  onChange={(e) =>{this.setState({changeAddress:e.target.value})}} style={{width:"300px"}} />
+                <Input defaultValue={ this.state.choiceTable.address}  onChange={(e) =>{this.setState({changeAddress:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -414,13 +432,13 @@ class Shop extends Component {
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >部门名称</Button>
-                <Input value={this.state.depData.name} readOnly style={{width:"300px"}} />
+                <Input defaultValue={ this.state.choiceTable.departmentName}  readOnly style={{width:"300px"}} />
               </div>
           </Col>
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >部门账号</Button>
-                <Input value={this.state.depData.code} readOnly style={{width:"300px"}} />
+                <Input defaultValue={this.state.choiceTable.departmentCode} readOnly style={{width:"300px"}} />
               </div>
           </Col>
           </Row>
@@ -428,13 +446,13 @@ class Shop extends Component {
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >经度</Button>
-                <Input onChange={(e) =>{this.setState({changeLongitude:e.target.value})}} style={{width:"300px"}} />
+                <Input defaultValue={this.state.choiceTable.longitude} onChange={(e) =>{this.setState({changeLongitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >维度</Button>
-                <Input onChange={(e) =>{this.setState({changeLatitude:e.target.value})}} style={{width:"300px"}} />
+                <Input defaultValue={this.state.choiceTable.latitude} onChange={(e) =>{this.setState({changeLatitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           </Row>

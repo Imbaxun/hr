@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Menu, Breadcrumb, Icon, Row, Col } from 'antd';
+import { Layout, Menu, Breadcrumb, Icon, Row, Col ,Button } from 'antd';
 import {Link } from 'react-router-dom'
 import './main.css'
 import *as route from '../../routers';
@@ -8,12 +8,11 @@ const SubMenu = Menu.SubMenu;
 
 
 class Main extends Component {
-
   constructor(props){
     super(props)
     this.state = {
       collapsed: false,
-      item:''
+      item:'',
     }
   }
   onCollapse = (collapsed) => {
@@ -21,9 +20,23 @@ class Main extends Component {
     this.setState({ collapsed });
   }
 
+  goOut = () =>{
+    window.sessionStorage.clear()
+    this.props.history.push('/');
+  }
+
+  componentDidMount() {
+    // console.log(this.props.location.userName)
+    // this.setState({userName:this.props.location.userName})
+    // let aa =  window.sessionStorage.getItem('path');
+    // console.log(JSON.parse(aa))
+    // this.setState({userName:aa.userName, roleName: aa.roleName})
+  }
 
   render() {
-    // console.log(this.props)
+    let aa =  window.sessionStorage.getItem('path')
+    let bb = JSON.parse(aa)
+    console.log(aa)
     const { match } = this.props
     return (
       <Layout style={{ minHeight: '100vh' }}>
@@ -76,7 +89,15 @@ class Main extends Component {
             >
               <Menu.Item key="16"><Link to={`${match.url}/CheckingData`}>考勤数据(工业园)</Link></Menu.Item>
               <Menu.Item key="17"><Link to={`${match.url}/CheckSolr`}>考勤数据(工业园)Solr</Link></Menu.Item>
-              <Menu.Item key="20"><Link to={`${match.url}/CheckingStore`}>考勤数据(门店)</Link></Menu.Item>
+              <Menu.Item key="21"><Link to={`${match.url}/CheckingStore`}>考勤数据(门店)</Link></Menu.Item>
+            </SubMenu>
+            <SubMenu
+              key="sub7"
+              title={<span><Icon type="team" /><span>门店考勤管理</span></span>}
+            >
+            <Menu.Item key="22"><Link to={`${match.url}/DailyClock`}>门店每日报表</Link></Menu.Item>
+            <Menu.Item key="23"><Link to={`${match.url}/DayClock`}>人员每日报表</Link></Menu.Item>
+            <Menu.Item key="24"><Link to={`${match.url}/ShopClock`}>门店考勤报表</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub6"
@@ -91,13 +112,23 @@ class Main extends Component {
               <span>数据词典</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="24">
+              <Link to={`${match.url}/Version`}>
+              <Icon type="file" />
+              <span>APP版本</span>
+              </Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout>
           <Header style={{ background: '#fff', padding: 0 }} >
-            <Row type="flex" justify="center">
-              <Col span="5">
+            <Row>
+              <Col span="6" offset="6">
                 <h1>人员管理系统</h1>
+              </Col>
+              <Col span="3" offset="6"><p style={{fontSize:12,fontWeight:'bold'}}>{bb.userName}</p></Col>
+              <Col span='3'>
+              <Button type="dashed" onClick = {this.goOut}>登出</Button>
               </Col>
             </Row>
           </Header>

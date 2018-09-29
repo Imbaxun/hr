@@ -25,6 +25,7 @@ class Person extends Component {
       addName: '',
       addPhone: '',
       addmainJob: '',
+      addempCode: '',
       showMainJob: '',
       showJob: '',
       addindex: 1,
@@ -108,6 +109,10 @@ class Person extends Component {
         {
           title: '姓名',
           dataIndex: 'empName',
+        },
+        {
+          title: '工号',
+          dataIndex: 'empCode',
         },
         {
           title: '公司',
@@ -231,7 +236,6 @@ class Person extends Component {
 
   addPerson = () =>{
     this.setState({addvisible: true})
-
   }
 
   onChangeDate = (date, dateString) => {
@@ -252,6 +256,7 @@ class Person extends Component {
     addData.forEach(item =>{
       let aa = {
         empName: item.empName,
+        empCode: item.empCode,
         empPhone: item.empPhone,
         entryDate: item.entryDate,
         idType: item.idType,
@@ -315,7 +320,7 @@ class Person extends Component {
   }
 
   addPersonData = () =>{
-    const {addindex,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob} = this.state
+    const {addindex,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers,addempCode, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob} = this.state
     // let url = `${IP}${Employee}`
     let sendData = {
       index: addindex,
@@ -332,15 +337,15 @@ class Person extends Component {
       showDept:addDeptName,
       showLever: showJob,
       positionType: addmainJob,
-      showJobtype: showMainJob
+      showJobtype: showMainJob,
+      empCode: addempCode
     }
     let newArr = addData
     newArr.push(sendData)
     console.log(newArr)
     let aa = []
     newArr.forEach(item =>{
-      console.log(item.positionType)
-      
+      console.log(item.positionType)      
       if(item.positionType === 10){
         // console.log(666)
         aa.push(item.empName)
@@ -534,14 +539,32 @@ class Person extends Component {
 
   }
 
+  IsAdmin = () =>{
+    let aa =  window.sessionStorage.getItem('path')
+    let bb = JSON.parse(aa)
+    if(bb.roleName === 'admin'){
+      return(
+        <Row type="flex" justify='space-end'>
+          <Col span="3"><Button icon="plus" onClick={() =>this.addPerson()} >新增</Button></Col>
+          <Col span="3"><Button icon="edit" onClick={this.changePerson}>编辑</Button></Col>
+          <Col span="3"><Button icon="delete" onClick={this.delAddData}>删除</Button></Col>
+        </Row>
+      )
+    }else{
+      return(
+        <div></div>
+      )
+    }
+  }
+
   render() {
     const {jobs, papersArr, threeData} = this.state
-    // const rowSelection = {
-    //   onChange: (selectedRowKeys,selectedRows) => {
-    //     console.log(selectedRows);
-    //     this.setState({choiceData:selectedRows})
-    //   }
-    // }  
+    const rowSelection = {
+      onChange: (selectedRowKeys,selectedRows) => {
+        console.log(selectedRows);
+        this.setState({choiceData:selectedRows})
+      }
+    }  
     const cityOptions = jobs.map(city => <Option value={city.id} key={city.id}>{city.positionName}</Option>)
     const papersOptions = papersArr.map(city => <Option value={city.dictValue} key={city.id}>{city.dictKey}</Option>)
     // const up = {
@@ -608,13 +631,14 @@ class Person extends Component {
                   <Col span="3"><Button icon="edit" onClick={this.changePerson}>编辑</Button></Col>
                   <Col span="3"><Button icon="delete" onClick={this.delAddData}>删除</Button></Col>
                 </Row> */}
+                {this.IsAdmin()}
                 <Table
                   style={{marginTop:20}}
                   columns={this.state.columns}
                   dataSource={this.state.data}
                   bordered
                   rowKey="id"
-                  // rowSelection={rowSelection}
+                  rowSelection={rowSelection}
                   pagination={{  // 分页
                     simple: false,
                     pageSize: 10 ,
@@ -701,6 +725,15 @@ class Person extends Component {
                     </RadioGroup>
                   </div>
                 </Col>
+              </Row>
+              <Row type="flex" justify="space-around" style={{marginBottom:20}}>
+                <Col span='10'>
+                <div style={{display:'flex'}}>
+                    <Button type='primary' >员工编号</Button>  
+                    <Input  onChange={(e) =>{this.setState({addempCode:e.target.value})}} />
+                  </div>
+                </Col>
+                <Col span='10'></Col>
               </Row>
               <Row type="flex" justify="space-around" style={{marginBottom:20}}>
                 <Col span='10'>

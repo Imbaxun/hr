@@ -31,11 +31,17 @@ import CheckingStore from '../components/CheckingStore/CheckingStore'
 //高级设置
 import HolidaySeting from '../components/HolidaySeting/HolidaySeting'
 import TimeTacking from '../components/TimeTacking/TimeTacking'
+import Version from '../components/Version/Version'
 
 //考勤管理
 import Attendance from '../components/attendance/attendance'
 import StatisticalForm from '../components/statisticalForm/statisticalForm'
 import Batch from '../components/Batch/Batch'
+
+//门店打卡处理
+import DailyClock from '../components/DailyClock/DailyClock'
+import DayClock from '../components/DayClock/DayClock.js'
+import ShopClock from '../components/ShopClock/ShopClock'
 
 export const routFirst = () =>{
   return (
@@ -72,6 +78,10 @@ export const mainRouters = () => {
       <Route path='/main/StatisticalForm' component={StatisticalForm} />
       <Route path='/main/CheckingStore' component={CheckingStore} />
       <Route path='/main/Batch' component={Batch} />
+      <Route path='/main/Version' component={Version} />
+      <Route path='/main/DailyClock' component={DailyClock} />
+      <Route path='/main/DayClock' component={DayClock} />
+      <Route path='/main/ShopClock' component={ShopClock} />
     </div>
   )
 }

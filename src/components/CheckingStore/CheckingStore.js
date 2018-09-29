@@ -44,8 +44,20 @@ class CheckingStore extends Component{
       data1: [],
       columns1: [
         {
+          title: '员工编号',
+          dataIndex: 'empCode',
+        },
+        {
           title: '员工姓名',
           dataIndex: 'empName',
+        },
+        {
+          title: '身份证',
+          dataIndex: 'typeValue',
+        },
+        {
+          title: '入职日期',
+          dataIndex: 'entryDateView',
         },
         {
           title: '打卡年',
@@ -70,6 +82,10 @@ class CheckingStore extends Component{
         {
           title: '打卡纬度',
           dataIndex: 'latitude',
+        },
+        {
+          title: '打卡地点',
+          dataIndex: 'storeName',
         },
         {
           title: '本次打卡是否正常',
@@ -177,7 +193,7 @@ class CheckingStore extends Component{
             // pagination={{ pageSize: 5 }}
             columns={this.state.columns1}
             dataSource={this.state.data1}
-            scroll={{ x: 1300 }}
+            scroll={{ x: 1600 }}
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,

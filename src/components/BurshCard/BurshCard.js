@@ -138,7 +138,7 @@ startData = () =>{
     console.log(page)
     console.log(pageSize)
     let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&userName=${name}&cardNo=${code}&searchyear=${searchyear}&searchmonth=${searchmonth}`
-    getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{

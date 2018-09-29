@@ -32,7 +32,15 @@ class Login extends Component {
     formfun(url,sendData).then(res => {
       console.log(res)
       if (res.code === 200) {
-        this.props.history.push('/main/Company');
+        let userName = res.data.user.empName
+        let roleName = res.data.user.roleList[0].roleName
+        let path = {
+          pathname:'/main/Company',
+          userName,
+          roleName
+        }
+        window.sessionStorage.setItem('path',JSON.stringify(path))
+        this.props.history.push(path);
       } else {
         alert(res.msg)
       }
