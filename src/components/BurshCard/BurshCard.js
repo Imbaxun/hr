@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal, Select } from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
 import './BurshCard.css'
 import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
@@ -192,6 +192,7 @@ startData = () =>{
   }
   addBS = () =>{
     const {addDate, addbqType,addbskType ,addReason, addperData}= this.state
+    // let addSucess = false
     let sendData ={
       reason:addReason,
       empId:addperData.empId,
@@ -207,30 +208,43 @@ startData = () =>{
       checkWorkTypeSonId:addbskType
     }
     let url =`${IP}/checkWorkHandle`
-    postfun2(url, sendData).then(res =>{
-      if(res ==='success'){
-        alert('新增成功')
-        this.startData()
-        this.setState({visible1:true})
-      }
-    }).catch(err => console.log(err))
+    if(addDate === '' || addperData.empId === '') {
+      alert('请填入完整信息')
+    }else{
+      postfun2(url, sendData).then(res =>{
+        if(res ==='success'){
+          alert('新增成功')
+          this.startData()
+          this.setState({visible1:true})
+        }
+      }).catch(err => console.log(err))
+    }
+
   }
 
   delTbale = () =>{
     const {choiceTable} =this.state
-    let newArr = []
-    choiceTable.forEach(item =>{
-      let id = item.id
-      newArr.push(id)
-    })
-    let idnumber = newArr.toString()
-    let url = `${IP}/checkWorkHandle/${idnumber}`
-    deletefun(url).then(res =>{
-      if(res === 'success'){
-        alert('删除成功')
-        this.startData()
-      }
-    }).catch(err =>console.log(err))
+    if(choiceTable.length === 0){
+      notification['error']({
+        message: '请勾选删除信息',
+        description: '发生错误',
+      });
+    }else{
+      let newArr = []
+      choiceTable.forEach(item =>{
+        let id = item.id
+        newArr.push(id)
+      })
+      let idnumber = newArr.toString()
+      let url = `${IP}/checkWorkHandle/${idnumber}`
+      deletefun(url).then(res =>{
+        if(res === 'success'){
+          alert('删除成功')
+          this.startData()
+          this.setState({ choiceTable: []})
+        }
+      }).catch(err =>console.log(err))
+    }
   }
 
 render() {

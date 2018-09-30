@@ -157,7 +157,6 @@ class ClassManage extends Component{
 
   delTable = () =>{
     const {choiceTable} = this.state
-    console.log(choiceTable)
     if(choiceTable === ''){
       alert('请选中删除的班次')
     }else{
@@ -167,6 +166,7 @@ class ClassManage extends Component{
         if(res === 'success'){
           alert('删除成功')
           this.startData()
+          this.setState({ choiceTable: []})
         }else{
           alert(res)
         }

@@ -153,11 +153,16 @@ class Shop extends Component {
       latitude: addLatitude, 
       address: addAddress,
     }
-    postfun2(url, sendData).then(res =>{
-      console.log(res)
-      this.startData()
-      this.setState({visible: false})
-    }).catch(err => console.log(err))
+    if(!addName||!addAddress||!depData.id){
+      alert('请输入完整信息')
+    }else{
+      postfun2(url, sendData).then(res =>{
+        console.log(res)
+        this.startData()
+        this.setState({visible: false})
+      }).catch(err => console.log(err))
+    }
+  
   }
 
   choiceShop = (item, index) =>{

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal, Select } from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
 import './WorkOverTime.css'
 import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
@@ -139,7 +139,7 @@ startData = () =>{
     console.log(page)
     console.log(pageSize)
     let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
-    getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
@@ -207,31 +207,44 @@ startData = () =>{
       checkWorkTypeSonId:addbqType
     }
     let url =`${IP}/checkWorkHandle`
-    postfun2(url, sendData).then(res =>{
-      if(res ==='success'){
-        alert('新增成功')
-        this.setState({visible1:false})
-        this.startData()
-      }
-    }).catch(err => console.log(err))
+
+    if(addDate === '' || addperData.empId === '') {
+      alert('请填入完整信息')
+    }else{
+      postfun2(url, sendData).then(res =>{
+        if(res ==='success'){
+          alert('新增成功')
+          this.setState({visible1:false})
+          this.startData()
+        }
+      }).catch(err => console.log(err))
+    }
   }
 
   delTbale = () =>{
     const {choiceTable} =this.state
-    let newArr = []
-    choiceTable.forEach(item =>{
-      let id = item.id
-      newArr.push(id)
-    })
-    let idnumber = newArr.toString()
-    let url = `${IP}/checkWorkHandle/${idnumber}`
-    deletefun(url).then(res =>{
-      if(res === 'success'){
-        alert('删除成功')
-        this.setState({visible2:false})
-        this.startData()
-      }
-    }).catch(err =>console.log(err))
+    if(choiceTable.length === 0) {
+      notification['error']({
+        message: '请勾选删除信息',
+        description: '发生错误',
+      });
+    }else{
+      let newArr = []
+      choiceTable.forEach(item =>{
+        let id = item.id
+        newArr.push(id)
+      })
+      let idnumber = newArr.toString()
+      let url = `${IP}/checkWorkHandle/${idnumber}`
+      deletefun(url).then(res =>{
+        if(res === 'success'){
+          alert('删除成功')
+          this.setState({visible2:false, choiceTable: []})
+          this.startData()
+        }
+      }).catch(err =>console.log(err))
+    }
+
   }
 
 render() {
@@ -261,7 +274,7 @@ render() {
               </Col>
               <Col span="8">
                 <div style={{ display: 'flex' }}>
-                  <Button type='primary' >请假月份</Button>
+                  <Button type='primary' >加班月份</Button>
                   <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
                 </div>
               </Col>
@@ -279,7 +292,7 @@ render() {
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">请假管理列表</h3>
+              <h3 className="comtitle">加班管理列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
                   {/* <Col span="3"><Button  >编辑</Button></Col> */}
@@ -314,7 +327,7 @@ render() {
         </Row>
         <Modal
           visible = {this.state.visible1}
-          title="新增请假处理"
+          title="新增加班处理"
           onOk={this.addBS}
           onCancel={() =>this.setState({visible1:false})}
           width={1000}
@@ -335,13 +348,13 @@ render() {
           </Col>
           <Col span="8">
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >请假类型</Button>
+            <Button type='primary' >加班类型</Button>
               <Select  style={{ width: 120 }} onChange={this.bqtype}>
                 {newTypeArr}
               </Select>
             </div>
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >请假事由</Button>
+            <Button type='primary' >加班事由</Button>
               <TextArea onChange={(e) =>{this.setState({addReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
             </div>
           </Col>

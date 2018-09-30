@@ -97,7 +97,7 @@ class Main extends Component {
             >
             <Menu.Item key="22"><Link to={`${match.url}/DailyClock`}>门店每日报表</Link></Menu.Item>
             <Menu.Item key="23"><Link to={`${match.url}/DayClock`}>人员每日报表</Link></Menu.Item>
-            <Menu.Item key="24"><Link to={`${match.url}/ShopClock`}>门店考勤报表</Link></Menu.Item>
+            <Menu.Item key="25"><Link to={`${match.url}/ShopClock`}>门店考勤报表</Link></Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub6"

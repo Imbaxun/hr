@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
-import {Row, Col, Input, Button, DatePicker, Table, Modal, Select } from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
 import './leave.css'
 import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
@@ -139,7 +139,7 @@ startData = () =>{
     console.log(page)
     console.log(pageSize)
     let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
-    getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
@@ -200,6 +200,7 @@ startData = () =>{
   addBS = () =>{
     this.setState({visible1:true})
     const {addDateStart,addDateEnd, charDays, addbqType ,addReason, addperData}= this.state
+
     let sendData ={
       reason:addReason,
       empId:addperData.empId,
@@ -214,30 +215,43 @@ startData = () =>{
       checkWorkTypeId:3,
       checkWorkTypeSonId:addbqType
     }
-    let url =`${IP}/checkWorkHandle`
-    postfun2(url, sendData).then(res =>{
-      if(res ==='success'){
-        alert('新增成功')
-        this.startData()
-      }
-    }).catch(err => console.log(err))
+    if(addDateStart === '' || addperData.empId === '') {
+      alert('请填入完整信息')
+    }else{
+      let url =`${IP}/checkWorkHandle`
+      postfun2(url, sendData).then(res =>{
+        if(res ==='success'){
+          alert('新增成功')
+          this.startData()
+        }
+      }).catch(err => console.log(err))
+    }
   }
 
   delTbale = () =>{
     const {choiceTable} =this.state
-    let newArr = []
-    choiceTable.forEach(item =>{
-      let id = item.id
-      newArr.push(id)
-    })
-    let idnumber = newArr.toString()
-    let url = `${IP}/checkWorkHandle/${idnumber}`
-    deletefun(url).then(res =>{
-      if(res === 'success'){
-        alert('删除成功')
-        this.startData()
-      }
-    }).catch(err =>console.log(err))
+
+    if(choiceTable.length === 0) {
+      notification['error']({
+        message: '请勾选删除信息',
+        description: '发生错误',
+      });
+    }else{
+      let newArr = []
+      choiceTable.forEach(item =>{
+        let id = item.id
+        newArr.push(id)
+      })
+      let idnumber = newArr.toString()
+      let url = `${IP}/checkWorkHandle/${idnumber}`
+      deletefun(url).then(res =>{
+        if(res === 'success'){
+          alert('删除成功')
+          this.startData()
+          this.setState({ choiceTable: []})
+        }
+      }).catch(err =>console.log(err))
+    }
   }
 
 render() {

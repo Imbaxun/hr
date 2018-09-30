@@ -16,10 +16,10 @@ export function postfun(url, zhydata) {
         resolve(res.data)
       }).catch(err => {
         // alert(err.response.data)
-        notification['error']({
-          message: 'Err',
-          description: err.response.data,
-        });
+        // notification['error']({
+        //   message: 'Err',
+        //   description: err.response.data,
+        // });
         reject(err)
       })
     })
@@ -32,10 +32,10 @@ export function postfun(url, zhydata) {
         // console.log(res)
         resolve(res.data)
       }).catch(err => {
-        notification['error']({
-          message: 'Err',
-          description: err.response.data,
-        });
+        // notification['error']({
+        //   message: 'Err',
+        //   description: err.response.data,
+        // });
         reject(err)
       })
     })
@@ -48,10 +48,10 @@ export function postfun(url, zhydata) {
         console.log(res)
         resolve(res.data)
       }).catch(err => {
-        notification['error']({
-          message: 'Err',
-          description: err.response.data,
-        });
+        // notification['error']({
+        //   message: 'Error',
+        //   description: err.response.data,
+        // });
         reject(err)
       })
     })
@@ -64,10 +64,10 @@ export function postfun(url, zhydata) {
         console.log(res)
         resolve(res.data)
       }).catch(err => {
-        notification['error']({
-          message: 'Err',
-          description: err.response.data,
-        });
+        // notification['error']({
+        //   message: 'Err',
+        //   description: err.response.data,
+        // });
         reject(err)
       })
     })
@@ -79,10 +79,10 @@ export function postfun(url, zhydata) {
         // console.log(res)
         resolve(res.data)
       }).catch(err => {
-        notification['error']({
-          message: 'Err',
-          description: err.response.data,
-        });
+        // notification['error']({
+        //   message: 'Err',
+        //   description: err.response.data,
+        // });
         reject(err)
       })
     })

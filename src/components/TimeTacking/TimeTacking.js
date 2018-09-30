@@ -85,13 +85,6 @@ class TimeTacking extends Component{
           simple: false,
           pageSize: 10 ,
         }}
-        onRow = {(record, index) =>{
-          return {
-            onClick: () =>{
-              this.choiceleft(record,index)
-            }
-          }
-        }}
         />
         </Col>
       </Row>
