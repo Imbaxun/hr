@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Modal, Cascader ,Select, DatePicker, Tree,   Radio   } from 'antd';
+import { Row, Col, Input, Button, Table, Modal, Cascader ,Select, DatePicker, Tree,   Radio ,message, Upload, Icon  } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun, putfun,deletefun} from '../../common/axiosFun'
@@ -567,24 +567,24 @@ class Person extends Component {
     }  
     const cityOptions = jobs.map(city => <Option value={city.id} key={city.id}>{city.positionName}</Option>)
     const papersOptions = papersArr.map(city => <Option value={city.dictValue} key={city.id}>{city.dictKey}</Option>)
-    // const up = {
-    //   name: 'file',
-    //   action: `${IP}/employee/importEmployee`,
-    //   headers: {
-    //     authorization: 'authorization-text',
-    //   },
-    //   onChange(info) {
-    //     if (info.file.status !== 'uploading') {
-    //       console.log(info.file, info.fileList);
-    //     }
-    //     if (info.file.status === 'done') {
-    //       message.success(`${info.file.name} file uploaded successfully`);
-    //       message.error(`${info.file.response.msg}`);
-    //     } else if (info.file.status === 'error') {
-    //       message.error(`${info.file.name} file upload failed.`);
-    //     }
-    //   },
-    // }
+    const up = {
+      name: 'file',
+      action: `${IP}/employee/importEmployee`,
+      headers: {
+        authorization: 'authorization-text',
+      },
+      onChange(info) {
+        if (info.file.status !== 'uploading') {
+          console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+          message.success(`${info.file.name} file uploaded successfully`);
+          message.error(`${info.file.response.msg}`);
+        } else if (info.file.status === 'error') {
+          message.error(`${info.file.name} file upload failed.`);
+        }
+      },
+    }
     
     return (
       <div>
@@ -649,11 +649,11 @@ class Person extends Component {
                 />
                 <div>
                   <Button onClick={this.downLoad}><a href={this.state.downLoad}>导出</a></Button>
-                  {/* <Upload {...up}>
+                  <Upload {...up}>
                     <Button>
-                      <Icon type="upload" /> Click to Upload
+                      <Icon type="upload" /> 人员导入
                     </Button>
-                  </Upload> */}
+                  </Upload>
                 </div>
             </div>
             <Modal

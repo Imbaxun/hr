@@ -100,14 +100,14 @@ class ClassSearch extends Component{
   searchData = () =>{
     const{searchmonth,searchyear,name,code,schedulingName} = this.state
     let url = `${IP}${ClassSearchUrl}?page=0&size=10&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}`
-    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
   }
 
   changePage = (page, pageSize) =>{
     const {searchmonth,searchyear,name,code,schedulingName, searchUrl} =this.state
     console.log(page)
     console.log(pageSize)
-    let aa = searchUrl === '' ? `${IP}${ClassSearchUrl}?page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&name=${name}&code=${code}&schedulingName=${schedulingName}` : `${searchUrl}&page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&name=${name}&code=${code}&schedulingName=${schedulingName}`
+    let aa = searchUrl === '' ? `${IP}${ClassSearchUrl}?page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}` : `${searchUrl}&page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}`
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)

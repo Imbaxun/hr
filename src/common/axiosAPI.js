@@ -1,10 +1,10 @@
 
 export const API = {
-    IP : 'http://172.30.43.53:9090',
+    // IP : 'http://172.30.43.53:9090',  //王善鹏
     // IP: 'http://172.30.43.116:9090',
-    // IP : 'http://172.30.41.59:9090',
+    // IP : 'http://172.30.41.109:9090',
     // IP : 'http://172.30.30.253:9090',
-    // IP : 'http://119.97.234.253:9090',  //外网IP
+    IP : 'http://119.97.234.253:9090',  //外网IP
     login: '/sys/login',
     PersonThree: '/organizational/tree',   //人员树状菜单
     searchbm: '/position',          //部门查询
@@ -26,5 +26,8 @@ export const API = {
     BatchUrl: '/punchRecordBatch/queryExecuteStateList', //手动批处理
     VersionUrl: '/app/appVersion',     //版本查询
     DailyClockUrl: '/tAppSignRecord/store/summary/excel/output',  //每日打卡查询
-    DayClockUrl: '/tAppSignRecord/employee/summary/excel/output'    //人员每人打卡
+    DayClockUrl: '/tAppSignRecord/employee/summary/excel/output',   //人员每人打卡
+    EmpDaysUrl: '/tAppSignRecord/employee/days/summary/excel/output',  //emp报表
+    PhoneIdUrl: '/user/unbound/' ,   //重置手机设备
+    userUnbounUrl: '/userUnbound'   //重置手机设备记录
 }

@@ -26,12 +26,14 @@ import Dictionaries from '../components/dictionaries/dictionaries'
 import CheckingData from '../components/CheckingData/CheckingData'
 import CheckSolr from '../components/CheckSolr/CheckSolr'
 import CheckingStore from '../components/CheckingStore/CheckingStore'
+import userUnbound from '../components/userUnbound/userUnbound'
 
 
 //高级设置
 import HolidaySeting from '../components/HolidaySeting/HolidaySeting'
 import TimeTacking from '../components/TimeTacking/TimeTacking'
 import Version from '../components/Version/Version'
+import PhoneId from '../components/PhoneId/PhoneId'
 
 //考勤管理
 import Attendance from '../components/attendance/attendance'
@@ -42,6 +44,8 @@ import Batch from '../components/Batch/Batch'
 import DailyClock from '../components/DailyClock/DailyClock'
 import DayClock from '../components/DayClock/DayClock.js'
 import ShopClock from '../components/ShopClock/ShopClock'
+import EmpDays from '../components/empdays/empdays'
+import ProcessView from '../components/ProcessView/ProcessView'
 
 export const routFirst = () =>{
   return (
@@ -82,6 +86,10 @@ export const mainRouters = () => {
       <Route path='/main/DailyClock' component={DailyClock} />
       <Route path='/main/DayClock' component={DayClock} />
       <Route path='/main/ShopClock' component={ShopClock} />
+      <Route path='/main/EmpDays' component={EmpDays} />
+      <Route path='/main/PhoneId' component={PhoneId} />
+      <Route path='/main/userUnbound' component={userUnbound} />
+      <Route path='/main/ProcessView' component={ProcessView} />
     </div>
   )
 }

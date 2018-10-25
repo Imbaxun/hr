@@ -60,64 +60,84 @@ class Main extends Component {
               
             </SubMenu>
             <SubMenu
-              key="sub3"
-              title={<span><Icon type="team" /><span>排班管理</span></span>}
+              key="sub7"
+              title={<span><Icon type="team" /><span>门店考勤管理</span></span>}
             >
-              <Menu.Item key="10"><Link to={`${match.url}/ClassManage`}>班次管理</Link></Menu.Item>
-              <Menu.Item key="11"><Link to={`${match.url}/ClassSearch`}>班次查询</Link></Menu.Item>
+              <Menu.Item key="10"><Link to={`${match.url}/ClassManage`}>门店班次管理</Link></Menu.Item>
+              <Menu.Item key="31"><Link to={`${match.url}/ProcessView`}>门店考勤流程</Link></Menu.Item>
+              <SubMenu
+              key="sub8"
+              title={<span><Icon type="team" /><span>门店报表</span></span>}
+              >
+              <Menu.Item key="22"><Link to={`${match.url}/DailyClock`}>门店每日报表</Link></Menu.Item>
+              <Menu.Item key="23"><Link to={`${match.url}/DayClock`}>人员每日报表</Link></Menu.Item>
+              <Menu.Item key="25"><Link to={`${match.url}/ShopClock`}>门店考勤报表</Link></Menu.Item> 
+              <Menu.Item key="26"><Link to={`${match.url}/EmpDays`}>门店人员打卡状态</Link></Menu.Item>              
+              </SubMenu>
             </SubMenu>
+    
+            <SubMenu
+              key="sub9"
+              title={<span><Icon type="setting" /><span>工业园考勤管理</span></span>}
+            >
             <SubMenu
               key="sub5"
               title={<span><Icon type="setting" /><span>考勤管理</span></span>}
             >
               <Menu.Item key="20"><Link to={`${match.url}/Attendance`}>考勤查询</Link></Menu.Item>
               <Menu.Item key="21"><Link to={`${match.url}/StatisticalForm`}>统计报表</Link></Menu.Item>
+            </SubMenu>             
+            </SubMenu> 
+            <SubMenu
+              key="sub10"
+              title={<span><Icon type="setting" /><span>公有模块</span></span>}
+            >
+              <SubMenu
+                key="sub3"
+                title={<span><Icon type="team" /><span>排班管理</span></span>}
+              >
+                <Menu.Item key="11"><Link to={`${match.url}/ClassSearch`}>班次查询</Link></Menu.Item>
+              </SubMenu>
+              <SubMenu
+                key="sub2"
+                title={<span><Icon type="team" /><span>考勤处理</span></span>}
+              >
+                <Menu.Item key="12"><Link to={`${match.url}/BurshCard`}>补刷卡管理</Link></Menu.Item>
+                <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
+                {/* <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item> */}
+                <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
+                <Menu.Item key="28"><Link to={`${match.url}/Batch`}>手动批处理</Link></Menu.Item>
+              </SubMenu>
+              <SubMenu
+                key="sub6"
+                title={<span><Icon type="setting" /><span>高级设置</span></span>}
+              >
+                <Menu.Item key="18"><Link to={`${match.url}/HolidaySeting`}>假日设置</Link></Menu.Item>
+                <Menu.Item key="19"><Link to={`${match.url}/TimeTacking`}>考勤处理类型</Link></Menu.Item>
+                <Menu.Item key="27"><Link to={`${match.url}/PhoneId`}>重置APP设备</Link></Menu.Item>
+              </SubMenu>
             </SubMenu>           
             <SubMenu
-              key="sub2"
-              title={<span><Icon type="team" /><span>考勤处理</span></span>}
-            >
-              <Menu.Item key="12"><Link to={`${match.url}/BurshCard`}>补刷卡管理</Link></Menu.Item>
-              <Menu.Item key="13"><Link to={`${match.url}/Leave`}>请假处理</Link></Menu.Item>
-              {/* <Menu.Item key="14"><Link to={`${match.url}/Travel`}>出差处理</Link></Menu.Item> */}
-              <Menu.Item key="15"><Link to={`${match.url}/WorkOverTime`}>加班处理</Link></Menu.Item>
-              <Menu.Item key="21"><Link to={`${match.url}/Batch`}>手动批处理</Link></Menu.Item>
-            </SubMenu>
-            <SubMenu
               key="sub4"
-              title={<span><Icon type="team" /><span>考勤数据管理</span></span>}
+              title={<span><Icon type="team" /><span>开发人员使用模块</span></span>}
             >
               <Menu.Item key="16"><Link to={`${match.url}/CheckingData`}>考勤数据(工业园)</Link></Menu.Item>
               <Menu.Item key="17"><Link to={`${match.url}/CheckSolr`}>考勤数据(工业园)Solr</Link></Menu.Item>
-              <Menu.Item key="21"><Link to={`${match.url}/CheckingStore`}>考勤数据(门店)</Link></Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub7"
-              title={<span><Icon type="team" /><span>门店考勤管理</span></span>}
-            >
-            <Menu.Item key="22"><Link to={`${match.url}/DailyClock`}>门店每日报表</Link></Menu.Item>
-            <Menu.Item key="23"><Link to={`${match.url}/DayClock`}>人员每日报表</Link></Menu.Item>
-            <Menu.Item key="25"><Link to={`${match.url}/ShopClock`}>门店考勤报表</Link></Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub6"
-              title={<span><Icon type="setting" /><span>高级设置</span></span>}
-            >
-              <Menu.Item key="18"><Link to={`${match.url}/HolidaySeting`}>假日设置</Link></Menu.Item>
-              <Menu.Item key="19"><Link to={`${match.url}/TimeTacking`}>考勤处理类型</Link></Menu.Item>
-            </SubMenu>
-            <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
+              <Menu.Item key="29"><Link to={`${match.url}/CheckingStore`}>考勤数据(门店)</Link></Menu.Item>
+              <Menu.Item key="30"><Link to={`${match.url}/userUnbound`}>APP账号解绑记录</Link></Menu.Item>
+              <Menu.Item key="9" onClick={() => this.setState({item:'dictionaries'})}>
               <Link to={`${match.url}/Dictionaries`}>
               <Icon type="file" />
               <span>数据词典</span>
               </Link>
-            </Menu.Item>
-            <Menu.Item key="24">
-              <Link to={`${match.url}/Version`}>
-              <Icon type="file" />
-              <span>APP版本</span>
-              </Link>
-            </Menu.Item>
+              </Menu.Item>
+              <Menu.Item key="24">
+                <Link to={`${match.url}/Version`}>
+                <Icon type="file" />
+                <span>APP版本</span>
+                </Link>
+              </Menu.Item>
+            </SubMenu>
           </Menu>
         </Sider>
         <Layout>

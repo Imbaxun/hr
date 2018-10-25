@@ -135,10 +135,12 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {code, aname,recordTimeStart, recordTimeEnd,selectTree} =this.state
+    const {empId, searchyear,searchmonth,selectTree} =this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
+    let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    let ayear = searchyear.toString()
+    let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 

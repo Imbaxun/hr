@@ -20,6 +20,7 @@ class Shop extends Component {
       addArea: '',
       addName:'',
       addCoordinate: '',
+      newShopCode: '',
       changeName:'',
       changeCoordinate: '',
       selectData: '',
@@ -32,6 +33,7 @@ class Shop extends Component {
       changeLatitude: '',
       changeLongitude: '',
       changeAddress: '',
+      changeShopCode: '',
       columns:[
         {
           title: '门店编码',
@@ -61,14 +63,23 @@ class Shop extends Component {
         }
       ],
       data: [],
-      choiceTable: {
-        name:'',
-        address: '',
-        departmentName: '',
-        departmentCode: '',
-        longitude:'',
-        latitude: ''
-      }
+      choiceArr: [],
+      // choiceTable: {
+      //   name:'',
+      //   address: '',
+      //   departmentName: '',
+      //   departmentCode: '',
+      //   longitude:'',
+      //   latitude: '',
+      //   code: ''
+      // },
+      choiceName: '',
+      choiceAddress: '',
+      chociedepartmentName: '',
+      choicedepartmentcode: '',
+      choicelongitude: '',
+      choicelatitude: '',
+      choicecode: ''
     }
   }
 
@@ -142,7 +153,7 @@ class Shop extends Component {
 
 
   addShop = () =>{
-    const {addCoordinate, addName,addArea, depData, addLongitude, addLatitude, addAddress} = this.state
+    const {addCoordinate, addName,addArea, depData, addLongitude, addLatitude, addAddress, newShopCode} = this.state
     let url = `${IP}${Store}`
     let sendData = {
       coordinate: addCoordinate,
@@ -152,8 +163,9 @@ class Shop extends Component {
       longitude: addLongitude,
       latitude: addLatitude, 
       address: addAddress,
+      code:newShopCode
     }
-    if(!addName||!addAddress||!depData.id){
+    if(!addName||!addAddress||!depData.id ||!newShopCode){
       alert('请输入完整信息')
     }else{
       postfun2(url, sendData).then(res =>{
@@ -173,17 +185,17 @@ class Shop extends Component {
 
 
   changeShop = () =>{
-    const {changeCoordinate, changeName, choiceData,depData, changeArea, changeAddress, changeLatitude, changeLongitude} = this.state
+    const {changeCoordinate, changeName, choiceData, choiceArr, changeArea, changeAddress, changeLatitude, changeLongitude,changeShopCode} = this.state
     let choiceId = choiceData.id
     let url =`${IP}${Store}/${choiceId}`
     console.log(choiceData)
     let sendData = {
       coordinate: changeCoordinate,
       name: changeName,
-      departmentId: depData.id,
+      departmentId: choiceArr[0].id,
       id:choiceId,
       area: changeArea,
-      code: choiceData.code,
+      code: changeShopCode === '' ? choiceData.code :changeShopCode,
       createTime: choiceData.createTime,
       isDeleted: choiceData.isDeleted,
       sort: choiceData.sort,
@@ -270,11 +282,12 @@ class Shop extends Component {
   }
 
   changeShopStart = () =>{
-    const{choiceTable} = this.state
-    if(choiceTable === []){
+    const{choiceArr} = this.state 
+    if(choiceArr.length === 0){
       alert('请勾选需要编辑的对象')
     }else{
-      this.setState({visible1: true})
+      console.log(choiceArr)
+      this.setState({visible1: true, changeArea: ''})
     }
   }
 
@@ -282,8 +295,21 @@ class Shop extends Component {
   render () {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(selectedRows);
-        this.setState({choiceTable: selectedRows[0]})
+        // console.log(selectedRows);
+        if(selectedRows.length === 0){
+          this.setState({choiceArr:[]})
+        }else{
+          // console.log(666)
+          this.setState({choiceArr: selectedRows,
+            choiceData:selectedRows[0],
+            changeName: selectedRows[0].name,
+            changeAddress: selectedRows[0].address,
+            chociedepartmentName: selectedRows[0].departmentName,
+            choicedepartmentcode: selectedRows[0].departmentCode,
+            changeLongitude: selectedRows[0].longitude,
+            changeLatitude: selectedRows[0].latitude,
+            changeShopCode: selectedRows[0].code}) 
+        }     
       }
     }
     return (
@@ -368,8 +394,8 @@ class Shop extends Component {
             </Col>
             <Col span="8">
             <div style={{display:'flex'}}>
-                <Button type='primary' >地址</Button>
-                <Input  onChange={(e) =>{this.setState({addAddress:e.target.value})}} style={{width:"300px"}} />
+                <Button type='primary' >新店编码</Button>
+                <Input  onChange={(e) =>{this.setState({newShopCode:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -408,7 +434,12 @@ class Shop extends Component {
             <Input onChange={(e) =>{this.setState({addArea:e.target.value})}} style={{width:"300px"}} />
             </div>
             </Col>
-            <Col span='8'></Col>
+            <Col span="10">
+            <div style={{display:'flex'}}>
+                <Button type='primary' >地址</Button>
+                <Input  onChange={(e) =>{this.setState({addAddress:e.target.value})}} style={{width:"300px"}} />
+              </div>
+            </Col>
           </Row>
         
           </Modal>
@@ -423,13 +454,13 @@ class Shop extends Component {
             <Col span="8">
               <div style={{display:'flex'}}>
                 <Button type='primary' >门店名称</Button>
-                <Input defaultValue={this.state.choiceTable.name}  onChange={(e) =>{this.setState({changeName:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.changeName}  onChange={(e) =>{this.setState({changeName:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
             <Col span="8">
             <div style={{display:'flex'}}>
-                <Button type='primary' >地址</Button>
-                <Input defaultValue={ this.state.choiceTable.address}  onChange={(e) =>{this.setState({changeAddress:e.target.value})}} style={{width:"300px"}} />
+                <Button type='primary' >门店编码</Button>
+                <Input value={ this.state.changeShopCode}  onChange={(e) =>{this.setState({changeShopCode:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -437,13 +468,13 @@ class Shop extends Component {
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >部门名称</Button>
-                <Input defaultValue={ this.state.choiceTable.departmentName}  readOnly style={{width:"300px"}} />
+                <Input value={this.state.chociedepartmentName}  readOnly style={{width:"300px"}} />
               </div>
           </Col>
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >部门账号</Button>
-                <Input defaultValue={this.state.choiceTable.departmentCode} readOnly style={{width:"300px"}} />
+                <Input value={this.state.choicedepartmentcode} readOnly style={{width:"300px"}} />
               </div>
           </Col>
           </Row>
@@ -451,13 +482,13 @@ class Shop extends Component {
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >经度</Button>
-                <Input defaultValue={this.state.choiceTable.longitude} onChange={(e) =>{this.setState({changeLongitude:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.changeLongitude} onChange={(e) =>{this.setState({changeLongitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >维度</Button>
-                <Input defaultValue={this.state.choiceTable.latitude} onChange={(e) =>{this.setState({changeLatitude:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.changeLatitude} onChange={(e) =>{this.setState({changeLatitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           </Row>
@@ -465,10 +496,15 @@ class Shop extends Component {
             <Col span="8">
             <div style={{display:'flex'}}>
             <Button type='primary' >区域</Button>
-            <Input onChange={(e) =>{this.setState({changeArea:e.target.value})}} style={{width:"300px"}} />
+            <Input value={this.state.changeArea} onChange={(e) =>{this.setState({changeArea:e.target.value})}} style={{width:"300px"}} />
             </div>
             </Col>
-            <Col span='8'></Col>
+            <Col span="10">
+            <div style={{display:'flex'}}>
+                <Button type='primary' >地址</Button>
+                <Input value={ this.state.changeAddress}  onChange={(e) =>{this.setState({changeAddress:e.target.value})}} style={{width:"300px"}} />
+              </div>
+            </Col>
           </Row>
           </Modal>
       </div>

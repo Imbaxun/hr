@@ -3,17 +3,17 @@ import {Row, Col,Input, Button, Table,DatePicker,Modal} from 'antd'
 import { API } from '../../common/axiosAPI'
 import { getfun } from '../../common/axiosFun'
 
-const { IP, Employee} = API
-const { MonthPicker } = DatePicker;
+const { IP, Employee ,userUnbounUrl} = API
+const { RangePicker } = DatePicker;
 
 
 
-class CheckingStore extends Component{
+class userUnbound extends Component{
   constructor(props) {
     super(props)
     this.state={
-      searchyear: '',
-      searchmonth: '',
+      startDate: '',
+      endDate: '',
       data:[],
       columns: [
         {
@@ -52,45 +52,9 @@ class CheckingStore extends Component{
           dataIndex: 'empName',
         },
         {
-          title: '身份证',
-          dataIndex: 'typeValue',
-        },
-        {
-          title: '入职日期',
-          dataIndex: 'entryDateView',
-        },
-        {
-          title: '打卡年',
-          dataIndex: 'year',
-        },
-        {
-          title: '打卡月',
-          dataIndex: 'month',
-        },
-        {
-          title: '打卡日',
-          dataIndex: 'day',
-        },
-        {
-          title: '打卡时间',
-          dataIndex: 'time',
-        },
-        {
-          title: '打卡经度',
-          dataIndex: 'longitude',
-        },
-        {
-          title: '打卡纬度',
-          dataIndex: 'latitude',
-        },
-        {
-          title: '打卡地点',
-          dataIndex: 'storeName',
-        },
-        {
-          title: '本次打卡是否正常',
-          dataIndex: 'isNormal',
-        }
+          title: '解绑时间',
+          dataIndex: 'unboundTimeView',
+        }       
       ]
     }
   }
@@ -98,21 +62,13 @@ class CheckingStore extends Component{
   start = (url) =>{
     // let url = `${IP}/appSignRecord?page=0&size=10`
     getfun(url).then(res => {
-      let arr = []
-      res.content.forEach(item =>{
-        if(item.isNormal === '0'){
-          item.isNormal = '正常'
-        }else{
-          item.isNormal = '不正常'
-        }
-        arr.push(item)
-      })
-      this.setState({data1: arr,totalLength:res.totalElements})}
+      this.setState({data1:res.content,totalLength:res.totalElements })
+      console.log(res)}
     ).catch(err =>console.log(err.message))
   }
 
   componentDidMount() {
-    let aa= `${IP}/appSignRecord?page=0&size=10`
+    let aa= `${IP}${userUnbounUrl}?page=0&size=10`
     this.start(aa)
     let url = `${IP}${Employee}`
     console.log(url)
@@ -120,8 +76,8 @@ class CheckingStore extends Component{
   }
 
   selectDate =(date,dateString) =>{
-    console.log(date)
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    console.log(dateString)
+    this.setState({startDate:dateString[0],endDate:dateString[1]})
   }
   searchPeople = () =>{
     const {Scode, Snaem} = this.state
@@ -129,16 +85,16 @@ class CheckingStore extends Component{
     getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
   }
   searchData = () =>{
-    const {code, aname,searchmonth, searchyear} =this.state
-    let url = `${IP}/appSignRecord?empName=${aname}&empCode=${code}&year=${searchyear}&month=${searchmonth}`
+    const {code,startDate, endDate} =this.state
+    let url = `${IP}${userUnbounUrl}?empCode=${code}&unboundTimeEnd=${endDate}&unboundTimeStart=${startDate}`
     // getfun(url).then(res => this.setState({data1:res.content})).catch(err => console.log(err))
     this.start(url)
   }
   changePage = (page, pageSize) =>{
-    const {code, aname ,searchmonth, searchyear} =this.state
+    const {code,startDate, endDate} =this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}/appSignRecord?page=${page-1}&size=${pageSize}&empName=${aname}&empCode=${code}&year=${searchyear}&month=${searchmonth}`
+    let url =`${IP}${userUnbounUrl}?page=${page-1}&size=${pageSize}&empCode=${code}&unboundTimeEnd=${endDate}&unboundTimeStart=${startDate}`
     // getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
     this.start(url)
   }
@@ -167,7 +123,7 @@ class CheckingStore extends Component{
         <Row type="flex" justify="space-around">
           <Col span='5'></Col>
           <Col span="8">
-            <h1>考勤数据查询</h1>
+            <h1>APP账号解绑记录</h1>
           </Col>
           <Col span='5'></Col>
         </Row>
@@ -182,7 +138,7 @@ class CheckingStore extends Component{
             </div>
           </Col>
           <Col span='10'>
-          <MonthPicker onChange={this.selectDate} placeholder="Select month" />
+          <RangePicker onChange={this.selectDate} />
           </Col>
         </Row>
         <Button type='primary' onClick={this.searchData}>查询</Button>
@@ -193,7 +149,7 @@ class CheckingStore extends Component{
             // pagination={{ pageSize: 5 }}
             columns={this.state.columns1}
             dataSource={this.state.data1}
-            scroll={{ x: 1600 }}
+            // scroll={{ x: 1600 }}
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,
@@ -246,4 +202,4 @@ class CheckingStore extends Component{
 }
 
 
-export default CheckingStore;
+export default userUnbound;
