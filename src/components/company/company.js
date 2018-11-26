@@ -77,7 +77,7 @@ class Company extends Component {
 
   componentDidMount() {
     let url = `${IP}${searchcom}?page=0&size=10`
-    console.log(url)
+    // console.log(url)
     getfun(url).then(res => {
       console.log(res)
       let newArr = []

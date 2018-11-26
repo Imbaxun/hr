@@ -37,7 +37,8 @@ class Login extends Component {
         let path = {
           pathname:'/main/Company',
           userName,
-          roleName
+          roleName,
+          userId:res.data.user.id
         }
         window.sessionStorage.setItem('path',JSON.stringify(path))
         this.props.history.push(path);

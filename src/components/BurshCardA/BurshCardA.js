@@ -15,7 +15,7 @@ const Option = Select.Option;
 const mydate = new Date()
 const monthFormat = 'YYYY/MM';
 
-class BurshCard extends Component{
+class BurshCardA extends Component{
 constructor(props) {
   super(props);
   this.state={
@@ -98,7 +98,7 @@ componentDidMount() {
 }
 
 startData = () =>{
-  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=12&page=0&size=10`
+  let url = `${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&page=0&size=10`
   getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
 }
 
@@ -112,7 +112,7 @@ startData = () =>{
       console.log(item)
       this.setState({selectTree: item})
       //点击查询的url
-      let searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=12&month=${ayear}/${amonth}`
+      let searchUrl = `${IP}/factoryhr${BurshCardUrl}?${item}&checkWorkTypeId=12&month=${ayear}/${amonth}`
       console.log(searchUrl)
       getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
 
@@ -139,7 +139,7 @@ startData = () =>{
     let ayear = searchyear.toString()
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
+    let url =`${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
     getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
@@ -159,7 +159,7 @@ startData = () =>{
   bqtype = (item) =>{
     console.log(item)
     this.setState({addbqType:item})
-    let url = `${IP}/checkWorkType/son/pid=${item}`
+    let url = `${IP}/factoryhr/checkWorkType/son/pid=${item}`
     getfun(url).then(res => this.setState({typeArr: res})).catch(err =>console.log(err))
   }
   bskType = (item) =>{
@@ -174,15 +174,13 @@ startData = () =>{
     console.log(item)
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
-
-
   searchData = () =>{
     const {empId, searchyear,searchmonth, selectTree} = this.state
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url = selectTree === ''? `${IP}${BurshCardUrl}?checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}` : `${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}`
+    let url = selectTree === ''? `${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&empId=${empId}&mounth=${ayear}/${amonth}` : `${IP}/factoryhr${BurshCardUrl}?${selectTree}&checkWorkTypeId=12&empId=${empId}&mounth=${ayear}/${amonth}`
     console.log(url)
-    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
 
   addBSdate = (date, dateString) =>{
@@ -211,7 +209,7 @@ startData = () =>{
       checkWorkTypeId:addbqType,
       checkWorkTypeSonId:addbskType
     }
-    let url =`${IP}/checkWorkHandle`
+    let url =`${IP}/factoryhr/checkWorkHandle`
     if(addDate === '' || addperData.empId === '') {
       alert('请填入完整信息')
     }else{
@@ -240,7 +238,7 @@ startData = () =>{
         newArr.push(id)
       })
       let idnumber = newArr.toString()
-      let url = `${IP}/checkWorkHandle/${idnumber}`
+      let url = `${IP}/factoryhr/checkWorkHandle/${idnumber}`
       deletefun(url).then(res =>{
         if(res === 'success'){
           alert('删除成功')
@@ -261,7 +259,7 @@ render() {
   } 
   const newTypeArr = []
   typeArr.forEach(item =>{
-    newTypeArr.push(
+    newTypeArr.push(  
       <Option key={item.id} value={item.id}>{item.name}</Option>
     )
   })
@@ -389,4 +387,4 @@ render() {
 }
 
 }
-export default BurshCard;
+export default BurshCardA;

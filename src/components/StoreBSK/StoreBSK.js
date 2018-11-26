@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Row, Col,Input, Button, Table,DatePicker,Modal, Select } from 'antd'
-import './ProcessView.css'
+import './StoreBSK.css'
 import { getfun } from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 const { IP, Employee ,KQIp, processViewUrl} = API
@@ -8,7 +8,7 @@ const { IP, Employee ,KQIp, processViewUrl} = API
 const Option = Select.Option;
 const {RangePicker} = DatePicker
 
-class ProcessView extends Component {
+class StoreBSK extends Component {
   constructor(props){
     super(props)
     this.state = {
@@ -71,7 +71,7 @@ class ProcessView extends Component {
       submissionDateStart: '',
       submissionDateEnd: '',
       proposerId: '',
-      flowName: ''
+      stateVal: '',
     }
   }
 
@@ -80,7 +80,8 @@ class ProcessView extends Component {
   }
 
   start = () =>{
-    let url = `${KQIp}${processViewUrl}`
+    let url = `${KQIp}${processViewUrl}?flowName=补刷卡申请单`
+    // url = `${KQIp}/AppOASystem/appSwingCard/getAppSwingCardByFlowId.do`
     getfun(url).then(res =>{
       this.setState({
         data1: res.content,
@@ -97,7 +98,7 @@ class ProcessView extends Component {
 
  handleChange = (value) =>{
     console.log(`selected ${value}`);
-    this.setState({flowName : value})
+    this.setState({stateVal : value})
   }
 
   choiceDate = (date, dateString) =>{
@@ -106,14 +107,14 @@ class ProcessView extends Component {
   }
 
   serchData = () =>{
-    const{code, submissionDateStart, submissionDateEnd, flowName} = this.state
-    let url = `${KQIp}${processViewUrl}?proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&flowName=${flowName}`
+    const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
+    let url = `${KQIp}${processViewUrl}?proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=补刷卡申请单`
     getfun(url).then(res => this.setState({data1:res.content, totalElements: res.totalElements})).catch(err => console.log(err))
   }
 
   changePage = (page, pageSize) =>{
-    const {code, submissionDateStart, submissionDateEnd, flowName} =this.state
-    let url =`${KQIp}${processViewUrl}?page=${page}&pageSize=${pageSize}&proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&flowName=${flowName}`
+    const {code, submissionDateStart, submissionDateEnd, stateVal} =this.state
+    let url =`${KQIp}${processViewUrl}?page=${page}&pageSize=${pageSize}&proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=补刷卡申请单`
     getfun(url).then(res => {
       console.log(666)
       this.setState({data1:res.content, totalElements: res.totalElements})   
@@ -157,7 +158,7 @@ class ProcessView extends Component {
   render() {
     return(
       <div>
-        <h3 className="comtitle">门店考勤</h3>
+        <h3 className="comtitle">门店考勤补刷卡</h3>
         <Row type="flex" justify="space-around"  style={{marginTop: 30}}>
         <Col span='8'>
             <div style={{display:'flex'}}>
@@ -169,12 +170,11 @@ class ProcessView extends Component {
           </Col>
             <Col span='6'>
               <div style={{display:'flex'}}>
-              <Button type='primary'>流程分类</Button>
+              <Button type='primary'>流程状态</Button>
               <Select  style={{ width: 120 }} onChange={this.handleChange}>
-                <Option value="补刷卡申请单">补刷卡申请单</Option>
-                <Option value="请假申请单">请假申请单</Option>
-                <Option value="销假申请单" >销假申请单</Option>
-                <Option value="加班申请单">加班申请单</Option>
+                <Option value="审核中">审核中</Option>
+                <Option value="已审核">已审核</Option>
+                <Option value="申请被终止" >申请被终止</Option>
               </Select>
               </div>
             </Col>
@@ -245,4 +245,4 @@ class ProcessView extends Component {
   }
 }
 
-export default ProcessView
+export default StoreBSK

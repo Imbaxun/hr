@@ -16,6 +16,7 @@ class PersonSearch extends Component{
       code: '',
       aname: '',
       tableShow: false,
+      totalLength: '',
       data:[],
       columns: [
         {
@@ -41,7 +42,12 @@ class PersonSearch extends Component{
   componentDidMount() {
     let url = `${IP}${Employee}`
     console.log(url)
-    getfun(url).then(res => this.setState({data: res.content})).catch(err =>console.log(err))
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
+  }
+
+  changePage = (page, pageSize) =>{
+    let url =`${IP}${Employee}?page=${page-1}&size=${pageSize}`
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
   tableVisible = () =>{
@@ -57,6 +63,13 @@ class PersonSearch extends Component{
         visible={this.state.tableShow}
         columns={this.state.columns} 
         dataSource={this.state.data}
+        pagination={{  
+          simple: false,
+          pageSize: 10 ,
+          // current: this.state.current,
+          total: this.state.totalLength,
+          onChange: this.changePage,
+        }}
         onRow = {(record, index) =>{
           return {
             onClick: () =>{

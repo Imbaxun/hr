@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Popconfirm ,Modal } from 'antd';
+import { Row, Col, Input, Button, Table, Popconfirm ,Modal, Select  } from 'antd';
 import './shop.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun2, putfun, deletefun} from '../../common/axiosFun'
 import CompanyThree from '../../common/companyThree'
 const { IP, Store} = API
 
+const Option = Select.Option;
 class Shop extends Component {
 
   constructor(props) {
     super(props)
+    console.log(props)
     this.state = {
       code: '',
       name: '',
@@ -52,6 +54,10 @@ class Shop extends Component {
           dataIndex: 'latitude',
         },
         {
+          title: '门店类型',
+          dataIndex: 'storeTypeView',
+        },
+        {
           title: '启用状态',
           dataIndex: 'state',
           render: (text, record) => {
@@ -79,7 +85,9 @@ class Shop extends Component {
       choicedepartmentcode: '',
       choicelongitude: '',
       choicelatitude: '',
-      choicecode: ''
+      choicecode: '',
+      selectaddData: [],
+      storeType:''
     }
   }
 
@@ -87,6 +95,7 @@ class Shop extends Component {
   componentDidMount() {
     this.startData()
   }
+
 
   startData = () =>{
     let url = `${IP}${Store}/search?page=0&size=10`
@@ -108,6 +117,11 @@ class Shop extends Component {
     }).catch(err => {
       console.log(err)
     })
+    let newUrl = `${IP}/sys/dictType/StoreType`
+    getfun(newUrl).then(res =>{
+      this.setState({selectaddData: res})
+    }).catch(err =>console.log(err))
+
   }
 
   searchData = () =>{
@@ -153,7 +167,7 @@ class Shop extends Component {
 
 
   addShop = () =>{
-    const {addCoordinate, addName,addArea, depData, addLongitude, addLatitude, addAddress, newShopCode} = this.state
+    const {addCoordinate, addName,addArea, depData, addLongitude, addLatitude, addAddress, newShopCode,storeType} = this.state
     let url = `${IP}${Store}`
     let sendData = {
       coordinate: addCoordinate,
@@ -163,9 +177,10 @@ class Shop extends Component {
       longitude: addLongitude,
       latitude: addLatitude, 
       address: addAddress,
-      code:newShopCode
+      code:newShopCode,
+      storeType
     }
-    if(!addName||!addAddress||!depData.id ||!newShopCode){
+    if(!addName||!addAddress||!depData.id ||!newShopCode ||!storeType){
       alert('请输入完整信息')
     }else{
       postfun2(url, sendData).then(res =>{
@@ -291,8 +306,21 @@ class Shop extends Component {
     }
   }
 
+  // selectAddData = () =>{
+  //   const {selectaddData} = this.state
+  //   console.log(selectaddData)
+  //   return selectaddData.map( item =>{
+  //     <Option value={item.dictKey} >item.dictValue</Option>
+  //   })
+  // }
+
+  selectAdd = (item) =>{
+    console.log(item)
+    this.setState({storeType:item})
+  }
 
   render () {
+    const {selectaddData} = this.state
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         // console.log(selectedRows);
@@ -441,7 +469,17 @@ class Shop extends Component {
               </div>
             </Col>
           </Row>
-        
+          <Row>
+            <Col span="10" offset="2">
+            <div style={{display:'flex'}}>
+            <Button type='primary' >门店类型</Button> 
+            <Select  style={{ width: 120 }} onChange={this.selectAdd}>
+              {selectaddData.map(item => <Option value={item.dictValue} key = {item.dictKey}>{item.dictKey}</Option>)}
+            </Select>
+            </div>   
+            </Col>
+            <Col span="10"></Col>
+          </Row>
           </Modal>
           <Modal
           title="编辑门店"

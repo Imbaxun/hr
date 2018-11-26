@@ -73,7 +73,7 @@ export function postfun(url, zhydata) {
     })
   }
 
-  export function getfun(url, zhydata) {
+  export function getfun(url) {
     return new Promise((resolve, reject) => {
       axios.get(url).then(res => {
         // console.log(res)

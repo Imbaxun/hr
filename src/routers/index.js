@@ -21,6 +21,8 @@ import Leave from '../components/leave/leave'
 import Travel from '../components/Travel/Travel'
 import WorkOverTime from '../components/WorkOverTime/WorkOverTime'
 
+import BurshCardA from '../components/BurshCardA/BurshCardA'
+
 //后台功能需求
 import Dictionaries from '../components/dictionaries/dictionaries'
 import CheckingData from '../components/CheckingData/CheckingData'
@@ -34,6 +36,9 @@ import HolidaySeting from '../components/HolidaySeting/HolidaySeting'
 import TimeTacking from '../components/TimeTacking/TimeTacking'
 import Version from '../components/Version/Version'
 import PhoneId from '../components/PhoneId/PhoneId'
+import MenuManager from '../components/MenuManager/MenuManager'
+import userRoleManager from '../components/userRoleManager/userRoleManager'
+import PermissionManager from '../components/PermissionManager/PermissionManager'
 
 //考勤管理
 import Attendance from '../components/attendance/attendance'
@@ -46,6 +51,17 @@ import DayClock from '../components/DayClock/DayClock.js'
 import ShopClock from '../components/ShopClock/ShopClock'
 import EmpDays from '../components/empdays/empdays'
 import ProcessView from '../components/ProcessView/ProcessView'
+import JBProcess from '../components/JBProcess/JBProcess'
+import QJProcess from '../components/QJProcess/QJProcess'
+import XJProcess from '../components/XJProcess/XJProcess'
+import BSKProcess from '../components/BSKPrpcess/BSKProcess'
+
+//门店流程具体数据
+import StoreBSK from '../components/StoreBSK/StoreBSK'
+import StoreQJ from '../components/StoreQJ/StoreQJ'
+import StoreXJ from '../components/StoreXJ/StoreXJ'
+import StoreJB from '../components/StoreJB/StoreJB'
+
 
 export const routFirst = () =>{
   return (
@@ -90,6 +106,18 @@ export const mainRouters = () => {
       <Route path='/main/PhoneId' component={PhoneId} />
       <Route path='/main/userUnbound' component={userUnbound} />
       <Route path='/main/ProcessView' component={ProcessView} />
+      <Route path='/main/JBProcess' component={JBProcess} />
+      <Route path='/main/QJProcess' component={QJProcess} />
+      <Route path='/main/XJProcess' component={XJProcess} />
+      <Route path='/main/BSKProcess' component={BSKProcess} />
+      <Route path='/main/BurshCardA' component={BurshCardA} />
+      <Route path='/main/MenuManager' component={MenuManager} />
+      <Route path='/main/userRoleManager' component={userRoleManager} />
+      <Route path='/main/PermissionManager' component={PermissionManager} />
+      <Route path='/main/StoreBSK' component={StoreBSK} />
+      <Route path='/main/StoreXJ' component={StoreXJ} />
+      <Route path='/main/StoreJB' component={StoreJB} />
+      <Route path='/main/StoreQJ' component={StoreQJ} />
     </div>
   )
 }

@@ -15,6 +15,7 @@ class ChoicePerson extends Component{
       Scode: '',
       Sname: '',
       visible: false,
+      totalLength: '',
       data:[],
       columns: [
         {
@@ -39,7 +40,7 @@ class ChoicePerson extends Component{
   componentDidMount() {
     let url = `${IP}${Employee}`
     console.log(url)
-    getfun(url).then(res => this.setState({data: res.content})).catch(err =>console.log(err))
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
     console.log(this.props.clearDate)
   }
 
@@ -48,9 +49,13 @@ class ChoicePerson extends Component{
     const {Scode, Snaem} = this.state
     let url = `${IP}${Employee}?empName=${Snaem}&empCode=${Scode}`
     console.log(url)
-    getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
+    getfun(url).then(res => this.setState({data:res.content, totalLength:res.totalElements})).catch(err => console.log(err))
   }
 
+  changePage = (page, pageSize) =>{
+    let url =`${IP}${Employee}?page=${page-1}&size=${pageSize}`
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  }
   // clearData = (item) =>{
   //   console.log(item)
   //   if(item) {
@@ -91,6 +96,13 @@ class ChoicePerson extends Component{
             pagination={{ pageSize: 5 }}
             columns={this.state.columns}
             dataSource={this.state.data}
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 10 ,
+              // current: this.state.current,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
             onRow = {(record, index) =>{
               return {
                 onClick: () =>{

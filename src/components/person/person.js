@@ -24,7 +24,7 @@ class Person extends Component {
       addDeptName: '',
       addName: '',
       addPhone: '',
-      addmainJob: '',
+      addmainJob: 20,
       addempCode: '',
       showMainJob: '',
       showJob: '',
@@ -103,10 +103,6 @@ class Person extends Component {
       addData: [],
       addcolumns: [
         {
-          title: '序号',
-          dataIndex: 'index'
-        },
-        {
           title: '姓名',
           dataIndex: 'empName',
         },
@@ -152,6 +148,7 @@ class Person extends Component {
       threeData:[],
       threeData1:[],
       totalLength: '',
+      addnum: 0,
     }
   }
 
@@ -235,7 +232,7 @@ class Person extends Component {
   }
 
   addPerson = () =>{
-    this.setState({addvisible: true})
+    this.setState({addvisible: true, addnum: 0})
   }
 
   onChangeDate = (date, dateString) => {
@@ -250,7 +247,7 @@ class Person extends Component {
   }
 
   addPersonEnd = () =>{
-    const {addData} =this.state
+    const {addData, addnum} =this.state
     console.log(addData)
     let arr = []
     addData.forEach(item =>{
@@ -274,17 +271,32 @@ class Person extends Component {
       arr.push(aa)
     })
     console.log(arr)
-    let url = `${IP}${Employee}`
-    postfun(url,arr).then(res =>{
-      console.log(res)
-      if(res ==='success'){
-        alert('新增成功')
-        this.setState({visible:false})
-        this.startData()
-      }else{
-        alert('新增失败')
-      }
-    }).catch(err => console.log(err))
+    if(addnum >1) {
+      alert('只能勾选一个主职')
+    }else{
+      let url = `${IP}${Employee}`
+      postfun(url,arr).then(res =>{
+        console.log(res)
+        if(res ==='success'){
+          alert('新增成功')
+          this.setState({visible:false})
+          this.startData()
+        }else{
+          alert('新增失败')
+        }
+      }).catch(err => console.log(err))
+    }
+    // let url = `${IP}${Employee}`
+    // postfun(url,arr).then(res =>{
+    //   console.log(res)
+    //   if(res ==='success'){
+    //     alert('新增成功')
+    //     this.setState({visible:false})
+    //     this.startData()
+    //   }else{
+    //     alert('新增失败')
+    //   }
+    // }).catch(err => console.log(err))
   }
 
   delAddData = () =>{
@@ -318,12 +330,12 @@ class Person extends Component {
     newArr.splice(delAddIndex,1)
     this.setState({addData: newArr})
   }
-
+  
   addPersonData = () =>{
-    const {addindex,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers,addempCode, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob} = this.state
+    const { addnum,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers,addempCode, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob} = this.state
     // let url = `${IP}${Employee}`
+    // this.setState({addnum:true})
     let sendData = {
-      index: addindex,
       companyId: addCompanyId,
       deptId: addDeptId,
       positionId: addJob,
@@ -343,23 +355,31 @@ class Person extends Component {
     let newArr = addData
     newArr.push(sendData)
     console.log(newArr)
-    let aa = []
-    newArr.forEach(item =>{
-      console.log(item.positionType)      
-      if(item.positionType === 10){
-        // console.log(666)
-        aa.push(item.empName)
-        console.log(aa)
-        if(aa.length>1){
-          alert('主职只有一个请勿重复勾选')
-          let anewArr = []
-          this.setState({addData: anewArr})
-        }else{
-          let aaddindex = addindex +1
-          this.setState({addData: newArr, addindex: aaddindex})
-        }
-      }
-    })
+    if(addmainJob === 10 ){
+      let aa = addnum +1
+      this.setState({addnum: aa, addData: newArr})
+    }else if(!addJob){
+      alert('请勾选职务')
+    }else{
+      this.setState({ addData: newArr})
+    }
+    // let aa = []
+    // newArr.forEach(item =>{
+    //   console.log(item.positionType)      
+    //   if(item.positionType === 10){
+    //     // console.log(666)
+    //     aa.push(item.empName)
+    //     console.log(aa)
+    //     if(aa.length>1){
+    //       alert('主职只有一个请勿重复勾选')
+    //       let anewArr = []
+    //       this.setState({addData: anewArr})
+    //     }else{
+    //       let aaddindex = addindex +1
+    //       this.setState({addData: newArr, addindex: aaddindex})
+    //     }
+    //   }
+    // })
     
   }
 
@@ -673,7 +693,7 @@ class Person extends Component {
                 <Col span="10">
                   <div style={{display:'flex'}}>
                     <Button type='primary' >选择职务</Button>  
-                    <Select  style={{ width: 120 }} onChange={this.onChangeJob}>
+                    <Select  style={{ width: 200 }} onChange={this.onChangeJob}>
                      {cityOptions}
                     </Select>
                   </div>
@@ -719,7 +739,7 @@ class Person extends Component {
                 <Col span='10'>
                   <div style={{display:'flex'}}>
                     <Button type='primary'>是否主职</Button>   
-                    <RadioGroup onChange={this.mainJob}>
+                    <RadioGroup defaultValue={20} onChange={this.mainJob}>
                       <Radio value={10}>是</Radio>
                       <Radio value={20}>否</Radio>
                     </RadioGroup>
