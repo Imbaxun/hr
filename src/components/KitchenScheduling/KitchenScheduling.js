@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-// import CompanyThree from '../../common/companyThree';
-import StoreTree from '../../common/StoreTree'
+import KitchenTree from '../../common/KitchenTree'
 import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio,Upload, message, Icon,} from 'antd'
-import './ClassSearch.css'
+import './KitchenScheduling.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import DepSearch from '../../common/searchPage/depSearch'
-// import PersonSearch from '../../common/searchPage/personSearch'
 
 const { IP, ClassSearchUrl} = API
 const Option = Select.Option
@@ -16,7 +14,7 @@ const { MonthPicker } = DatePicker;
 const mydate = new Date()
 
 
-class ClassSearch extends Component{
+class KitchenScheduling extends Component{
   constructor(props) {
     super(props)
     this.state={
@@ -94,13 +92,13 @@ class ClassSearch extends Component{
 
   startData = () =>{
     const{searchyear,searchmonth}=this.state
-    let url = `${IP}${ClassSearchUrl}?page=0&size=10&year=${searchyear}&month=${searchmonth}`
+    let url = `${IP}${ClassSearchUrl}?page=0&size=10&year=${searchyear}&month=${searchmonth}&recordType=kitchen`
     getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err => console.log(err))
   }
 
   searchData = () =>{
     const{searchmonth,searchyear,name,code,schedulingName} = this.state
-    let url = `${IP}${ClassSearchUrl}?page=0&size=10&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}`
+    let url = `${IP}${ClassSearchUrl}?page=0&size=10&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}&recordType=kitchen`
     getfun(url).then(res =>this.setState({data:res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
   }
 
@@ -108,7 +106,7 @@ class ClassSearch extends Component{
     const {searchmonth,searchyear,name,code,schedulingName, searchUrl} =this.state
     console.log(page)
     console.log(pageSize)
-    let aa = searchUrl === '' ? `${IP}${ClassSearchUrl}?page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}` : `${searchUrl}&page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}`
+    let aa = searchUrl === '' ? `${IP}${ClassSearchUrl}?page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&recordType=kitchen` : `${searchUrl}&page=${page-1}&size=${pageSize}&month=${searchmonth}&year=${searchyear}&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&recordType=kitchen`
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)
@@ -128,7 +126,7 @@ class ClassSearch extends Component{
     console.log(item)
     this.setState({selectData: item})
     //点击查询的url
-    let searchUrl = `${IP}${ClassSearchUrl}?page=0&size=10&${item}&year=${ayear}&month=${amonth}`
+    let searchUrl = `${IP}${ClassSearchUrl}?page=0&size=10&${item}&year=${ayear}&month=${amonth}&recordType=kitchen`
     console.log(searchUrl)
     this.setState({searchUrl:`${IP}${ClassSearchUrl}?${item}`})
     getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
@@ -145,7 +143,7 @@ class ClassSearch extends Component{
   }
   onChangeDepClassMonth = (date, dateString) =>{
     this.setState({depClassYear: date._d.getFullYear(),depClassMonth:date._d.getMonth()+1})
-    let perUrl = `${IP}/employeeScheduling/${date._d.getFullYear()}/${date._d.getMonth()+1}`
+    let perUrl = `${IP}/employeeScheduling/kitchen/${date._d.getFullYear()}/${date._d.getMonth()+1}`
     // console.log(perUrl)
     getfun(perUrl).then(res => this.setState({perClass:res})).catch(err =>console.log(err))
   }
@@ -159,7 +157,7 @@ class ClassSearch extends Component{
     }
   
     const {searchmonth, searchyear} = this.state
-    let perUrl = `${IP}/employeeScheduling/${searchyear}/${searchmonth}`
+    let perUrl = `${IP}/employeeScheduling/kitchen/${searchyear}/${searchmonth}`
     // console.log(perUrl)
     getfun(perUrl).then(res => this.setState({perClass:res})).catch(err =>console.log(err))
     let addperUrl = `${IP}/sys/dictType/SchedulingOvertimeType`
@@ -171,7 +169,7 @@ class ClassSearch extends Component{
   depClass = () =>{
     this.setState({visible2: true})
     const {searchmonth, searchyear} = this.state
-    let perUrl = `${IP}/employeeScheduling/${searchyear}/${searchmonth}`
+    let perUrl = `${IP}/employeeScheduling/kitchen/${searchyear}/${searchmonth}`
     // console.log(perUrl)
     getfun(perUrl).then(res => this.setState({perClass:res})).catch(err =>console.log(err))
     let addperUrl = `${IP}/sys/dictType/SchedulingOvertimeType`
@@ -298,7 +296,7 @@ class ClassSearch extends Component{
       <div>
         <Row type="flex" justify="space-around">
           <Col span="5">
-            <StoreTree   getThreeData= {this.getThreeData}/>
+            <KitchenTree   getThreeData= {this.getThreeData}/>
           </Col>
           <Col span="18">
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
@@ -484,4 +482,4 @@ class ClassSearch extends Component{
   }
 }
 
-export default ClassSearch;
+export default KitchenScheduling;

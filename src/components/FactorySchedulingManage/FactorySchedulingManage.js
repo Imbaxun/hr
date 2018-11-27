@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { Row, Col, Input, Button, Table,DatePicker, Modal ,Calendar, Tag, Tooltip, TimePicker } from 'antd';
 import{getfun, postfun2, deletefun, putfun} from '../../common/axiosFun'
 import {API} from '../../common/axiosAPI'
-import './ClassManage.css'
+import './FactorySchedulingManage.css'
 import moment from 'moment';
 const { MonthPicker} = DatePicker;
 const { IP, ClassManageUrl} = API
 
-class ClassManage extends Component{
+class FactorySchedulingManage extends Component{
   constructor(props){
     super(props)
     this.state = {
@@ -109,7 +109,7 @@ class ClassManage extends Component{
   }
 
   startData = () =>{
-    let url = `${IP}${ClassManageUrl}?page=0&size=10`
+    let url = `${IP}${ClassManageUrl}?page=0&size=10&schedulingType=Administrative`
     getfun(url).then(res =>{
       console.log(res)
       let arr = res.content
@@ -125,7 +125,7 @@ class ClassManage extends Component{
     const {ClassManageUrl, month, year, schedulingName} =this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${ClassManageUrl}?page=${page-1}&size=${pageSize}&month=${month}&year=${year}&schedulingName=${schedulingName}`
+    let url =`${IP}${ClassManageUrl}?page=${page-1}&size=${pageSize}&month=${month}&year=${year}&schedulingName=${schedulingName}&schedulingType=Administrative`
     getfun(url).then(res => {
       console.log(res.content)
       this.setState({tableData: res.content,totalLength:res.totalElements})
@@ -146,7 +146,7 @@ class ClassManage extends Component{
 
   searchData = () =>{
     const {month, year, schedulingName} =this.state
-    let url = `${IP}${ClassManageUrl}?schedulingName=${schedulingName}&month=${month}&year=${year}&page=0&size=10`
+    let url = `${IP}${ClassManageUrl}?schedulingName=${schedulingName}&month=${month}&year=${year}&page=0&size=10&schedulingType=Administrative`
     /*
     getfun(url).then(res => this.setState({tableData:res.content})).catch(err =>console.log(err))
     */
@@ -272,7 +272,8 @@ class ClassManage extends Component{
       year,
       month,
       schedulingItemList: newArr1.slice(1),
-      schedulingRemarkList: arr2
+      schedulingRemarkList: arr2,
+      schedulingType: 'Administrative'
     }
     console.log(sendData)
     let url = `${IP}${ClassManageUrl}`
@@ -321,7 +322,7 @@ class ClassManage extends Component{
       month: freeMonth,
       schedulingName: freeClassName,
       schedulingSource: "人资",
-      schedulingType: "store",
+      schedulingType: "Administrative",
       startDate: workStart,
       workingDays: freeDays,
       year: freeYear,
@@ -398,7 +399,7 @@ class ClassManage extends Component{
         </div>
         <hr/>
         <div className="comMain">
-          <h3 className="comtitle">班次维护列表</h3>
+          <h3 className="comtitle">工业园班次维护列表</h3>
           <Row type="flex" justify="end">
             {/* <Col span="2"><Button icon="plus" onClick={() =>this.setState({visible:true})} >新增</Button></Col> */}
             <Col span="4"><Button icon="plus" onClick={() =>this.setState({visible1:true})} >新增自由班次</Button></Col>
@@ -613,4 +614,4 @@ class ClassManage extends Component{
 
 }
 
-export default ClassManage;
+export default FactorySchedulingManage;

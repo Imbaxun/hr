@@ -36,6 +36,7 @@ class Shop extends Component {
       changeLongitude: '',
       changeAddress: '',
       changeShopCode: '',
+      queryRecordType: '',
       columns:[
         {
           title: '门店编码',
@@ -125,9 +126,9 @@ class Shop extends Component {
   }
 
   searchData = () =>{
-    const {name, code} = this.state
+    const {name, code,queryRecordType} = this.state
     const { IP, Store} = API
-    let url = `${IP}${Store}/search?page=0&size=10&code=${code}&name=${name}`
+    let url = `${IP}${Store}/search?page=0&size=10&code=${code}&name=${name}&storeType=${queryRecordType}`
     getfun(url).then(res => {
       // console.log(res)
       let newArr = []
@@ -146,10 +147,10 @@ class Shop extends Component {
   }
 
   changePage = (page, pageSize) =>{
-    const {name, code, selectData} = this.state
+    const {name, code, selectData,queryRecordType} = this.state
     console.log(page)
     console.log(pageSize)
-    let url =`${IP}${Store}/search?page=${page-1}&size=${pageSize}&${selectData}&code=${code}&name=${name}`
+    let url =`${IP}${Store}/search?page=${page-1}&size=${pageSize}&${selectData}&code=${code}&name=${name}&storeType=${queryRecordType}`
     getfun(url).then(res => {
       let newArr = []
       res.content.forEach(item => {
@@ -349,15 +350,24 @@ class Shop extends Component {
           <Col span="18" >
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
             <Col span="5">
-            <div style={{display:'flex'}}>
+              <div style={{display:'flex'}}>
                 <Button type='primary' >门店编码</Button>  
                 <Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}}  />
               </div>
             </Col>
             <Col span="5">
-            <div style={{display:'flex'}}>
+              <div style={{display:'flex'}}>
                 <Button type='primary' >门店名称</Button>  
                 <Input value={this.state.name} onChange={(e) =>{this.setState({name:e.target.value})}}  />
+              </div>
+            </Col>
+            <Col span="5">
+              <div style={{display:'flex'}}>
+                <Button type='primary' >门店类型</Button>  
+                <Select  style={{ width: 120 }} onChange={(e) =>{this.setState({queryRecordType:e})}}>
+                  <Option value="store">门店</Option>
+                  <Option value="kitchen" >卤味厨房</Option>
+                </Select>
               </div>
             </Col>
           </Row>

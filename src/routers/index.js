@@ -63,6 +63,19 @@ import StoreXJ from '../components/StoreXJ/StoreXJ'
 import StoreJB from '../components/StoreJB/StoreJB'
 
 
+// 门店
+import StoreScheduling from '../components/StoreScheduling/StoreScheduling' // 门店排班查询
+import StoreSchedulingManage from '../components/StoreSchedulingManage/StoreSchedulingManage' // 门店班次管理
+
+// 卤味厨房
+import KitchenScheduling from '../components/KitchenScheduling/KitchenScheduling'  // 卤味厨房班次查询
+import KitchenSchedulingManage from '../components/KitchenSchedulingManage/KitchenSchedulingManage' // 卤味厨房班次管理
+
+// 工业园
+import FactoryScheduling from '../components/FactoryScheduling/FactoryScheduling' // 工业园排班查询
+import FactorySchedulingManage from '../components/FactorySchedulingManage/FactorySchedulingManage' // 工业园排班管理
+
+
 export const routFirst = () =>{
   return (
     <Router>
@@ -118,6 +131,12 @@ export const mainRouters = () => {
       <Route path='/main/StoreXJ' component={StoreXJ} />
       <Route path='/main/StoreJB' component={StoreJB} />
       <Route path='/main/StoreQJ' component={StoreQJ} />
+      <Route path="/main/FactoryScheduling" component={FactoryScheduling} />
+      <Route path="/main/KitchenScheduling" component={KitchenScheduling} />
+      <Route path="/main/StoreScheduling" component={StoreScheduling} />
+      <Route path="/main/StoreSchedulingManage" component={StoreSchedulingManage} />
+      <Route path="/main/FactorySchedulingManage" component={FactorySchedulingManage} />
+      <Route path="/main/KitchenSchedulingManage" component={KitchenSchedulingManage} />
     </div>
   )
 }

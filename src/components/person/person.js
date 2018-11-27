@@ -26,6 +26,8 @@ class Person extends Component {
       addPhone: '',
       addmainJob: 20,
       addempCode: '',
+      addRecordType: 'Administrative',
+      showRecordType: '',
       showMainJob: '',
       showJob: '',
       addindex: 1,
@@ -34,6 +36,7 @@ class Person extends Component {
       addPapersNumber: '',
       addDate1: '',
       addDate2: '',
+      queryRecordType: '', // 打卡类型
       addvisibl: false,
       addvisibl1: false,
       changeJob:'',
@@ -86,6 +89,10 @@ class Person extends Component {
         {
           title: '证件号码',
           dataIndex: 'typeValue',
+        },
+        {
+          title: '打卡类型',
+          dataIndex: 'recordTypeView',
         }
         // {
         //   title: '启用状态',
@@ -141,6 +148,10 @@ class Person extends Component {
         {
           title: '是否主职',
           dataIndex: 'showJobtype',
+        },
+        {
+          title: '打卡类型',
+          dataIndex: 'showRecordType',
         }
       ],
       threeId: '',
@@ -195,9 +206,9 @@ class Person extends Component {
   }
 
   searchData = () =>{
-    const {empCode, empName, levelName} = this.state
+    const {empCode, empName, levelName,queryRecordType} = this.state
     const { IP, Employee} = API
-    let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&levelName=${levelName}&page=0&size=10`
+    let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&levelName=${levelName}&recordType=${queryRecordType}&page=0&size=10`
     getfun(url).then(res => {
       console.log(res)
       let newArr = []
@@ -217,10 +228,10 @@ class Person extends Component {
   }
 
   changePage = (page, pageSize) =>{
-    const {empCode, empName, levelName, searchUrl} =this.state
+    const {empCode, empName, levelName, searchUrl,queryRecordType} =this.state
     console.log(page)
     console.log(pageSize)
-    let aa = searchUrl === '' ? `${IP}${Employee}?page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}` : `${searchUrl}&page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}`
+    let aa = searchUrl === '' ? `${IP}${Employee}?page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}&recordType=${queryRecordType}` : `${searchUrl}&page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}&recordType=${queryRecordType}`
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)
@@ -258,6 +269,7 @@ class Person extends Component {
         entryDate: item.entryDate,
         idType: item.idType,
         typeValue: item.typeValue,
+        recordType: item.recordType,
         relationshipList:[
           {
             companyId: item.companyId,
@@ -332,7 +344,7 @@ class Person extends Component {
   }
   
   addPersonData = () =>{
-    const { addnum,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers,addempCode, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob} = this.state
+    const { addnum,addCompanyId,addDeptName,showJob, addCompanyName, addDeptId, addpapers,addempCode, addName, addPhone, addPapersNumber, addDate1,addDate2, addJob, addData, addmainJob ,showMainJob,addRecordType,showRecordType} = this.state
     // let url = `${IP}${Employee}`
     // this.setState({addnum:true})
     let sendData = {
@@ -350,7 +362,9 @@ class Person extends Component {
       showLever: showJob,
       positionType: addmainJob,
       showJobtype: showMainJob,
-      empCode: addempCode
+      empCode: addempCode,
+      recordType:addRecordType,
+      showRecordType: showRecordType,
     }
     let newArr = addData
     newArr.push(sendData)
@@ -556,8 +570,21 @@ class Person extends Component {
     }else{
       this.setState({addmainJob: e.target.value, showMainJob: '否'})
     }
-
   }
+
+  recordTypeChange = (e) =>{
+    if(e.target.value === "Administrative" )
+    {
+      this.setState({addRecordType: e.target.value, showRecordType: '行政'})
+    }else if (e.target.value === "store" )
+    {
+      this.setState({addRecordType: e.target.value, showRecordType: '门店'})
+    }else if (e.target.value === "kitchen" )
+    {
+      this.setState({addRecordType: e.target.value, showRecordType: '卤味厨房'})
+    }
+  }
+
 
   IsAdmin = () =>{
     let aa =  window.sessionStorage.getItem('path')
@@ -621,22 +648,32 @@ class Person extends Component {
           </Col>
           <Col span="18" >
             <Row type="flex" justify="space-around" style={{marginBottom:20}}>
-              <Col span="5">
-              <div style={{display:'flex'}}>
+              <Col span="4">
+                <div style={{display:'flex'}}>
                   <Button type='primary' >工号</Button>  
                   <Input value={this.state.empCode} onChange={(e) =>{this.setState({empCode:e.target.value})}}  />
                 </div>
               </Col>
-              <Col span="5">
-              <div style={{display:'flex'}}>
+              <Col span="4">
+                <div style={{display:'flex'}}>
                   <Button type='primary' >姓名</Button>  
                   <Input value={this.state.empName} onChange={(e) =>{this.setState({empName:e.target.value})}}  />
                 </div>
               </Col>
-              <Col span="5">
-              <div style={{display:'flex'}}>
+              <Col span="4">
+                <div style={{display:'flex'}}>
                   <Button type='primary' >职务</Button>  
                   <Input value={this.state.levelName} onChange={(e) =>{this.setState({levelName:e.target.value})}}  />
+                </div>
+              </Col>
+              <Col span="4">
+                <div style={{display:'flex'}}>
+                  <Button type='primary' >打卡类型</Button>  
+                  <Select  style={{ width: 120 }} onChange={(e) =>{this.setState({queryRecordType:e})}}>
+                    <Option value="store">门店</Option>
+                    <Option value="Administrative">工业园</Option>
+                    <Option value="kitchen" >卤味厨房</Option>
+                  </Select>
                 </div>
               </Col>
             </Row>
@@ -748,12 +785,21 @@ class Person extends Component {
               </Row>
               <Row type="flex" justify="space-around" style={{marginBottom:20}}>
                 <Col span='10'>
-                <div style={{display:'flex'}}>
+                  <div style={{display:'flex'}}>
                     <Button type='primary' >员工编号</Button>  
                     <Input  onChange={(e) =>{this.setState({addempCode:e.target.value})}} />
                   </div>
                 </Col>
-                <Col span='10'></Col>
+                <Col>
+                  <div style={{display:'flex'}}>
+                    <Button type='primary' >打卡类型</Button>  
+                    <RadioGroup defaultValue={"Administrative"} onChange={this.recordTypeChange}>
+                      <Radio value={"Administrative"}>行政</Radio>
+                      <Radio value={"store"}>门店打卡</Radio>
+                      <Radio value={"kitchen"}>卤味厨房</Radio>
+                    </RadioGroup>
+                  </div>
+                </Col>
               </Row>
               <Row type="flex" justify="space-around" style={{marginBottom:20}}>
                 <Col span='10'>

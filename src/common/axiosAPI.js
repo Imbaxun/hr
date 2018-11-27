@@ -11,6 +11,8 @@ export const API = {
     mainMenu: '/sys/menu/tree',  //菜单树
     mainMenuPermission: '/sys/menu/tree/user',
     PersonThree: '/organizational/tree',   //人员树状菜单
+    StoreTreeData: '/organizational/store/tree', //门店人员树
+    KitchenTreeTreeData: '/organizational/kitchen/tree', // 卤味厨房人员树
     searchbm: '/position',          //部门查询
     addcom: '/company',              //新增公司
     searchcom: '/company/search',          //公司查询
