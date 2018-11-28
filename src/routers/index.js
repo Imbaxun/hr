@@ -74,7 +74,8 @@ import KitchenSchedulingManage from '../components/KitchenSchedulingManage/Kitch
 // 工业园
 import FactoryScheduling from '../components/FactoryScheduling/FactoryScheduling' // 工业园排班查询
 import FactorySchedulingManage from '../components/FactorySchedulingManage/FactorySchedulingManage' // 工业园排班管理
-
+import workRule from '../components/WorkRule/WorkRule'  //考勤规则
+import CompanyTravel from '../components/CompanyTravel/CompanyTravel'
 
 export const routFirst = () =>{
   return (
@@ -137,6 +138,8 @@ export const mainRouters = () => {
       <Route path="/main/StoreSchedulingManage" component={StoreSchedulingManage} />
       <Route path="/main/FactorySchedulingManage" component={FactorySchedulingManage} />
       <Route path="/main/KitchenSchedulingManage" component={KitchenSchedulingManage} />
+      <Route path="/main/workRule" component={workRule} />
+      <Route path="/main/CompanyTravel" component={CompanyTravel} />
     </div>
   )
 }

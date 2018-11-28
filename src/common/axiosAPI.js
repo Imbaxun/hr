@@ -1,7 +1,7 @@
 
 export const API = {
-    IP : 'http://172.30.43.53:9090',  //王善鹏
-    // IP: 'http://172.30.43.116:9090',   //佳浩
+    // IP : 'http://172.30.43.53:9090',  //王善鹏
+    IP: 'http://172.30.43.116:9090',   //佳浩
     // IP : 'http://172.30.41.109:9090',
     // IP : 'http://172.30.30.253:9090',
     KQIp: 'http://172.30.43.53:8080',
@@ -40,5 +40,6 @@ export const API = {
     progresHistory: 'AppOASystem/appTask/listHistoryComment.do', //审批历程查询
     MenuId: '/sys/menu',  //id查询菜单
     userRole: '/sys/role',  //角色查询
-    permissionManagerUrl: '/sys/permission'  //权限设置
+    permissionManagerUrl: '/sys/permission' , //权限设置
+    WorkRuleUrl: '/tCheckWorkRule', //考勤规则
 }

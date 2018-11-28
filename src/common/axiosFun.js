@@ -41,6 +41,22 @@ export function postfun(url, zhydata) {
     })
   }
 
+  export function putfun2(url, zhydata) {
+    return new Promise((resolve, reject) => {
+      axios.put(url, zhydata
+      ).then(res => {
+        // console.log(res)
+        resolve(res.data)
+      }).catch(err => {
+        // notification['error']({
+        //   message: 'Err',
+        //   description: err.response.data,
+        // });
+        reject(err)
+      })
+    })
+  }
+
   export function deletefun(url, zhydata) {
     return new Promise((resolve, reject) => {
       axios.delete(url, qs.parse(zhydata)

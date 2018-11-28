@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Row, Col, Icon, Input, Button,Modal, Table} from 'antd';
+import { Row, Col, Input, Button,Modal, Table} from 'antd';
 
 import{ getfun, postfun} from '../../common/axiosFun'
 
