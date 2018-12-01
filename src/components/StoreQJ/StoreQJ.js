@@ -121,6 +121,13 @@ class StoreJB extends Component {
     }).catch(err =>console.log(err.message))
   }
 
+  changePage1 = (page, pageSize) =>{
+    const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
+    let url = `${KQIp}${processViewUrl}?proposerId=${code}&page=${page}&size=${pageSize}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=请假申请单`
+    getfun(url).then(res => this.setState({data1: res.content, totalElements:res.totalElements})).catch(err =>console.log(err.message))
+  }
+
+
   toProcessContent = (url, flowId, flowCode) =>{
     console.log(url)
     window.sessionStorage.setItem('flowUrl',JSON.stringify(url))
@@ -194,9 +201,8 @@ class StoreJB extends Component {
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,
-              current: this.state.current,
               total: this.state.totalElements,
-              onChange: this.changePage,
+              onChange: this.changePage1,
             }}
             onRow={(record) => {
               return {

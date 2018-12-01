@@ -70,6 +70,7 @@ import StoreSchedulingManage from '../components/StoreSchedulingManage/StoreSche
 // 卤味厨房
 import KitchenScheduling from '../components/KitchenScheduling/KitchenScheduling'  // 卤味厨房班次查询
 import KitchenSchedulingManage from '../components/KitchenSchedulingManage/KitchenSchedulingManage' // 卤味厨房班次管理
+import KitchenPhoneId from '../components/KitchenPhoneId/KitchenPhoneId'  //设备解绑
 
 // 工业园
 import FactoryScheduling from '../components/FactoryScheduling/FactoryScheduling' // 工业园排班查询
@@ -140,6 +141,7 @@ export const mainRouters = () => {
       <Route path="/main/KitchenSchedulingManage" component={KitchenSchedulingManage} />
       <Route path="/main/workRule" component={workRule} />
       <Route path="/main/CompanyTravel" component={CompanyTravel} />
+      <Route path="/main/KitchenPhoneId" component={KitchenPhoneId} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Input, Button, notification } from 'antd';
-import './PhoneId.css'
+import './KitchenPhoneId.css'
 import{putfun} from '../../common/axiosFun'
 import {API} from '../../common/axiosAPI'
 const { IP, PhoneIdUrl} = API
@@ -12,7 +12,7 @@ const { IP, PhoneIdUrl} = API
 //   });
 // };
 
-class PhoneId extends Component {
+class KitchenPhoneId extends Component {
 
   constructor(props) {
     super(props)
@@ -32,7 +32,7 @@ class PhoneId extends Component {
         description: '请输入正确账号',
       });
     }else{
-      let url = `${IP}${PhoneIdUrl}${empCode}/store`
+      let url = `${IP}${PhoneIdUrl}${empCode}/kitchen`
       let sendData = {
         empCode: empCode
       }
@@ -42,11 +42,7 @@ class PhoneId extends Component {
             message: 'success',
             description: res.data,
           })
-        }else if(res.msg ==='error'){
-          notification['error']({
-            message: 'Error',
-            description: res.data,
-          });
+        }else{
           console.log(res)
         }
       }).catch(err =>{
@@ -83,4 +79,4 @@ class PhoneId extends Component {
 
 }
 
-export default PhoneId
+export default KitchenPhoneId

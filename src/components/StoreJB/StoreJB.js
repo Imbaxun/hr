@@ -112,6 +112,12 @@ class StoreJB extends Component {
     getfun(url).then(res => this.setState({data1:res.content, totalElements: res.totalElements})).catch(err => console.log(err))
   }
 
+  changePage1 = (page, pageSize) =>{
+    const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
+    let url = `${KQIp}${processViewUrl}?proposerId=${code}&page=${page}&size=${pageSize}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=加班申请单`
+    getfun(url).then(res => this.setState({data1: res.content, totalElements:res.totalElements})).catch(err =>console.log(err.message))
+  }
+
   changePage = (page, pageSize) =>{
     const {code, submissionDateStart, submissionDateEnd, stateVal} =this.state
     let url =`${KQIp}${processViewUrl}?page=${page}&pageSize=${pageSize}&proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=加班申请单`
@@ -194,9 +200,8 @@ class StoreJB extends Component {
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,
-              current: this.state.current,
               total: this.state.totalElements,
-              onChange: this.changePage,
+              onChange: this.changePage1,
             }}
             onRow={(record) => {
               return {
