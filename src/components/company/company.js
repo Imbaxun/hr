@@ -245,17 +245,22 @@ class Company extends Component {
     console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
+      let responseData = []
       res.content.forEach(item=> {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
-        newArr.push(item)
+        responseData.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: responseData})
       });
+      console.log("abcdef="+responseData.length)
+      if(0 === responseData.length)
+      {
+        this.setState({data: responseData})
+      }
     }).catch(err => {
       console.log(err)
     })  

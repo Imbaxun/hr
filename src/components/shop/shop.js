@@ -131,17 +131,21 @@ class Shop extends Component {
     let url = `${IP}${Store}/search?page=0&size=10&code=${code}&name=${name}&storeType=${queryRecordType}`
     getfun(url).then(res => {
       // console.log(res)
-      let newArr = []
+      let responseData = []
       res.content.forEach(item=> {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
-        newArr.push(item)
+        responseData.push(item)
         // console.log(newArr)
-        this.setState({data: newArr,totalLength:res.totalElements})
+        this.setState({data: responseData,totalLength:res.totalElements})
       });
+      if(0 === responseData.length)
+      {
+        this.setState({data: responseData,totalLength:res.totalElements})
+      }
     }).catch(err => console.log(err))
 
   }

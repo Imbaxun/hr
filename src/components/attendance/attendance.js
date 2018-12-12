@@ -38,7 +38,7 @@ class Attendance extends Component{
   start = () =>{
     const {searchmonth, searchyear} =this.state
     let url =  `${IP}/punchRecord/solr?page=0&size=10&recordYear=${searchyear}&recordMonth=${searchmonth}`
-    let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=原始考勤数据记录`
+    let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=工业园原始考勤数据记录`
     // getfun(hurl).then(res => {
     //   if(res.msg === "success"){
     //     this.setState({columns:res.data})

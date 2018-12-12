@@ -96,7 +96,8 @@ class ChoicePerson extends Component{
             pagination={{ pageSize: 5 }}
             columns={this.state.columns}
             dataSource={this.state.data}
-            pagination={{  // 分页
+            // 分页
+            pagination={{  
               simple: false,
               pageSize: 10 ,
               // current: this.state.current,

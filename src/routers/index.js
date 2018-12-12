@@ -77,6 +77,8 @@ import FactoryScheduling from '../components/FactoryScheduling/FactoryScheduling
 import FactorySchedulingManage from '../components/FactorySchedulingManage/FactorySchedulingManage' // 工业园排班管理
 import workRule from '../components/WorkRule/WorkRule'  //考勤规则
 import CompanyTravel from '../components/CompanyTravel/CompanyTravel'
+import BasePunchRecordSolr from '../components/BasePunchRecordSolr/BasePunchRecordSolr'
+
 
 export const routFirst = () =>{
   return (
@@ -142,6 +144,7 @@ export const mainRouters = () => {
       <Route path="/main/workRule" component={workRule} />
       <Route path="/main/CompanyTravel" component={CompanyTravel} />
       <Route path="/main/KitchenPhoneId" component={KitchenPhoneId} />
+      <Route path="/main/BasePunchRecordSolr" component={BasePunchRecordSolr} />
     </div>
   )
 }

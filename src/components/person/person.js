@@ -159,6 +159,7 @@ class Person extends Component {
       threeData:[],
       threeData1:[],
       totalLength: '',
+      currentPage: '',
       addnum: 0,
     }
   }
@@ -198,7 +199,7 @@ class Person extends Component {
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      this.setState({data: res.content,totalLength:res.totalElements})
+      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number)})
       // this.setState({data:res.content})
     }).catch(err => {
       console.log(err)
@@ -208,20 +209,24 @@ class Person extends Component {
   searchData = () =>{
     const {empCode, empName, levelName,queryRecordType} = this.state
     const { IP, Employee} = API
-    let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&levelName=${levelName}&recordType=${queryRecordType}&page=0&size=10`
+    let url = `${IP}${Employee}?empCode=${empCode}&empName=${empName}&positionName=${levelName}&recordType=${queryRecordType}&page=0&size=10`
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
+      let responseData = []
       res.content.forEach(item=> {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
-        newArr.push(item)
+        responseData.push(item)
         // console.log(newArr)
-        this.setState({data: newArr,totalLength:res.totalElements})
+        this.setState({data: responseData,totalLength:res.totalElements,currentPage:(1+res.number)})
       });
+      if (0 === responseData.length)
+      {
+        this.setState({data: responseData,totalLength:res.totalElements,currentPage:(1+res.number)})
+      }
     }).catch(err => {
       console.log(err)
     })  
@@ -231,11 +236,11 @@ class Person extends Component {
     const {empCode, empName, levelName, searchUrl,queryRecordType} =this.state
     console.log(page)
     console.log(pageSize)
-    let aa = searchUrl === '' ? `${IP}${Employee}?page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}&recordType=${queryRecordType}` : `${searchUrl}&page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&levelName=${levelName}&recordType=${queryRecordType}`
+    let aa = searchUrl === '' ? `${IP}${Employee}?page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&positionName=${levelName}&recordType=${queryRecordType}` : `${searchUrl}&page=${page-1}&size=${pageSize}&empCode=${empCode}&empName=${empName}&positionName=${levelName}&recordType=${queryRecordType}`
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)
-      this.setState({data: res.content,totalLength:res.totalElements})
+      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number)})
       console.log('执行到这里')
     }).catch(err => {
       console.log(err)
@@ -492,7 +497,7 @@ class Person extends Component {
     this.setState({dowloadUrl: newurl, searchUrl:url})
     getfun(url).then(res =>{
       console.log(res)
-      this.setState({data: res.content, totalLength:res.totalElements})
+      this.setState({data: res.content, totalLength:res.totalElements,currentPage:(1+res.number)})
     }).catch(err => console.log(err))
 
   }
@@ -558,7 +563,7 @@ class Person extends Component {
   downLoad = () =>{
     const {dowloadUrl,empCode, empName, levelName} = this.state
     console.log(dowloadUrl)
-    let url = `${IP}/employee/exportEmployee?${empCode}&empName=${empName}&levelName=${levelName}`
+    let url = `${IP}/employee/exportEmployee?${empCode}&empName=${empName}&positionName=${levelName}`
     console.log(url)
     this.setState({downLoad:url})
   }
@@ -699,7 +704,7 @@ class Person extends Component {
                   pagination={{  // 分页
                     simple: false,
                     pageSize: 10 ,
-                    // current: this.state.current,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}
