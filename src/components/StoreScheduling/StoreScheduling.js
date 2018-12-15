@@ -231,7 +231,8 @@ class StoreScheduling extends Component{
       year: depClassYear,
       overtimeType,
       schedulingId:depClassName,
-      deptId:depId
+      deptId:depId,
+      recordType:'store'
     }
     console.log(sendData)
     let postUrl = `${IP}/employeeScheduling/department`

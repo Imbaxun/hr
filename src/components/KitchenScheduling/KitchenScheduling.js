@@ -231,7 +231,8 @@ class KitchenScheduling extends Component{
       year: depClassYear,
       overtimeType,
       schedulingId:depClassName,
-      deptId:depId
+      deptId:depId,
+      recordType:'kitchen'
     }
     console.log(sendData)
     let postUrl = `${IP}/employeeScheduling/department`
