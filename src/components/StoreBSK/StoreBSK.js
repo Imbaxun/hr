@@ -67,6 +67,10 @@ class StoreBSK extends Component {
           title: '发起日期',
           dataIndex: 'submissionDate',
         },
+        {
+          title: '结束时间',
+          dataIndex: 'finishDate'
+        }
       ],
       submissionDateStart: '',
       submissionDateEnd: '',

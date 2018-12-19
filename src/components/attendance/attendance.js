@@ -19,8 +19,8 @@ class Attendance extends Component{
       searchyear: mydate.getFullYear(),
       searchmonth: mydate.getMonth()+1<10 ? `0${ mydate.getMonth()+1}`: mydate.getMonth()+1,
       selectTree:'',
-      showData: '原始考勤数据记录',
-      tableType: '原始考勤数据记录',
+      showData: '工业园原始考勤数据记录',
+      tableType: '工业园原始考勤数据记录',
       columns:[],
       data: [],
       dowloadUrl: '',
@@ -73,26 +73,27 @@ class Attendance extends Component{
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     switch(tableType) {
       case "原始考勤数据记录":
-      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       // let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${}`
       break
       case "月度考勤汇总":
-      url =`${IP}/monthPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "年度考勤汇总":
-      url =`${IP}/yearPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/yearPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
+      break
+      case "工业园原始考勤数据记录":
+      url =`${IP}/yearPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       default:
-      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
     }
     this.getHead(url,hurl)
   }
 
   onChangeMonth = (date, dateString) =>{
-    // console.log(date._d.getFullYear() + date._d.getMonth()) 
     console.log(date)
     if(date === null) {
-      console.log('222')
       this.setState({searchyear: '',searchmonth:''})
     }else{
       this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
@@ -127,19 +128,17 @@ class Attendance extends Component{
     let url =''
     switch(tableType) {
       case "原始考勤数据记录":
-      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "月度考勤汇总":
-      url =`${IP}/monthPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "年度考勤汇总":
-      url =`${IP}/yearPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/yearPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       default:
-      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
     }
-    console.log(url)
-    console.log(hurl)
     this.getHead(url,hurl)
   }
 
@@ -159,16 +158,16 @@ class Attendance extends Component{
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     switch(tableType) {
       case "原始考勤数据记录":
-      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "月度考勤汇总":
-      url =`${IP}/monthPunchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "年度考勤汇总":
-      url =`${IP}/yearPunchRecord/solr?&page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/yearPunchRecord/solr?&page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       default:
-      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
     }
     // let url =`${IP}/basePunchRecord?page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
     this.getHead(url,hurl)
