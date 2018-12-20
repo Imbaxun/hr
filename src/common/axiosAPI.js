@@ -42,4 +42,8 @@ export const API = {
     userRole: '/sys/role',  //角色查询
     permissionManagerUrl: '/sys/permission' , //权限设置
     WorkRuleUrl: '/tCheckWorkRule', //考勤规则
+
+    AdministrativeReportBasePunchRecord: '/report/administrative/basePunchRecord',     // 工业园考勤基础数据
+    AdministrativeReportMonthPunchRecord:'/report/administrative/monthPunchRecord',    // 工业园考勤月度报表
+    AdministrativeReportYearPunchRecord:'/report/administrative/yearPunchRecord'       // 工业园考勤年度报表
 }

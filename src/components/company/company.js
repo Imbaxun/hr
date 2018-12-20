@@ -401,7 +401,9 @@ class Company extends Component {
             dataSource={this.state.data}
             bordered
             rowKey='code'
+            /*
             rowSelection={rowSelection}
+            */
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,

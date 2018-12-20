@@ -387,7 +387,9 @@ class department extends Component {
             dataSource={this.state.data}
             bordered
             rowKey='id'
+            /*
             rowSelection={rowSelection}
+            */
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,
