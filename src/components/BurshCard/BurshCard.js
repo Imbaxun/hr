@@ -296,7 +296,7 @@ render() {
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">补刷卡管理列表</h3>
+              <h3 className="comtitle">门店补刷卡管理列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
                   {/* <Col span="3"><Button  >编辑</Button></Col> */}

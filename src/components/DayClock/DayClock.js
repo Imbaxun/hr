@@ -37,7 +37,7 @@ class DayClock extends Component {
     return(
       <div>
         <div className="comMain">
-        <h3 className="comtitle">人员每日打卡查询</h3>
+        <h3 className="comtitle">门店人员每日打卡查询</h3>
         </div>
         <Row type="flex" justify="space-around" style={{marginTop:30}}>
           <Col span='10'>

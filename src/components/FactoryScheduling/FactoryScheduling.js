@@ -336,7 +336,7 @@ class FactoryScheduling extends Component{
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">排班查询列表</h3>
+              <h3 className="comtitle">工业园排班查询列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button  onClick={this.depClass}>部门排班</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
