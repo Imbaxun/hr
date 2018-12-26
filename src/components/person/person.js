@@ -597,9 +597,11 @@ class Person extends Component {
     if(bb.roleName === 'admin'){
       return(
         <Row type="flex" justify='space-end'>
+          {/*
           <Col span="3"><Button icon="plus" onClick={() =>this.addPerson()} >新增</Button></Col>
           <Col span="3"><Button icon="edit" onClick={this.changePerson}>编辑</Button></Col>
           <Col span="3"><Button icon="delete" onClick={this.delAddData}>删除</Button></Col>
+          */}
         </Row>
       )
     }else{
@@ -710,12 +712,14 @@ class Person extends Component {
                   }}
                 />
                 <div>
+                  {/* 
                   <Button onClick={this.downLoad}><a href={this.state.downLoad}>导出</a></Button>
                   <Upload {...up}>
                     <Button>
                       <Icon type="upload" /> 人员导入
                     </Button>
                   </Upload>
+                  */}
                 </div>
             </div>
             <Modal
