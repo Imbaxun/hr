@@ -81,6 +81,7 @@ import BasePunchRecordSolr from '../components/BasePunchRecordSolr/BasePunchReco
 import FactoryReport from '../components/factory/FactoryReport'
 import FactoryHrTimeTacking from '../components/TimeTacking/FactoryHrTimeTacking'//工业园考勤处理类型
 import LeaveA from '../components/leave/leaveA';
+import WorkOverTimeA from '../components/WorkOverTime/WorkOverTimeA'//工业园加班处理
 
 
 export const routFirst = () =>{
@@ -111,6 +112,7 @@ export const mainRouters = () => {
       <Route path='/main/LeaveA' component={LeaveA} />
       <Route path='/main/Travel' component={Travel} />
       <Route path='/main/WorkOverTime' component={WorkOverTime} />
+      <Route path='/main/WorkOverTimeA' component={WorkOverTimeA} />
       <Route path='/main/CheckingData' component={CheckingData} />
       <Route path='/main/CheckSolr' component={CheckSolr} />
       <Route path='/main/HolidaySeting' component={HolidaySeting} />
