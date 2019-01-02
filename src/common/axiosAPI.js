@@ -43,6 +43,9 @@ export const API = {
     permissionManagerUrl: '/sys/permission' , //权限设置
     WorkRuleUrl: '/tCheckWorkRule', //考勤规则
 
+    FactoryHrTacking: '/factoryhr/checkWorkType',   //工业园考勤处理类型
+    FactoryBurshCardUrl: '/factoryhr/checkWorkHandle/search',  //工业园补刷卡考勤查询
+
     AdministrativeReportBasePunchRecord: '/report/administrative/basePunchRecord',     // 工业园考勤基础数据
     AdministrativeReportMonthPunchRecord:'/report/administrative/monthPunchRecord',    // 工业园考勤月度报表
     AdministrativeReportYearPunchRecord:'/report/administrative/yearPunchRecord'       // 工业园考勤年度报表

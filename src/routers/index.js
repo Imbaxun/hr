@@ -79,6 +79,8 @@ import workRule from '../components/WorkRule/WorkRule'  //考勤规则
 import CompanyTravel from '../components/CompanyTravel/CompanyTravel'
 import BasePunchRecordSolr from '../components/BasePunchRecordSolr/BasePunchRecordSolr'
 import FactoryReport from '../components/factory/FactoryReport'
+import FactoryHrTimeTacking from '../components/TimeTacking/FactoryHrTimeTacking'//工业园考勤处理类型
+import LeaveA from '../components/leave/leaveA';
 
 
 export const routFirst = () =>{
@@ -106,12 +108,14 @@ export const mainRouters = () => {
       <Route path='/main/ClassSearch' component={ClassSearch} />
       <Route path='/main/BurshCard' component={BurshCard} />
       <Route path='/main/Leave' component={Leave} />
+      <Route path='/main/LeaveA' component={LeaveA} />
       <Route path='/main/Travel' component={Travel} />
       <Route path='/main/WorkOverTime' component={WorkOverTime} />
       <Route path='/main/CheckingData' component={CheckingData} />
       <Route path='/main/CheckSolr' component={CheckSolr} />
       <Route path='/main/HolidaySeting' component={HolidaySeting} />
       <Route path='/main/TimeTacking' component={TimeTacking} />
+      <Route path='/main/FactoryTimeTacking' component={FactoryHrTimeTacking} />
       <Route path='/main/Attendance' component={Attendance} />
       <Route path='/main/StatisticalForm' component={StatisticalForm} />
       <Route path='/main/CheckingStore' component={CheckingStore} />

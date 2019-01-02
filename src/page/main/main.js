@@ -178,7 +178,7 @@ class Main extends Component {
           <Header style={{ background: '#fff', padding: 0 }} >
             <Row>
               <Col span="6" offset="6">
-                <h1>人员管理系统</h1>
+                <h1>考勤管理系统</h1>
               </Col>
               <Col span="3" offset="6"><p style={{fontSize:12,fontWeight:'bold'}}>{bb.userName}</p></Col>
               <Col span='3'>
