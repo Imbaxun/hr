@@ -46,7 +46,15 @@ class ChoicePerson extends Component{
 
   searchPerson = () =>{
     // this.setState({ tableShow: true })
-    const {Scode, Snaem} = this.state
+    let {Scode, Snaem} = this.state
+    if(!Snaem)
+    {
+      Snaem=''
+    }
+    if(!Scode)
+    {
+      Scode=''
+    }
     let url = `${IP}${Employee}?empName=${Snaem}&empCode=${Scode}`
     console.log(url)
     getfun(url).then(res => this.setState({data:res.content, totalLength:res.totalElements})).catch(err => console.log(err))

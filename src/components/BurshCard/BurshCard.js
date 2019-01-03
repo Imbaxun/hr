@@ -288,7 +288,7 @@ render() {
             <Button>去组织架构</Button>
             </Col>
             <Col span='5'>
-            <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>  
+            {/* <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>   */}
             </Col>
             <Col span="5">
             <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
