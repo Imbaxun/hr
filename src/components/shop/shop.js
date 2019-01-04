@@ -368,7 +368,8 @@ class Shop extends Component {
             <Col span="5">
               <div style={{display:'flex'}}>
                 <Button type='primary' >门店类型</Button>  
-                <Select  style={{ width: 120 }} onChange={(e) =>{this.setState({queryRecordType:e})}}>
+                <Select  style={{ width: 120 }} value={this.state.queryRecordType} onChange={(e) =>{this.setState({queryRecordType:e})}}>
+                  <Option value="">请选择</Option>
                   <Option value="store">门店</Option>
                   <Option value="kitchen" >卤味厨房</Option>
                 </Select>
@@ -380,7 +381,7 @@ class Shop extends Component {
             <Button>去组织架构</Button>
             </Col> */}
             <Col span='5'>
-            <Button icon="reload" onClick={()=>this.setState({code:'',name:''})}  type="primary">重置</Button>  
+            <Button icon="reload" onClick={()=>this.setState({code:'',name:'',queryRecordType:''})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
             <Button  icon="search" onClick={() =>this.searchData()} type="primary">查询</Button>

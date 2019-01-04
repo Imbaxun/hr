@@ -125,17 +125,17 @@ startData = () =>{
     }
 
   onChangeMonth = (date, dateString) =>{
-    // console.log(date._d.getFullYear() + date._d.getMonth()) 
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    if(date&&date._d)
+    {
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    } 
   }
 
   choicedPerson = (item, record) =>{
-    console.log(record)
     this.setState({addPerId:item.empId, addPerName:item.name, addperData:record})
   }
 
   onPanelChange= (value, mode) =>{
-    console.log(mode)
     this.setState({year:value._d.getFullYear(),month:value._d.getMonth()+1})
   }
 
@@ -166,15 +166,12 @@ startData = () =>{
 
   selectDate = (item) =>{
     const {tags} = this.state
-    console.log(tags)
     let selectDate = item._d.getDate().toString()
     let newArr = tags.push(selectDate)
-    console.log(newArr)
     this.setState({tags: tags})
   }
   handleClose = (removedTag) => {
     const tags = this.state.tags.filter(tag => tag !== removedTag);
-    console.log(tags);
     this.setState({ tags });
   }
   bqtype = (item) =>{

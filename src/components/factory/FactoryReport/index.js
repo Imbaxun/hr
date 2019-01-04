@@ -21,8 +21,11 @@ export default class FactoryReport extends React.Component
 
     onChangeMonth=(date,a,b)=>
     {
-        let d=date._d
-        this.setState({recordYear:d.getFullYear(),recordMonth:(d.getMonth()+1)})
+        if(date&&date._d)
+        {
+            let d=date._d
+            this.setState({recordYear:d.getFullYear(),recordMonth:(d.getMonth()+1)})
+        }
     }
 
     downLoad=()=>
@@ -34,11 +37,13 @@ export default class FactoryReport extends React.Component
         if(!recordYear||!recordMonth)
         {
             this.openInfoDialog('消息提醒','请选择报表日期')
+            return
         }
 
         if(!reportType)
         {
             this.openInfoDialog('消息提醒','请选择报表类型')
+            return
         }
 
 

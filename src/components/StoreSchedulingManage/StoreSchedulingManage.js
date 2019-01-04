@@ -136,12 +136,12 @@ class StoreSchedulingManage extends Component{
   }
 
   onChangeMonth= (date, dateString) =>{
-    // console.log(date._d.getFullYear())
-    let year = date._d.getFullYear()
-    let month = date._d.getMonth()+1
-    console.log(year)
-    console.log(month)
-    this.setState({month:month,year:year})
+    if(date&&date._d)
+    {
+      let year = date._d.getFullYear()
+      let month = date._d.getMonth()+1
+      this.setState({month:month,year:year})
+    }
   }
 
   searchData = () =>{
