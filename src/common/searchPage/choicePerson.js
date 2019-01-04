@@ -39,9 +39,7 @@ class ChoicePerson extends Component{
   }
   componentDidMount() {
     let url = `${IP}${Employee}`
-    console.log(url)
     getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
-    console.log(this.props.clearDate)
   }
 
   searchPerson = () =>{

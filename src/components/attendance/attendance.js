@@ -117,13 +117,16 @@ class Attendance extends Component{
     }
   }
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({empCode:item.empCode})
   }
 
   searchData = () =>{
-    const{empCode, searchmonth, searchyear,tableType, selectTree} = this.state
-    console.log(tableType)
+    let {empCode, searchmonth, searchyear,tableType, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empCode=''
+    }
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     let url =''
     switch(tableType) {
@@ -151,9 +154,11 @@ class Attendance extends Component{
   // }
 
   changePage = (page, pageSize) =>{
-    const{empCode, searchmonth, searchyear,tableType} = this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empCode, searchmonth, searchyear,tableType} = this.state
+    if(this.state.clearDate)
+    {
+      empCode=''
+    }
     let url =''
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     switch(tableType) {
@@ -233,7 +238,7 @@ class Attendance extends Component{
             <div className="comMain">
               <h3 className="comtitle">{this.state.showData}</h3>
                 <Row type="flex" justify='space-end'>
-                  {/* <Col span="3"><Button onClick = {() => this.setState({clearDate:true})}>重置</Button></Col> */}
+                  <Col span="3"><Button onClick = {() => this.setState({clearDate:true})}>重置</Button></Col>
                   <Col span="3"><Button onClick = {this.searchData} >查询</Button></Col>
                 </Row>
                 <Table

@@ -135,9 +135,11 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {empId, searchyear,searchmonth,selectTree} =this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empId, searchyear,searchmonth,selectTree} =this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
@@ -174,7 +176,11 @@ startData = () =>{
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
   searchData = () =>{
-    const {empId, searchyear,searchmonth, selectTree} = this.state
+    let {empId, searchyear,searchmonth, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url = `${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&empId=${empId}&mounth=${ayear}/${amonth}`
