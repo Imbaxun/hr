@@ -140,18 +140,27 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {empId, searchyear,searchmonth,selectTree} =this.state
-    let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    let {empId, searchyear,searchmonth,selectTree} =this.state
+    let amonth = ''
     let ayear = searchyear.toString()
-    /*
-    if()
+    
+    if(this.state.clearDate)
     {
-
-    }else{
-
+      empId=""
     }
-    */
-    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
+
+    if(searchmonth)
+    {
+      amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    }
+
+    let month=''
+    if(amonth&&ayear)
+    {
+      month=`${ayear}/${amonth}`
+    }
+
+    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${month}`
     getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 

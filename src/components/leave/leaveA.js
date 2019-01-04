@@ -24,8 +24,8 @@ constructor(props) {
     empId: '',
     totalLength: '',
     selectTree: '',
-    searchyear: mydate.getFullYear(),
-    searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+    searchyear: '',
+    searchmonth: '',
     stringDate: '',
     tags: ['补刷卡日期:'],
     columns: [
@@ -135,9 +135,11 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {empId, searchyear,searchmonth,selectTree} =this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empId, searchyear,searchmonth,selectTree} =this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
@@ -170,14 +172,26 @@ startData = () =>{
   }
 
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
   searchData = () =>{
-    const {empId, searchyear,searchmonth, selectTree} = this.state
+    let {empId, searchyear,searchmonth, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
+
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let month=''
+
+    if(amonth&&ayear)
+    {
+      month=`${ayear}/${amonth}`
+    }
+
+    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${month}&${selectTree}`
     console.log(url)
     getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
@@ -284,7 +298,7 @@ render() {
               <Col span="8">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >请假月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                  <MonthPicker onChange={this.onChangeMonth} format={monthFormat} />
                 </div>
               </Col>
           </Row>
