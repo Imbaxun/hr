@@ -16,8 +16,8 @@ class Attendance extends Component{
   constructor(props){
     super(props)
     this.state = {
-      searchyear: mydate.getFullYear(),
-      searchmonth: mydate.getMonth()+1<10 ? `0${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+      searchyear: '',
+      searchmonth: '',
       selectTree:'',
       showData: '工业园原始考勤数据记录',
       tableType: '工业园原始考勤数据记录',
@@ -117,13 +117,16 @@ class Attendance extends Component{
     }
   }
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({empCode:item.empCode})
   }
 
   searchData = () =>{
-    const{empCode, searchmonth, searchyear,tableType, selectTree} = this.state
-    console.log(tableType)
+    let {empCode, searchmonth, searchyear,tableType, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empCode=''
+    }
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     let url =''
     switch(tableType) {
@@ -151,9 +154,11 @@ class Attendance extends Component{
   // }
 
   changePage = (page, pageSize) =>{
-    const{empCode, searchmonth, searchyear,tableType} = this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empCode, searchmonth, searchyear,tableType} = this.state
+    if(this.state.clearDate)
+    {
+      empCode=''
+    }
     let url =''
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     switch(tableType) {
@@ -207,7 +212,12 @@ class Attendance extends Component{
               <Col span="10">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                  <MonthPicker onChange={this.onChangeMonth} format={monthFormat} />
+                  {
+                    /**
+                     * <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                     */
+                  }
                 </div>
               </Col>
             </Row>
@@ -215,7 +225,7 @@ class Attendance extends Component{
             <Col span='10'>
               <div style={{ display: 'flex',marginBottom:20 }}>
                 <Button type='primary' >考勤类型</Button>
-                  <Select  style={{ width: 250}} onChange={this.checkType}>
+                  <Select  style={{ width: 250}} onChange={this.checkType} defaultValue="1" >
                     <Option value="1">原始考勤记录</Option>
                     <Option value="2">月度考勤汇总</Option>
                     <Option value="3">年度考勤汇总</Option>

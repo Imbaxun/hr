@@ -70,7 +70,7 @@ class CheckSolr extends Component{
       ]
     }
   }
-    componentDidMount() {
+  componentDidMount() {
     this.start()
     let url = `${IP}${Employee}`
     getfun(url).then(res => this.setState({data: res.content})).catch(err =>console.log(err))
@@ -113,6 +113,10 @@ class CheckSolr extends Component{
       )).catch(err => console.log(err))
   }
 
+  resetQueryParams = () =>{
+    this.setState({code:'',aname:''})
+  }
+
   render() {
 
     return(
@@ -135,10 +139,19 @@ class CheckSolr extends Component{
             </div>
           </Col>
           <Col span='5'>
-          <RangePicker  onChange={this.selectDate} />
+            <RangePicker  onChange={this.selectDate} />
           </Col>
         </Row>
-        <Button type='primary' onClick={this.searchData}>查询</Button>
+        <Row>
+          <Col span='5'>
+          </Col>
+          <Col span='5'>
+            <Button type='primary' onClick={this.resetQueryParams}>重置</Button>
+          </Col>
+          <Col span='5'>
+            <Button type='primary' onClick={this.searchData}>查询</Button>
+          </Col>
+        </Row>
         <Table 
             bordered
             size='small'

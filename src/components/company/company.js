@@ -239,10 +239,8 @@ class Company extends Component {
 
   searchData = () =>{
     const {name,code,bigArea} = this.state
-    console.log(this.state)
     const { IP, searchcom} = API
     let url = `${IP}${searchcom}?name=${name}&code=${code}&bigArea=${bigArea}`
-    console.log(url)
     getfun(url).then(res => {
       console.log(res)
       let responseData = []
@@ -253,14 +251,13 @@ class Company extends Component {
           item.state = '已启用'
         }
         responseData.push(item)
-        // console.log(newArr)
         this.setState({data: responseData})
       });
-      console.log("abcdef="+responseData.length)
       if(0 === responseData.length)
       {
         this.setState({data: responseData})
       }
+      this.setState({totalLength:res.totalElements})
     }).catch(err => {
       console.log(err)
     })  

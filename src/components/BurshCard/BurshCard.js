@@ -24,8 +24,10 @@ constructor(props) {
     empId: '',
     totalLength: '',
     selectTree: '',
-    searchyear: mydate.getFullYear(),
-    searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+    //searchyear: mydate.getFullYear(),
+    //searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+    searchyear: '',
+    searchmonth: '',
     stringDate: '',
     tags: ['补刷卡日期:'],
     columns: [
@@ -98,7 +100,7 @@ componentDidMount() {
 }
 
 startData = () =>{
-  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=12&page=0&size=10`
+  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=12&page=1&size=10`
   getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
 }
 
@@ -112,48 +114,64 @@ startData = () =>{
       console.log(item)
       this.setState({selectTree: item})
       //点击查询的url
-      let searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=12&month=${ayear}/${amonth}`
-      console.log(searchUrl)
+      let searchUrl = ''
+      if(ayear||amonth) {
+        searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=12&month=${ayear}/${amonth}`
+      }else{
+        searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=12`
+      }
       getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
 
     }
 
   onChangeMonth = (date, dateString) =>{
-    // console.log(date._d.getFullYear() + date._d.getMonth()) 
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    if(date&&date._d)
+    {
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    } 
   }
 
   choicedPerson = (item, record) =>{
-    console.log(record)
     this.setState({addPerId:item.empId, addPerName:item.name, addperData:record})
   }
 
   onPanelChange= (value, mode) =>{
-    console.log(mode)
     this.setState({year:value._d.getFullYear(),month:value._d.getMonth()+1})
   }
 
   changePage = (page, pageSize) =>{
-    const {empId, searchyear,searchmonth,selectTree} =this.state
-    let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    let {empId, searchyear,searchmonth,selectTree} =this.state
+    let amonth = ''
     let ayear = searchyear.toString()
-    console.log(page)
-    console.log(pageSize)
-    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
+    
+    if(this.state.clearDate)
+    {
+      empId=""
+    }
+
+    if(searchmonth)
+    {
+      amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    }
+
+    let month=''
+    if(amonth&&ayear)
+    {
+      month=`${ayear}/${amonth}`
+    }
+
+    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${month}`
     getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
     const {tags} = this.state
-    console.log(tags)
     let selectDate = item._d.getDate().toString()
     let newArr = tags.push(selectDate)
-    console.log(newArr)
     this.setState({tags: tags})
   }
   handleClose = (removedTag) => {
     const tags = this.state.tags.filter(tag => tag !== removedTag);
-    console.log(tags);
     this.setState({ tags });
   }
   bqtype = (item) =>{
@@ -171,17 +189,45 @@ startData = () =>{
   }
 
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
 
 
   searchData = () =>{
-    const {empId, searchyear,searchmonth, selectTree} = this.state
-    let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    let {empId, searchyear,searchmonth, selectTree} = this.state
+    let amonth =''
+    if(searchmonth)
+    {
+      amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
+    }else{
+      amonth=''
+    }
     let ayear = searchyear.toString()
-    let url = selectTree === ''? `${IP}${BurshCardUrl}?checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}` : `${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}`
-    console.log(url)
+
+    if(this.state.clearDate)
+    {
+      empId=""
+    }
+    
+    let url = ''
+    if(selectTree=='')
+    {
+      if(ayear||amonth)
+      {
+        url=`${IP}${BurshCardUrl}?checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}`
+      }else{
+        url=`${IP}${BurshCardUrl}?checkWorkTypeId=12&empId=${empId}`
+      }
+    }else{
+      if(ayear||amonth)
+      {
+        url=`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}`
+      }else{
+        url=`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=12&empId=${empId}`
+      }
+    }
+
     getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err =>console.log(err))
   }
 
@@ -279,19 +325,19 @@ render() {
               <Col span="8">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >补刷卡月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                  <MonthPicker onChange={this.onChangeMonth} format={monthFormat} />
                 </div>
               </Col>
           </Row>
             <Row type="flex" justify="center"  style={{marginBottom:10}}>
             <Col span="5">
-            <Button>去组织架构</Button>
+              <Button>去组织架构</Button>
             </Col>
             <Col span='5'>
-            <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>  
+              <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
-            <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
+              <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
             </Col>
           </Row>
           <hr />
