@@ -70,7 +70,7 @@ class workRule extends Component {
     sendArr[8] = time9
     let url = `${IP}${WorkRuleUrl}`
     putfun2(url ,sendArr).then(res =>{
-      if(res == 'success'){
+      if(res === 'success'){
          notification['success']({
           message: 'success',
           description: '保存成功',
