@@ -16,11 +16,11 @@ class Attendance extends Component{
   constructor(props){
     super(props)
     this.state = {
-      searchyear: mydate.getFullYear(),
-      searchmonth: mydate.getMonth()+1<10 ? `0${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+      searchyear: '',
+      searchmonth: '',
       selectTree:'',
-      showData: '原始考勤数据记录',
-      tableType: '原始考勤数据记录',
+      showData: '工业园原始考勤数据记录',
+      tableType: '工业园原始考勤数据记录',
       columns:[],
       data: [],
       dowloadUrl: '',
@@ -38,7 +38,7 @@ class Attendance extends Component{
   start = () =>{
     const {searchmonth, searchyear} =this.state
     let url =  `${IP}/punchRecord/solr?page=0&size=10&recordYear=${searchyear}&recordMonth=${searchmonth}`
-    let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=原始考勤数据记录`
+    let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=工业园原始考勤数据记录`
     // getfun(hurl).then(res => {
     //   if(res.msg === "success"){
     //     this.setState({columns:res.data})
@@ -73,26 +73,27 @@ class Attendance extends Component{
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     switch(tableType) {
       case "原始考勤数据记录":
-      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       // let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${}`
       break
       case "月度考勤汇总":
-      url =`${IP}/monthPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "年度考勤汇总":
-      url =`${IP}/yearPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/yearPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
+      break
+      case "工业园原始考勤数据记录":
+      url =`${IP}/yearPunchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       default:
-      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${item}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
     }
     this.getHead(url,hurl)
   }
 
   onChangeMonth = (date, dateString) =>{
-    // console.log(date._d.getFullYear() + date._d.getMonth()) 
     console.log(date)
     if(date === null) {
-      console.log('222')
       this.setState({searchyear: '',searchmonth:''})
     }else{
       this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
@@ -116,30 +117,31 @@ class Attendance extends Component{
     }
   }
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({empCode:item.empCode})
   }
 
   searchData = () =>{
-    const{empCode, searchmonth, searchyear,tableType, selectTree} = this.state
-    console.log(tableType)
+    let {empCode, searchmonth, searchyear,tableType, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empCode=''
+    }
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     let url =''
     switch(tableType) {
       case "原始考勤数据记录":
-      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "月度考勤汇总":
-      url =`${IP}/monthPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "年度考勤汇总":
-      url =`${IP}/yearPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/yearPunchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       default:
-      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?${selectTree}&page=0&size=10&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
     }
-    console.log(url)
-    console.log(hurl)
     this.getHead(url,hurl)
   }
 
@@ -152,23 +154,25 @@ class Attendance extends Component{
   // }
 
   changePage = (page, pageSize) =>{
-    const{empCode, searchmonth, searchyear,tableType} = this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empCode, searchmonth, searchyear,tableType} = this.state
+    if(this.state.clearDate)
+    {
+      empCode=''
+    }
     let url =''
     let hurl = `${IP}/punchRecordCommon/getTableHand?queryType=${tableType}`
     switch(tableType) {
       case "原始考勤数据记录":
-      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "月度考勤汇总":
-      url =`${IP}/monthPunchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/monthPunchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       case "年度考勤汇总":
-      url =`${IP}/yearPunchRecord/solr?&page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/yearPunchRecord/solr?&page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
       break
       default:
-      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}`
+      url =`${IP}/punchRecord/solr?page=${page-1}&size=${pageSize}&empCode=${empCode}&recordYear=${searchyear}&recordMonth=${searchmonth}&recordType=Administrative`
     }
     // let url =`${IP}/basePunchRecord?page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
     this.getHead(url,hurl)
@@ -208,7 +212,12 @@ class Attendance extends Component{
               <Col span="10">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                  <MonthPicker onChange={this.onChangeMonth} format={monthFormat} />
+                  {
+                    /**
+                     * <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                     */
+                  }
                 </div>
               </Col>
             </Row>
@@ -216,7 +225,7 @@ class Attendance extends Component{
             <Col span='10'>
               <div style={{ display: 'flex',marginBottom:20 }}>
                 <Button type='primary' >考勤类型</Button>
-                  <Select  style={{ width: 250}} onChange={this.checkType}>
+                  <Select  style={{ width: 250}} onChange={this.checkType} defaultValue="1" >
                     <Option value="1">原始考勤记录</Option>
                     <Option value="2">月度考勤汇总</Option>
                     <Option value="3">年度考勤汇总</Option>

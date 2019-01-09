@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
 import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
-import './CompanyTravel.css'
+import './WorkOverTime.css'
 import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
@@ -10,12 +10,12 @@ import ChoicePerson from '../../common/searchPage/choicePerson'
 
 const { IP,FactoryBurshCardUrl} = API
 const { TextArea } = Input;
-const { MonthPicker, RangePicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const Option = Select.Option;
 const mydate = new Date()
 const monthFormat = 'YYYY/MM';
 
-class CompanyTravel extends Component{
+class WorkOverTimeA extends Component{
 constructor(props) {
   super(props);
   this.state={
@@ -50,7 +50,7 @@ constructor(props) {
         dataIndex: 'storeName'
       },
       {
-        title: '请假类型',
+        title: '加班类型',
         dataIndex: 'checkWorkTypeName'
       }, 
       {
@@ -62,7 +62,7 @@ constructor(props) {
         dataIndex: 'endDate'
       },
       {
-        title: '请假天数',
+        title: '加班天数',
         dataIndex: 'days'
       }, 
       {
@@ -94,12 +94,12 @@ constructor(props) {
 
 componentDidMount() {
   this.startData()
-  let url = `${IP}/factoryhr/checkWorkType/son/4`
+  let url = `${IP}/factoryhr/checkWorkType/son/5`
   getfun(url).then(res => this.setState({typeArr: res})).catch(err =>console.log(err))
 }
 
 startData = () =>{
-  let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=4&page=0&size=10`
+  let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=5&page=0&size=10`
   getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
 }
 
@@ -113,9 +113,9 @@ startData = () =>{
       console.log(item)
       this.setState({selectTree: item})
       //点击查询的url
-      let searchUrl = `${IP}${FactoryBurshCardUrl}?${item}&checkWorkTypeId=4&month=${ayear}/${amonth}`
+      let searchUrl = `${IP}${FactoryBurshCardUrl}?${item}&checkWorkTypeId=5&month=${ayear}/${amonth}`
       console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
 
     }
 
@@ -135,12 +135,14 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {empId, searchyear,searchmonth,selectTree} =this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empId, searchyear,searchmonth,selectTree} =this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=4&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
@@ -170,60 +172,57 @@ startData = () =>{
   }
 
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
   searchData = () =>{
-    const {empId, searchyear,searchmonth, selectTree} = this.state
+    let {empId, searchyear,searchmonth, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=4&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let url = `${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&empId=${empId}&mounth=${ayear}/${amonth}`
     console.log(url)
     getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
 
   addBSdate = (date, dateString) =>{
-    console.log(date)
-    console.log(dateString)
-    let year = date[0]._d.getFullYear()
-    let month =  date[0]._d.getMonth()+1<10 ? `0${ date[0]._d.getMonth()+1}`: date[0]._d.getMonth()+1
-    let day = date[0]._d.getDate()<10 ? `0${ date[0]._d.getDate()}`: date[0]._d.getDate()
-    let start = `${year}/${month}/${day}`
-    let year1 = date[1]._d.getFullYear()
-    let month1 =  date[1]._d.getMonth()+1<10 ? `0${ date[1]._d.getMonth()+1}`: date[1]._d.getMonth()+1
-    let day1 = date[1]._d.getDate()<10 ? `0${ date[1]._d.getDate()}`: date[1]._d.getDate()
-    let end = `${year1}/${month1}/${day1}`
-    // console.log(aa)
-    let aa = date[1]._d.getTime()-date[0]._d.getTime()
-    let bb = parseInt(aa/(1000*60*60*24),10)
-    console.log(bb)
-    this.setState({addDateStart:start,addDateEnd:end,charDays:bb})
+    // console.log(date._d)
+    let year = date._d.getFullYear()
+    let month =  date._d.getMonth()+1<10 ? `0${ date._d.getMonth()+1}`: date._d.getMonth()+1
+    let day = date._d.getDate()<10 ? `0${ date._d.getDate()}`: date._d.getDate()
+    let aa = `${year}/${month}/${day}`
+    console.log(aa)
+    this.setState({addDate:aa})
   }
   addBS = () =>{
-    this.setState({visible1:true})
-    const {addDateStart,addDateEnd, charDays, addbqType ,addReason, addperData}= this.state
-
+    // this.setState({visible1:true})
+    const {addDate,  addbqType ,addReason, addperData}= this.state
     let sendData ={
       reason:addReason,
       empId:addperData.empId,
       companyId: addperData.companyId,
       deptId: addperData.deptId,
-      days:charDays,
+      days:'1',
       source:'人资',
-      startDate:addDateStart,
-      endDate:addDateEnd,
-      month:addDateStart,
+      startDate:addDate,
+      endDate:addDate,
+      month:addDate,
       storeId: addperData.storeId,
-      checkWorkTypeId:4,
+      checkWorkTypeId:5,
       checkWorkTypeSonId:addbqType
     }
-    if(addDateStart === '' || addperData.empId === '') {
+    let url =`${IP}/factoryhr/checkWorkHandle`
+
+    if(addDate === '' || addperData.empId === '') {
       alert('请填入完整信息')
     }else{
-      let url =`${IP}/factoryhr/checkWorkHandle`
       postfun2(url, sendData).then(res =>{
         if(res ==='success'){
           alert('新增成功')
+          this.setState({visible1:false})
           this.startData()
         }
       }).catch(err => console.log(err))
@@ -232,7 +231,6 @@ startData = () =>{
 
   delTbale = () =>{
     const {choiceTable} =this.state
-
     if(choiceTable.length === 0) {
       notification['error']({
         message: '请勾选删除信息',
@@ -245,15 +243,16 @@ startData = () =>{
         newArr.push(id)
       })
       let idnumber = newArr.toString()
-      let url = `${IP}/checkWorkHandle/${idnumber}`
+      let url = `${IP}/factoryhr/checkWorkHandle/${idnumber}`
       deletefun(url).then(res =>{
         if(res === 'success'){
           alert('删除成功')
+          this.setState({visible2:false, choiceTable: []})
           this.startData()
-          this.setState({ choiceTable: []})
         }
       }).catch(err =>console.log(err))
     }
+
   }
 
 render() {
@@ -279,11 +278,11 @@ render() {
           <Col span="18">
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
               <Col span="5">
-              <ChoicePerson getpepple={this.getpepple} clearDate= {this.state.clearDate} />
+              <ChoicePerson getpepple={this.getpepple} clearDate= {this.state.clearDate}/>
               </Col>
               <Col span="8">
                 <div style={{ display: 'flex' }}>
-                  <Button type='primary' >出差月份</Button>
+                  <Button type='primary' >加班月份</Button>
                   <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
                 </div>
               </Col>
@@ -301,7 +300,7 @@ render() {
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">出差管理列表</h3>
+              <h3 className="comtitle">加班管理列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
                   {/* <Col span="3"><Button  >编辑</Button></Col> */}
@@ -336,7 +335,7 @@ render() {
         </Row>
         <Modal
           visible = {this.state.visible1}
-          title="新增出差处理"
+          title="新增加班处理"
           onOk={this.addBS}
           onCancel={() =>this.setState({visible1:false})}
           width={1000}
@@ -348,8 +347,8 @@ render() {
             <Col span='12'>
             <div style={{ display: 'flex' }}>
             <Button type='primary' >请选择</Button>
-            {/* <DatePicker onChange={this.addBSdate} /> */}
-            <RangePicker onChange={this.addBSdate} />
+            <DatePicker onChange={this.addBSdate} />
+            {/* <RangePicker onChange={this.addBSdate} /> */}
             </div>
             </Col>
             <Col span='4'></Col>
@@ -357,13 +356,13 @@ render() {
           </Col>
           <Col span="8">
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >出差类型</Button>
+            <Button type='primary' >加班类型</Button>
               <Select  style={{ width: 120 }} onChange={this.bqtype}>
                 {newTypeArr}
               </Select>
             </div>
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >出差事由</Button>
+            <Button type='primary' >加班事由</Button>
               <TextArea onChange={(e) =>{this.setState({addReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
             </div>
           </Col>
@@ -388,4 +387,4 @@ render() {
 }
 
 }
-export default CompanyTravel;
+export default WorkOverTimeA;

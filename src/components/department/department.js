@@ -46,13 +46,18 @@ class department extends Component {
       ],
       data: [],
       columns: [
+      // {
+      //   title: '部门编号',
+      //   dataIndex: 'code',
+      // }, 
       {
-        title: '部门编号',
-        dataIndex: 'code',
-      }, {
+        title: '所属公司',
+        dataIndex: 'companyName',
+      },
+      {
         title: '部门名称',
         dataIndex: 'name',
-      }, 
+      } 
       // {
       //   title: '负责人工号',
       //   dataIndex: 'chargePersionCode',
@@ -60,13 +65,11 @@ class department extends Component {
       //   title: '负责人',
       //   dataIndex: 'chargePersionName',
       // }, 
-      {
-        title: '公司编码',
-        dataIndex: 'companyCode',
-      }, {
-        title: '所属公司',
-        dataIndex: 'companyName',
-      }
+      // {
+      //   title: '公司编码',
+      //   dataIndex: 'companyCode',
+      // }, 
+      
       // , {
       //   title: '启用状态',
       //   dataIndex: 'state',
@@ -139,17 +142,21 @@ class department extends Component {
     console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
+      let responseData = []
       res.content.forEach(item=> {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
-        newArr.push(item)
+        responseData.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: responseData,totalLength:res.totalElements})
       });
+      if(responseData.length === 0)
+      {
+        this.setState({data: responseData,totalLength:res.totalElements})
+      }
     }).catch(err => {
       console.log(err)
     })  
@@ -289,17 +296,21 @@ class department extends Component {
     let url = `${IP}${Department}?page=${page-1}&size=${pageSize}&code=${code}&name=${name}&chargePersionId=${chargePersionId}&chargePersion=${chargePersion}&companyCode=${companyCode}&companyName=${companyName}`
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
+      let responseData = []
       res.content.forEach(item=> {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
-        newArr.push(item)
+        responseData.push(item)
         // console.log(newArr)
-        this.setState({data: newArr})
+        this.setState({data: responseData,totalLength:res.totalElements})
       });
+      if(null==responseData)
+      {
+        this.setState({data: responseData,totalLength:res.totalElements})
+      }
     }).catch(err => {
       console.log(err)
     })  
@@ -322,24 +333,24 @@ class department extends Component {
               <Input value={this.state.companyName} onChange={(e) =>{this.setState({companyName:e.target.value})}} />
             </div>
           </Col>
-          <Col span="5">
-          <div style={{display:'flex'}}>
+          {/* <Col span="5">
+            <div style={{display:'flex'}}>
               <Button type='primary' >公司编码</Button>  
               <Input value={this.state.companyCode}  onChange={(e) =>{this.setState({companyCode:e.target.value})}} />
             </div>
-          </Col>
+          </Col> */}
           <Col span="5">
           <div style={{display:'flex'}}>
               <Button type='primary' >部门名称</Button>  
               <Input value={this.state.name}  onChange={(e) =>{this.setState({name:e.target.value})}} />
             </div>
           </Col>
-          <Col span="5">
-          <div style={{display:'flex'}}>
+          {/* <Col span="5">
+            <div style={{display:'flex'}}>
               <Button type='primary' >部门编码</Button>  
               <Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} />
             </div>
-          </Col>
+          </Col> */}
         </Row>
         {/* <Row type="flex" justify="space-around"  style={{marginBottom:20}}>
         <Col span="5">
@@ -379,7 +390,9 @@ class department extends Component {
             dataSource={this.state.data}
             bordered
             rowKey='id'
+            /*
             rowSelection={rowSelection}
+            */
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
 import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
-import './CompanyTravel.css'
+import './leave.css'
 import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
@@ -15,7 +15,7 @@ const Option = Select.Option;
 const mydate = new Date()
 const monthFormat = 'YYYY/MM';
 
-class CompanyTravel extends Component{
+class Leave extends Component{
 constructor(props) {
   super(props);
   this.state={
@@ -24,8 +24,8 @@ constructor(props) {
     empId: '',
     totalLength: '',
     selectTree: '',
-    searchyear: mydate.getFullYear(),
-    searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
+    searchyear: '',
+    searchmonth: '',
     stringDate: '',
     tags: ['补刷卡日期:'],
     columns: [
@@ -94,12 +94,12 @@ constructor(props) {
 
 componentDidMount() {
   this.startData()
-  let url = `${IP}/factoryhr/checkWorkType/son/4`
+  let url = `${IP}/checkWorkType/son/3`
   getfun(url).then(res => this.setState({typeArr: res})).catch(err =>console.log(err))
 }
 
 startData = () =>{
-  let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=4&page=0&size=10`
+  let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&page=0&size=10`
   getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
 }
 
@@ -113,7 +113,7 @@ startData = () =>{
       console.log(item)
       this.setState({selectTree: item})
       //点击查询的url
-      let searchUrl = `${IP}${FactoryBurshCardUrl}?${item}&checkWorkTypeId=4&month=${ayear}/${amonth}`
+      let searchUrl = `${IP}${FactoryBurshCardUrl}?${item}&checkWorkTypeId=3&month=${ayear}/${amonth}`
       console.log(searchUrl)
       getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
 
@@ -135,12 +135,14 @@ startData = () =>{
   }
 
   changePage = (page, pageSize) =>{
-    const {empId, searchyear,searchmonth,selectTree} =this.state
-    console.log(page)
-    console.log(pageSize)
+    let {empId, searchyear,searchmonth,selectTree} =this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=4&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
@@ -170,14 +172,26 @@ startData = () =>{
   }
 
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
   searchData = () =>{
-    const {empId, searchyear,searchmonth, selectTree} = this.state
+    let {empId, searchyear,searchmonth, selectTree} = this.state
+    if(this.state.clearDate)
+    {
+      empId=''
+    }
+
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=4&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let month=''
+
+    if(amonth&&ayear)
+    {
+      month=`${ayear}/${amonth}`
+    }
+
+    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${month}&${selectTree}`
     console.log(url)
     getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
@@ -214,13 +228,13 @@ startData = () =>{
       endDate:addDateEnd,
       month:addDateStart,
       storeId: addperData.storeId,
-      checkWorkTypeId:4,
+      checkWorkTypeId:3,
       checkWorkTypeSonId:addbqType
     }
     if(addDateStart === '' || addperData.empId === '') {
       alert('请填入完整信息')
     }else{
-      let url =`${IP}/factoryhr/checkWorkHandle`
+      let url =`${IP}/checkWorkHandle`
       postfun2(url, sendData).then(res =>{
         if(res ==='success'){
           alert('新增成功')
@@ -283,8 +297,8 @@ render() {
               </Col>
               <Col span="8">
                 <div style={{ display: 'flex' }}>
-                  <Button type='primary' >出差月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(`${this.state.searchyear}/${this.state.searchmonth}`, monthFormat)} format={monthFormat} />
+                  <Button type='primary' >请假月份</Button>
+                  <MonthPicker onChange={this.onChangeMonth} format={monthFormat} />
                 </div>
               </Col>
           </Row>
@@ -301,7 +315,7 @@ render() {
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">出差管理列表</h3>
+              <h3 className="comtitle">请假管理列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
                   {/* <Col span="3"><Button  >编辑</Button></Col> */}
@@ -336,7 +350,7 @@ render() {
         </Row>
         <Modal
           visible = {this.state.visible1}
-          title="新增出差处理"
+          title="新增请假处理"
           onOk={this.addBS}
           onCancel={() =>this.setState({visible1:false})}
           width={1000}
@@ -357,13 +371,13 @@ render() {
           </Col>
           <Col span="8">
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >出差类型</Button>
+            <Button type='primary' >请假类型</Button>
               <Select  style={{ width: 120 }} onChange={this.bqtype}>
                 {newTypeArr}
               </Select>
             </div>
             <div style={{ display: 'flex',marginBottom:20 }}>
-            <Button type='primary' >出差事由</Button>
+            <Button type='primary' >请假事由</Button>
               <TextArea onChange={(e) =>{this.setState({addReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
             </div>
           </Col>
@@ -388,4 +402,4 @@ render() {
 }
 
 }
-export default CompanyTravel;
+export default Leave;

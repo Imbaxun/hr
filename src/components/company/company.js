@@ -38,10 +38,11 @@ class Company extends Component {
       choiceData:[],
       data: [],
       columns: [
+      // {
+      //   title: '公司编号',
+      //   dataIndex: 'code',
+      // }, 
       {
-        title: '公司编号',
-        dataIndex: 'code',
-      }, {
         title: '公司名称',
         dataIndex: 'name',
       },
@@ -239,23 +240,25 @@ class Company extends Component {
 
   searchData = () =>{
     const {name,code,bigArea} = this.state
-    console.log(this.state)
     const { IP, searchcom} = API
     let url = `${IP}${searchcom}?name=${name}&code=${code}&bigArea=${bigArea}`
-    console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
+      let responseData = []
       res.content.forEach(item=> {
         if(item.state === '0') {
           item.state = '未启用'
         }else{
           item.state = '已启用'
         }
-        newArr.push(item)
-        // console.log(newArr)
-        this.setState({data: newArr})
+        responseData.push(item)
+        this.setState({data: responseData})
       });
+      if(0 === responseData.length)
+      {
+        this.setState({data: responseData})
+      }
+      this.setState({totalLength:res.totalElements})
     }).catch(err => {
       console.log(err)
     })  
@@ -377,7 +380,7 @@ class Company extends Component {
         <div style={{marginBottom:20}}>
         <Row type="flex" justify="space-around">
           <Col span="4"><Input value={this.state.name} onChange={(e) =>{this.setState({name:e.target.value})}} placeholder="请输入公司名称..." /></Col>
-          <Col span="4"><Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} placeholder="请输入公司编号..." /></Col>
+          {/* <Col span="4"><Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} placeholder="请输入公司编号..." /></Cosl> */}
           <Col span="4"><Input value={this.state.bigArea} onChange={(e) =>{this.setState({bigArea:e.target.value})}}  placeholder="请输入大区名称..." /></Col>
           <Col span="4"><Button icon="reload" onClick={()=>this.setState({name:'',code: '',bigArea:''})} type="primary">重置</Button>  <Button onClick={() =>this.searchData()} icon="search" type="primary">查询</Button></Col>
         </Row>
@@ -396,7 +399,9 @@ class Company extends Component {
             dataSource={this.state.data}
             bordered
             rowKey='code'
+            /*
             rowSelection={rowSelection}
+            */
             pagination={{  // 分页
               simple: false,
               pageSize: 10 ,

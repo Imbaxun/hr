@@ -5,11 +5,11 @@ import './StoreScheduling.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import DepSearch from '../../common/searchPage/depSearch'
-
+import moment from 'moment';
 const { IP, ClassSearchUrl} = API
 const Option = Select.Option
 const RadioGroup = Radio.Group
-
+const monthFormat = 'YYYY-MM';
 const { MonthPicker } = DatePicker;
 const mydate = new Date()
 
@@ -135,7 +135,10 @@ class StoreScheduling extends Component{
 
   onChangeMonth = (date, dateString) =>{
     // console.log(date._d.getFullYear() + date._d.getMonth()) 
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    if(date&&date._d)
+    {
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    }
   }
 
   onChangePerClassMonth = (date, dateString) =>{
@@ -231,7 +234,8 @@ class StoreScheduling extends Component{
       year: depClassYear,
       overtimeType,
       schedulingId:depClassName,
-      deptId:depId
+      deptId:depId,
+      recordType:'store'
     }
     console.log(sendData)
     let postUrl = `${IP}/employeeScheduling/department`
@@ -306,12 +310,12 @@ class StoreScheduling extends Component{
                   <Input value={this.state.name} onChange={(e) => { this.setState({ name: e.target.value }) }} />
                 </div>
               </Col>
-              <Col span="5">
+              {/* <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >门店编码</Button>
                   <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }) }} />
                 </div>
-              </Col>
+              </Col> */}
               <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >班次名称</Button>
@@ -321,7 +325,7 @@ class StoreScheduling extends Component{
               <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >班次月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} placeholder="Select month" />
+                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(this.state.searchyear+"-"+this.state.searchmonth, monthFormat)} format={monthFormat} />
                 </div>
               </Col>
           </Row>
@@ -335,7 +339,7 @@ class StoreScheduling extends Component{
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">排班查询列表</h3>
+              <h3 className="comtitle">门店班次查询列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button  onClick={this.depClass}>部门排班</Button></Col>
                   {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}

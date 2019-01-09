@@ -120,8 +120,10 @@ startData = () =>{
     }
 
   onChangeMonth = (date, dateString) =>{
-    // console.log(date._d.getFullYear() + date._d.getMonth()) 
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    if(date&&date._d)
+    {
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    }
   }
 
   choicedPerson = (item, record) =>{
@@ -170,14 +172,23 @@ startData = () =>{
   }
 
   getpepple = (item) =>{
-    console.log(item)
+    this.setState({clearDate:false})
     this.setState({code:item.empCode,name:item.empName, empId:item.empId})
   }
+
   searchData = () =>{
     const {empId, searchyear,searchmonth, selectTree} = this.state
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url = `${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=5&empId=${empId}&mounth=${ayear}/${amonth}`
+
+    if(this.state.clearDate)
+    {
+      url = `${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=5&mounth=${ayear}/${amonth}`
+    }else{
+      url = `${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=5&empId=${empId}&mounth=${ayear}/${amonth}`
+    }
+
     console.log(url)
     getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
@@ -272,7 +283,7 @@ render() {
           <Col span="18">
           <Row type="flex" justify="space-around" style={{marginBottom:20}}>
               <Col span="5">
-              <ChoicePerson getpepple={this.getpepple} clearDate= {this.state.clearDate}/>
+                <ChoicePerson getpepple={this.getpepple} clearDate= {this.state.clearDate}/>
               </Col>
               <Col span="8">
                 <div style={{ display: 'flex' }}>
@@ -283,18 +294,18 @@ render() {
           </Row>
             <Row type="flex" justify="center"  style={{marginBottom:10}}>
             <Col span="5">
-            <Button>去组织架构</Button>
+              <Button>去组织架构</Button>
             </Col>
             <Col span='5'>
-            <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>  
+              <Button icon="reload" onClick={()=>this.setState({clearDate:true})}  type="primary">重置</Button>  
             </Col>
             <Col span="5">
-            <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
+              <Button  icon="search" onClick={this.searchData} type="primary">查询</Button>
             </Col>
           </Row>
           <hr />
             <div className="comMain">
-              <h3 className="comtitle">加班管理列表</h3>
+              <h3 className="comtitle">门店加班管理列表</h3>
                 <Row type="flex" justify='space-end'>
                   <Col span="3"><Button onClick={() => this.setState({visible1:true})} >新增</Button></Col>
                   {/* <Col span="3"><Button  >编辑</Button></Col> */}

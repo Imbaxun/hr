@@ -134,8 +134,10 @@ class KitchenScheduling extends Component{
   }
 
   onChangeMonth = (date, dateString) =>{
-    // console.log(date._d.getFullYear() + date._d.getMonth()) 
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    if(date&&date._d)
+    {
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    }
   }
 
   onChangePerClassMonth = (date, dateString) =>{
@@ -231,7 +233,8 @@ class KitchenScheduling extends Component{
       year: depClassYear,
       overtimeType,
       schedulingId:depClassName,
-      deptId:depId
+      deptId:depId,
+      recordType:'kitchen'
     }
     console.log(sendData)
     let postUrl = `${IP}/employeeScheduling/department`
@@ -336,9 +339,10 @@ class KitchenScheduling extends Component{
           <hr />
             <div className="comMain">
               <h3 className="comtitle">排班查询列表</h3>
-                <Row type="flex" justify='space-end'>
+                
+                {/* <Row type="flex" justify='space-end'>
                   <Col span="3"><Button  onClick={this.depClass}>部门排班</Button></Col>
-                  {/* <Button span="3"><Button icon="warning">启用/禁用</Button></Button> */}
+                  <Button span="3"><Button icon="warning">启用/禁用</Button></Button>
                   <Col span="3"><Button onClick={this.personClass} >人员排班</Button></Col>
                   <Col span="5"><a href={`${IP}/批量排班模板.xls`}><Button  >批量排班模板下载</Button></a></Col>
                   <Col span="3">
@@ -348,7 +352,8 @@ class KitchenScheduling extends Component{
                       </Button>
                     </Upload>
                   </Col>
-                </Row>
+                </Row> */}
+
                 <Table
                   style={{marginTop:20}}
                   columns={this.state.columns}

@@ -1,12 +1,12 @@
 
 export const API = {
-    // IP : 'http://172.30.43.53:9090',  //王善鹏
+
+    // IP : 'http://172.30.40.177:9090',  //王善鹏
     // IP: 'http://172.30.43.116:9090',   //佳浩
     // IP : 'http://172.30.41.109:9090',
     IP : 'http://172.30.30.253:9090',
-    KQIp : 'http://172.30.30.253:9091',
-    // KQIp: 'http://172.30.43.53:8080',
-    // KQIp: 'http://119.97.234.253:9091',
+    // KQIp: 'http://172.30.40.177:8080',
+    KQIp: 'http://119.97.234.253:9091',
     // IP : 'http://119.97.234.253:9090',  //外网IP
     login: '/sys/login',
     mainMenu: '/sys/menu/tree',  //菜单树
@@ -43,6 +43,9 @@ export const API = {
     userRole: '/sys/role',  //角色查询
     permissionManagerUrl: '/sys/permission' , //权限设置
     WorkRuleUrl: '/tCheckWorkRule', //考勤规则
+
+    FactoryHrTacking: '/factoryhr/checkWorkType',   //工业园考勤处理类型
+    FactoryBurshCardUrl: '/factoryhr/checkWorkHandle/search',  //工业园补刷卡考勤查询
 
     AdministrativeReportBasePunchRecord: '/report/administrative/basePunchRecord',     // 工业园考勤基础数据
     AdministrativeReportMonthPunchRecord:'/report/administrative/monthPunchRecord',    // 工业园考勤月度报表

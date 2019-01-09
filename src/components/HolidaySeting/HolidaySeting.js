@@ -284,6 +284,7 @@ class HolidaySeting extends Component{
             </Col>
           </Row>
           </Modal>
+
           <Modal 
             title="编辑假日"
             visible={this.state.visible1}
@@ -295,7 +296,8 @@ class HolidaySeting extends Component{
             <Col span="8">
                 <div style={{ display: 'flex',marginBottom:20,width:300 }}>
                   <Button type='primary' >节假日名称</Button>
-                  <Input value={this.state.choiceName}   onChange={(e) => { this.setState({ changeName: e.target.value }) }} />
+                  <Input defaultValue={this.state.choiceName}   onChange={(e) => { this.setState({ changeName: e.target.value }) }} />
+                  
                 </div>
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >节假日日期</Button>
@@ -305,11 +307,12 @@ class HolidaySeting extends Component{
             <Col span='8'>
             <div style={{ display: 'flex',marginBottom:20 }}>
             <Button type='primary' >请假事由</Button>
-              <TextArea value={this.state.choiceReson}  onChange={(e) =>{this.setState({changeReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
+              <TextArea defaultValue={this.state.choiceReson}  onChange={(e) =>{this.setState({changeReason: e.target.value})}} autosize={{ minRows: 4, maxRows: 6 }}/>
             </div>
             </Col>
           </Row>
           </Modal>
+          
         </div>
       </div>
     )

@@ -11,6 +11,7 @@ class CheckSolr extends Component{
     super(props)
     this.state={
       data:[],
+      totalLength: '',
       columns: [
         {
           title: '姓名',
@@ -69,22 +70,29 @@ class CheckSolr extends Component{
       ]
     }
   }
-
-  start = () =>{
-    let url = `${IP}/basePunchRecord/solr`
-    getfun(url).then(res => this.setState({data1: res.content})).catch(err =>console.log(err.message))
-  }
-
   componentDidMount() {
     this.start()
     let url = `${IP}${Employee}`
-    console.log(url)
     getfun(url).then(res => this.setState({data: res.content})).catch(err =>console.log(err))
   }
 
-  selectDate =(date,dateString) =>{
-    console.log(dateString)
+  changePage = (page, pageSize)=>{
+    const {code, aname,recordTimeStart, recordTimeEnd} =this.state
+    let url = `${IP}/basePunchRecord/solr?userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}&page=${page-1}&pageSize=${pageSize}`
+    getfun(url).then(res =>
+      {
+        this.setState({data1: res.content,totalLength:res.totalElements})
+      }
+    ).catch(err =>console.log(err.message))
+  }
 
+  start = () =>{
+    let url = `${IP}/basePunchRecord/solr`
+    getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  }
+
+
+  selectDate =(date,dateString) =>{
     this.setState({
       recordTimeStart: dateString[0],
       recordTimeEnd: dateString[1]
@@ -93,12 +101,20 @@ class CheckSolr extends Component{
   searchPeople = () =>{
     const {Scode, Snaem} = this.state
     let url = `${IP}${Employee}?empName=${Snaem}&empCode=${Scode}`
-    getfun(url).then(res => this.setState({data:res.content})).catch(err => console.log(err))
+    getfun(url).then(res => {
+      this.setState({data:res.content})
+    }
+    ).catch(err => {console.log(err)})
   }
   searchData = () =>{
     const {code, aname,recordTimeStart, recordTimeEnd} =this.state
     let url = `${IP}/basePunchRecord/solr?userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
-    getfun(url).then(res => this.setState({data1:res.content})).catch(err => console.log(err))
+    getfun(url).then(res => this.setState({data1:res.content,totalLength:res.totalElements}
+      )).catch(err => console.log(err))
+  }
+
+  resetQueryParams = () =>{
+    this.setState({code:'',aname:''})
   }
 
   render() {
@@ -123,18 +139,32 @@ class CheckSolr extends Component{
             </div>
           </Col>
           <Col span='5'>
-          <RangePicker  onChange={this.selectDate} />
+            <RangePicker  onChange={this.selectDate} />
           </Col>
         </Row>
-        <Button type='primary' onClick={this.searchData}>查询</Button>
+        <Row>
+          <Col span='5'>
+          </Col>
+          <Col span='5'>
+            <Button type='primary' onClick={this.resetQueryParams}>重置</Button>
+          </Col>
+          <Col span='5'>
+            <Button type='primary' onClick={this.searchData}>查询</Button>
+          </Col>
+        </Row>
         <Table 
             bordered
             size='small'
             rowKey='id'
-            pagination={{ pageSize: 5 }}
             columns={this.state.columns1}
             dataSource={this.state.data1}
-            />
+            pagination={{  // 分页
+              simple: false,
+              pageSize: 20 ,
+              total: this.state.totalLength,
+              onChange: this.changePage,
+            }}
+        />
         <Modal
         title="人员查询"
         visible={this.state.visible}

@@ -44,6 +44,10 @@ class StoreJB extends Component {
           dataIndex: 'flowName',
         },
         {
+          title: '请假类型',
+          dataIndex: 'kaoqinType'
+        },
+        {
           title: '单号',
           dataIndex: 'flowId',
         },
@@ -67,11 +71,16 @@ class StoreJB extends Component {
           title: '发起日期',
           dataIndex: 'submissionDate',
         },
+        {
+          title: '结束时间',
+          dataIndex: 'finishDate'
+        }
       ],
       submissionDateStart: '',
       submissionDateEnd: '',
       proposerId: '',
       stateVal: '',
+      kaoqinType:''
     }
   }
 
@@ -101,20 +110,24 @@ class StoreJB extends Component {
     this.setState({stateVal : value})
   }
 
+  handleQjTypeChange = (value)=>{
+    this.setState({kaoqinType:value})
+  }
+
   choiceDate = (date, dateString) =>{
     console.log(dateString)
     this.setState({submissionDateStart: dateString[0], submissionDateEnd: dateString[1] })
   }
 
   serchData = () =>{
-    const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
-    let url = `${KQIp}${processViewUrl}?proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=请假申请单`
+    const{code, submissionDateStart, submissionDateEnd, stateVal,kaoqinType} = this.state
+    let url = `${KQIp}${processViewUrl}?proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&kaoqinType=${kaoqinType}&flowName=请假申请单`
     getfun(url).then(res => this.setState({data1:res.content, totalElements: res.totalElements})).catch(err => console.log(err))
   }
 
   changePage = (page, pageSize) =>{
-    const {code, submissionDateStart, submissionDateEnd, stateVal} =this.state
-    let url =`${KQIp}${processViewUrl}?page=${page}&pageSize=${pageSize}&proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=请假申请单`
+    const {code, submissionDateStart, submissionDateEnd, stateVal,kaoqinType} =this.state
+    let url =`${KQIp}${processViewUrl}?page=${page}&pageSize=${pageSize}&proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&kaoqinType=${kaoqinType}&flowName=请假申请单`
     getfun(url).then(res => {
       console.log(666)
       this.setState({data1:res.content, totalElements: res.totalElements})   
@@ -122,8 +135,8 @@ class StoreJB extends Component {
   }
 
   changePage1 = (page, pageSize) =>{
-    const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
-    let url = `${KQIp}${processViewUrl}?proposerId=${code}&page=${page}&size=${pageSize}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=请假申请单`
+    const{code, submissionDateStart, submissionDateEnd, stateVal,kaoqinType} = this.state
+    let url = `${KQIp}${processViewUrl}?proposerId=${code}&page=${page}&size=${pageSize}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&kaoqinType=${kaoqinType}&flowName=请假申请单`
     getfun(url).then(res => this.setState({data1: res.content, totalElements:res.totalElements})).catch(err =>console.log(err.message))
   }
 
@@ -166,7 +179,7 @@ class StoreJB extends Component {
       <div>
         <h3 className="comtitle">门店考勤请假</h3>
         <Row type="flex" justify="space-around"  style={{marginTop: 30}}>
-        <Col span='8'>
+          <Col span='4'>
             <div style={{display:'flex'}}>
               <Button type='primary'>人员</Button>
               <Input value={this.state.code} readOnly style={{ width:100}}  />
@@ -174,22 +187,39 @@ class StoreJB extends Component {
               <Button onClick={() => this.setState({visible:true})}>查询</Button>
             </div>
           </Col>
-            <Col span='6'>
+          <Col span='4'>
               <div style={{display:'flex'}}>
               <Button type='primary'>流程状态</Button>
               <Select  style={{ width: 120 }} onChange={this.handleChange}>
+                <Option value="">请选择</Option>
                 <Option value="审核中">审核中</Option>
                 <Option value="已审核">已审核</Option>
                 <Option value="申请被终止" >申请被终止</Option>
               </Select>
               </div>
-            </Col>
-            <Col span='4'>
-            <RangePicker onChange={this.choiceDate} />
-            </Col>
-            <Col span='4'>
+          </Col>
+          <Col span='4'>
+              <RangePicker onChange={this.choiceDate} />
+          </Col>
+          
+          <Col span='4'>
+             <div style={{display:'flex'}}>
+              <Button type='primary'>请假类型</Button>
+              <Select  style={{ width: 120 }} onChange={this.handleQjTypeChange}>
+                <Option value="">请选择</Option>
+                <Option value="病假">病假</Option>
+                <Option value="事假">事假</Option>
+                <Option value="产假" >产假</Option>
+                <Option value="婚假" >婚假</Option>
+                <Option value="年假" >年假</Option>
+                <Option value="丧假" >丧假</Option>
+              </Select>
+              </div>
+          </Col>
+          
+          <Col span='4'>
             <Button type='primary' onClick={this.serchData}>查询</Button>
-            </Col>
+          </Col>
           </Row>
           <hr/>
           <Table

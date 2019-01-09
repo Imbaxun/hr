@@ -159,7 +159,7 @@ startData = () =>{
   bqtype = (item) =>{
     console.log(item)
     this.setState({addbqType:item})
-    let url = `${IP}/factoryhr/checkWorkType/son/pid=${item}`
+    let url = `${IP}/factoryhr/checkWorkType/son/${item}`
     getfun(url).then(res => this.setState({typeArr: res})).catch(err =>console.log(err))
   }
   bskType = (item) =>{

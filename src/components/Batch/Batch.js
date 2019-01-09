@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Row, Col, Button, DatePicker, Table } from 'antd'
+import {Row, Col, Button, DatePicker, Table,message } from 'antd'
 import {getfun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import  './Batch.css'
@@ -78,7 +78,6 @@ class Batch extends Component {
     // console.log(date._d.getFullYear() + date._d.getMonth()) 
     console.log(date)
     if(date === null) {
-      console.log('222')
       this.setState({searchyear: '',searchmonth:''})
     }else{
       this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
@@ -87,11 +86,21 @@ class Batch extends Component {
 
   search =() =>{
     const{searchyear,searchmonth } =this.state
+    if(!searchyear)
+    {
+      message.error('请选择批处理年')
+      return
+    }
+    if(!searchmonth)
+    {
+      message.error('请选择批处理月')
+      return
+    }
     let url = `${IP}/punchRecordBatch/batchRecordByRecordYearAndRecordMonth/${searchyear}/${searchmonth}`
     getfun(url).then(res =>{
       console.log(res)
       if(res.code === 200) {
-        alert('批处理正在执行中')
+        message.warning('批处理正在执行中')
         this.start()
       }else{
         console.log(res.msg)
@@ -104,7 +113,8 @@ class Batch extends Component {
     let i = 0
     data.forEach(item =>{
       if(item.batchState !== 'Completed'){
-        alert('请等待全部执行完毕后再执行')
+        // alert('请等待全部执行完毕后再执行')
+        message.warning('请等待全部执行完毕后再执行')
       }else{
         i ++
       }

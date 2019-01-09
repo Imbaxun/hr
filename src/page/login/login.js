@@ -70,7 +70,7 @@ class Login extends Component {
         <Row style = {{marginTop: '100px'}}>
           <Col span={10}></Col>
           <Col span={4}>
-            <h1 style={{textAlign: 'center'}}>人资系统</h1> 
+            <h1 style={{textAlign: 'center'}}>考勤管理系统</h1> 
             <Input
             prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
             style={{ marginBottom:'20px'}}

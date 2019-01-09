@@ -120,8 +120,10 @@ class CheckingStore extends Component{
   }
 
   selectDate =(date,dateString) =>{
-    console.log(date)
-    this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    if(date&&date._d)
+    {
+      this.setState({searchyear: date._d.getFullYear(),searchmonth:date._d.getMonth()+1})
+    }
   }
   searchPeople = () =>{
     const {Scode, Snaem} = this.state
