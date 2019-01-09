@@ -5,11 +5,11 @@ import './StoreScheduling.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import DepSearch from '../../common/searchPage/depSearch'
-
+import moment from 'moment';
 const { IP, ClassSearchUrl} = API
 const Option = Select.Option
 const RadioGroup = Radio.Group
-
+const monthFormat = 'YYYY-MM';
 const { MonthPicker } = DatePicker;
 const mydate = new Date()
 
@@ -310,12 +310,12 @@ class StoreScheduling extends Component{
                   <Input value={this.state.name} onChange={(e) => { this.setState({ name: e.target.value }) }} />
                 </div>
               </Col>
-              <Col span="5">
+              {/* <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >门店编码</Button>
                   <Input value={this.state.code} onChange={(e) => { this.setState({ code: e.target.value }) }} />
                 </div>
-              </Col>
+              </Col> */}
               <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >班次名称</Button>
@@ -325,7 +325,7 @@ class StoreScheduling extends Component{
               <Col span="5">
                 <div style={{ display: 'flex' }}>
                   <Button type='primary' >班次月份</Button>
-                  <MonthPicker onChange={this.onChangeMonth} placeholder="Select month" />
+                  <MonthPicker onChange={this.onChangeMonth} defaultValue={moment(this.state.searchyear+"-"+this.state.searchmonth, monthFormat)} format={monthFormat} />
                 </div>
               </Col>
           </Row>

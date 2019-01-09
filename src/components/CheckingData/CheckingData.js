@@ -103,9 +103,7 @@ class CheckingData extends Component{
   }
   changePage = (page, pageSize) =>{
     const {code, aname,recordTimeStart, recordTimeEnd} =this.state
-    console.log(page)
-    console.log(pageSize)
-    let url =`${IP}/basePunchRecord?page=${page-1}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
+    let url =`${IP}/basePunchRecord?page=${page}&size=${pageSize}&userName=${aname}&cardNo=${code}&recordTimeStart=${recordTimeStart}&recordTimeEnd=${recordTimeEnd}`
     getfun(url).then(res => this.setState({data1: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 

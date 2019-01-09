@@ -38,10 +38,11 @@ class Company extends Component {
       choiceData:[],
       data: [],
       columns: [
+      // {
+      //   title: '公司编号',
+      //   dataIndex: 'code',
+      // }, 
       {
-        title: '公司编号',
-        dataIndex: 'code',
-      }, {
         title: '公司名称',
         dataIndex: 'name',
       },
@@ -379,7 +380,7 @@ class Company extends Component {
         <div style={{marginBottom:20}}>
         <Row type="flex" justify="space-around">
           <Col span="4"><Input value={this.state.name} onChange={(e) =>{this.setState({name:e.target.value})}} placeholder="请输入公司名称..." /></Col>
-          <Col span="4"><Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} placeholder="请输入公司编号..." /></Col>
+          {/* <Col span="4"><Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} placeholder="请输入公司编号..." /></Cosl> */}
           <Col span="4"><Input value={this.state.bigArea} onChange={(e) =>{this.setState({bigArea:e.target.value})}}  placeholder="请输入大区名称..." /></Col>
           <Col span="4"><Button icon="reload" onClick={()=>this.setState({name:'',code: '',bigArea:''})} type="primary">重置</Button>  <Button onClick={() =>this.searchData()} icon="search" type="primary">查询</Button></Col>
         </Row>

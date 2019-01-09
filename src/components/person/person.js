@@ -82,14 +82,14 @@ class Person extends Component {
           title: '手机号码',
           dataIndex: 'empPhone',
         },
-        {
-          title: '证件类型',
-          dataIndex: 'idTypeView',
-        },
-        {
-          title: '证件号码',
-          dataIndex: 'typeValue',
-        },
+        // {
+        //   title: '证件类型',
+        //   dataIndex: 'idTypeView',
+        // },
+        // {
+        //   title: '证件号码',
+        //   dataIndex: 'typeValue',
+        // },
         {
           title: '打卡类型',
           dataIndex: 'recordTypeView',

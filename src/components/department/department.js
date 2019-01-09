@@ -46,13 +46,18 @@ class department extends Component {
       ],
       data: [],
       columns: [
+      // {
+      //   title: '部门编号',
+      //   dataIndex: 'code',
+      // }, 
       {
-        title: '部门编号',
-        dataIndex: 'code',
-      }, {
+        title: '所属公司',
+        dataIndex: 'companyName',
+      },
+      {
         title: '部门名称',
         dataIndex: 'name',
-      }, 
+      } 
       // {
       //   title: '负责人工号',
       //   dataIndex: 'chargePersionCode',
@@ -60,13 +65,11 @@ class department extends Component {
       //   title: '负责人',
       //   dataIndex: 'chargePersionName',
       // }, 
-      {
-        title: '公司编码',
-        dataIndex: 'companyCode',
-      }, {
-        title: '所属公司',
-        dataIndex: 'companyName',
-      }
+      // {
+      //   title: '公司编码',
+      //   dataIndex: 'companyCode',
+      // }, 
+      
       // , {
       //   title: '启用状态',
       //   dataIndex: 'state',
@@ -330,24 +333,24 @@ class department extends Component {
               <Input value={this.state.companyName} onChange={(e) =>{this.setState({companyName:e.target.value})}} />
             </div>
           </Col>
-          <Col span="5">
-          <div style={{display:'flex'}}>
+          {/* <Col span="5">
+            <div style={{display:'flex'}}>
               <Button type='primary' >公司编码</Button>  
               <Input value={this.state.companyCode}  onChange={(e) =>{this.setState({companyCode:e.target.value})}} />
             </div>
-          </Col>
+          </Col> */}
           <Col span="5">
           <div style={{display:'flex'}}>
               <Button type='primary' >部门名称</Button>  
               <Input value={this.state.name}  onChange={(e) =>{this.setState({name:e.target.value})}} />
             </div>
           </Col>
-          <Col span="5">
-          <div style={{display:'flex'}}>
+          {/* <Col span="5">
+            <div style={{display:'flex'}}>
               <Button type='primary' >部门编码</Button>  
               <Input value={this.state.code} onChange={(e) =>{this.setState({code:e.target.value})}} />
             </div>
-          </Col>
+          </Col> */}
         </Row>
         {/* <Row type="flex" justify="space-around"  style={{marginBottom:20}}>
         <Col span="5">
