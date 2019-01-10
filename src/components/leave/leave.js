@@ -142,8 +142,13 @@ startData = () =>{
     console.log(pageSize)
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
+<<<<<<< HEAD
     let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
+=======
+    let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+>>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   selectDate = (item) =>{
@@ -183,8 +188,13 @@ startData = () =>{
     {
       empId=''
     }
+<<<<<<< HEAD
     let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err))
+=======
+    let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
+    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
+>>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   addBSdate = (date, dateString) =>{

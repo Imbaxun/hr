@@ -142,8 +142,13 @@ startData = () =>{
     console.log(pageSize)
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
+<<<<<<< HEAD
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=4&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err.message))
+=======
+    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=4&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+>>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   selectDate = (item) =>{
@@ -179,7 +184,7 @@ startData = () =>{
     const {empId, searchyear,searchmonth, selectTree} = this.state
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=4&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=4&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
     console.log(url)
     getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err))
   }
