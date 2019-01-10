@@ -59,7 +59,7 @@ class PersonSearch extends Component{
         bordered
         size='small'
         rowKey='empCode'
-        pagination={{ pageSize: 5 }}
+
         visible={this.state.tableShow}
         columns={this.state.columns} 
         dataSource={this.state.data}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree'
-import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio,Upload, message, Icon,} from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio, } from 'antd'
 import './FactoryScheduling.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
@@ -23,6 +23,8 @@ class FactoryScheduling extends Component{
       name: '',
       code: '',
       totalLength: '',
+      pageSize: '',
+      currentPage: '',
       schedulingName: '',
       searchUrl: '',
       searchyear: mydate.getFullYear(),
@@ -94,13 +96,13 @@ class FactoryScheduling extends Component{
   startData = () =>{
     const{searchyear,searchmonth}=this.state
     let url = `${IP}${ClassSearchUrl}?page=0&size=10&year=${searchyear}&month=${searchmonth}&recordType=Administrative`
-    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err => console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err => console.log(err))
   }
 
   searchData = () =>{
     const{searchmonth,searchyear,name,code,schedulingName} = this.state
     let url = `${IP}${ClassSearchUrl}?page=0&size=10&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}&recordType=Administrative`
-    getfun(url).then(res =>this.setState({data:res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content, totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err))
   }
 
   changePage = (page, pageSize) =>{
@@ -111,7 +113,7 @@ class FactoryScheduling extends Component{
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)
-      this.setState({data: res.content,totalLength:res.totalElements})
+      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       console.log('执行到这里')
     }).catch(err => {
       console.log(err)
@@ -130,7 +132,7 @@ class FactoryScheduling extends Component{
     let searchUrl = `${IP}${ClassSearchUrl}?page=0&size=10&${item}&year=${ayear}&month=${amonth}&recordType=Administrative`
     console.log(searchUrl)
     this.setState({searchUrl:`${IP}${ClassSearchUrl}?${item}`})
-    getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
+    getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err => console.log)
 
   }
 
@@ -276,24 +278,24 @@ class FactoryScheduling extends Component{
       addPerData.push(<Radio key={item.id} value={item.dictValue}>{item.dictKey}</Radio>)
     })
 
-    const up = {
-      name: 'file',
-      action: `${IP}/employeeScheduling/inputEmployeeScheduling`,
-      headers: {
-        authorization: 'authorization-text',
-      },
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} 上传成功`);
-          message.success(`${info.file.response.msg}`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败.`);
-        }
-      },
-    }
+    // const up = {
+    //   name: 'file',
+    //   action: `${IP}/employeeScheduling/inputEmployeeScheduling`,
+    //   headers: {
+    //     authorization: 'authorization-text',
+    //   },
+    //   onChange(info) {
+    //     if (info.file.status !== 'uploading') {
+    //       console.log(info.file, info.fileList);
+    //     }
+    //     if (info.file.status === 'done') {
+    //       message.success(`${info.file.name} 上传成功`);
+    //       message.success(`${info.file.response.msg}`);
+    //     } else if (info.file.status === 'error') {
+    //       message.error(`${info.file.name} 上传失败.`);
+    //     }
+    //   },
+    // }
 
 
     return(
@@ -357,8 +359,8 @@ class FactoryScheduling extends Component{
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}

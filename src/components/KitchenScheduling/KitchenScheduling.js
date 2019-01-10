@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import KitchenTree from '../../common/KitchenTree'
-import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio,Upload, message, Icon,} from 'antd'
+import {Row, Col, Input, Button, DatePicker, Table, Modal ,Tag, Select, Radio} from 'antd'
 import './KitchenScheduling.css'
 import {getfun, postfun2} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
@@ -275,24 +275,24 @@ class KitchenScheduling extends Component{
       addPerData.push(<Radio key={item.id} value={item.dictValue}>{item.dictKey}</Radio>)
     })
 
-    const up = {
-      name: 'file',
-      action: `${IP}/employeeScheduling/inputEmployeeScheduling`,
-      headers: {
-        authorization: 'authorization-text',
-      },
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} 上传成功`);
-          message.success(`${info.file.response.msg}`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败.`);
-        }
-      },
-    }
+    // const up = {
+    //   name: 'file',
+    //   action: `${IP}/employeeScheduling/inputEmployeeScheduling`,
+    //   headers: {
+    //     authorization: 'authorization-text',
+    //   },
+    //   onChange(info) {
+    //     if (info.file.status !== 'uploading') {
+    //       console.log(info.file, info.fileList);
+    //     }
+    //     if (info.file.status === 'done') {
+    //       message.success(`${info.file.name} 上传成功`);
+    //       message.success(`${info.file.response.msg}`);
+    //     } else if (info.file.status === 'error') {
+    //       message.error(`${info.file.name} 上传失败.`);
+    //     }
+    //   },
+    // }
 
 
     return(

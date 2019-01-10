@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
 import ChoicePerson from '../../common/searchPage/choicePerson'
-import moment from 'moment';
+// import moment from 'moment';
 import './attendance.css'
 import {getfun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
@@ -10,7 +10,7 @@ const { MonthPicker } = DatePicker;
 const Option = Select.Option;
 const monthFormat = 'YYYY/MM';
 const {IP} = API
-const mydate = new Date()
+// const mydate = new Date()
 
 class Attendance extends Component{
   constructor(props){
@@ -26,6 +26,8 @@ class Attendance extends Component{
       dowloadUrl: '',
       downLoad: '',
       totalLength: '',
+      currentPage: '',
+      pageSize: '',
       empCode: '',
       totalWidth:'',
       clearDate: false
@@ -50,14 +52,14 @@ class Attendance extends Component{
 
   getTable = (url) =>{
     getfun(url).then(res =>{
-      this.setState({data:res.content,totalLength:res.totalElements})
+      this.setState({data:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
     }).catch(err =>console.log(err))
   }
 
   getHead = (url,hurl) =>{
     getfun(hurl).then(res =>{
       if(res.msg === "success"){
-        this.setState({columns:res.data,totalWidth:res.totalWidth})
+        this.setState({columns:res.data,totalLength:res.totalElements,totalWidth:res.totalWidth,pageSize:res.size})
         this.getTable(url)
       }
     }).catch(err =>console.log(err))
@@ -251,8 +253,8 @@ class Attendance extends Component{
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}
