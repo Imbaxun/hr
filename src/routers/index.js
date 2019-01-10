@@ -82,6 +82,7 @@ import FactoryReport from '../components/factory/FactoryReport'
 import FactoryHrTimeTacking from '../components/TimeTacking/FactoryHrTimeTacking'//工业园考勤处理类型
 import LeaveA from '../components/leave/leaveA';
 import WorkOverTimeA from '../components/WorkOverTime/WorkOverTimeA'//工业园加班处理
+import BasePunchRecordImport from '../components/factory/BasePunchRecordImport'
 //测试111
 
 
@@ -154,6 +155,7 @@ export const mainRouters = () => {
       <Route path="/main/KitchenPhoneId" component={KitchenPhoneId} />
       <Route path="/main/BasePunchRecordSolr" component={BasePunchRecordSolr} />
       <Route path="/main/FactoryReport" component={FactoryReport} />
+      <Route path="/main/BasePunchRecordImport" component={BasePunchRecordImport} />
     </div>
   )
 }
