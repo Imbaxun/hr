@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Input, Button, Table, Modal, Select,DatePicker } from 'antd';
+import { Row, Col,  Button,  Modal, Select,DatePicker } from 'antd';
 import { API } from '../../../common/axiosAPI'
 
 const {MonthPicker} = DatePicker
@@ -47,14 +47,14 @@ export default class FactoryReport extends React.Component
         }
 
 
-        if('工业园考勤基础数据'==reportType)
+        if('工业园考勤基础数据'=== reportType)
         {
             window.open(API.IP+API.AdministrativeReportBasePunchRecord+"/"+recordYear+"/"+recordMonth)
             
-        }else if ('工业园月度考勤报表'==reportType)
+        }else if ('工业园月度考勤报表'=== reportType)
         {
             window.open(API.IP+API.AdministrativeReportMonthPunchRecord+"/"+recordYear+"/"+recordMonth)
-        }else if('工业园年度考勤报表'==reportType)
+        }else if('工业园年度考勤报表'=== reportType)
         {
             window.open(API.IP+API.AdministrativeReportYearPunchRecord+"/"+recordYear)
         }
@@ -63,13 +63,13 @@ export default class FactoryReport extends React.Component
 
     onChangeReport=(value)=>
     {
-        if('工业园考勤基础数据'==value)
+        if('工业园考勤基础数据'=== value)
         {
             this.setState({reportType:'工业园考勤基础数据'})
-        }else if ('工业园月度考勤报表'==value)
+        }else if ('工业园月度考勤报表'=== value)
         {
             this.setState({reportType:'工业园月度考勤报表'})
-        }else if('工业园年度考勤报表'==value)
+        }else if('工业园年度考勤报表'=== value)
         {
             this.setState({reportType:'工业园年度考勤报表'})
         }

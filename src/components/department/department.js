@@ -82,6 +82,8 @@ class department extends Component {
       // }
     ],
       totalLength: '',
+      currentPage: '',
+      pageSize: ''
     }
 
   }
@@ -95,18 +97,18 @@ class department extends Component {
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      let newArr = []
-      res.content.forEach(item => {
-        if(item.state === '0') {
-          item.state = '未启用'
-        }else{
-          item.state = '已启用'
-        }
-        newArr.push(item)
-        // console.log(newArr)
-        this.setState({data: newArr,totalLength:res.totalElements})
-      });
-      // this.setState({data:res.content})
+      // let newArr = []
+      // res.content.forEach(item => {
+      //   if(item.state === '0') {
+      //     item.state = '未启用'
+      //   }else{
+      //     item.state = '已启用'
+      //   }
+      //   newArr.push(item)
+      //   // console.log(newArr)
+      //   this.setState({data: newArr,totalLength:res.totalElements, pageSize:res.size})
+      // });
+      this.setState({data:res.content, totalLength:res.totalElements, pageSize:res.size,currentPage:(1+res.number)})
     }).catch(err => {
       console.log(err)
     })
@@ -142,21 +144,7 @@ class department extends Component {
     console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      let responseData = []
-      res.content.forEach(item=> {
-        if(item.state === '0') {
-          item.state = '未启用'
-        }else{
-          item.state = '已启用'
-        }
-        responseData.push(item)
-        // console.log(newArr)
-        this.setState({data: responseData,totalLength:res.totalElements})
-      });
-      if(responseData.length === 0)
-      {
-        this.setState({data: responseData,totalLength:res.totalElements})
-      }
+      this.setState({data:res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number),})
     }).catch(err => {
       console.log(err)
     })  
@@ -305,11 +293,11 @@ class department extends Component {
         }
         responseData.push(item)
         // console.log(newArr)
-        this.setState({data: responseData,totalLength:res.totalElements})
+        this.setState({data: responseData,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number),})
       });
       if(null==responseData)
       {
-        this.setState({data: responseData,totalLength:res.totalElements})
+        this.setState({data: responseData,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number),})
       }
     }).catch(err => {
       console.log(err)
@@ -317,12 +305,12 @@ class department extends Component {
   }
 
   render() {
-    const rowSelection = {
-      onChange: (selectedRowKeys,selectedRows) => {
-        console.log(selectedRows);
-        this.setState({choiceData:selectedRows})
-      }
-    }    
+    // const rowSelection = {
+    //   onChange: (selectedRowKeys,selectedRows) => {
+    //     console.log(selectedRows);
+    //     this.setState({choiceData:selectedRows})
+    //   }
+    // }    
     return (
       <div>
         <div style={{marginBottom:20}}>
@@ -395,8 +383,8 @@ class department extends Component {
             */
             pagination={{  // 分页
               simple: false,
-              pageSize: 10 ,
-              // current: this.state.current,
+              pageSize: this.state.pageSize ,
+              current: this.state.currentPage,
               total: this.state.totalLength,
               onChange: this.changePage,
             }}

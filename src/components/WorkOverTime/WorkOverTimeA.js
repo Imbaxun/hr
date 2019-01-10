@@ -23,6 +23,8 @@ constructor(props) {
     code: '',
     empId: '',
     totalLength: '',
+    currentPage: '',
+    pageSize: '',
     selectTree: '',
     searchyear: mydate.getFullYear(),
     searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
@@ -100,7 +102,7 @@ componentDidMount() {
 
 startData = () =>{
   let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=5&page=0&size=10`
-  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err =>console.log(err.message))
 }
 
     //树桩查询的方法
@@ -115,7 +117,7 @@ startData = () =>{
       //点击查询的url
       let searchUrl = `${IP}${FactoryBurshCardUrl}?${item}&checkWorkTypeId=5&month=${ayear}/${amonth}`
       console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err => console.log)
 
     }
 
@@ -143,7 +145,7 @@ startData = () =>{
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
-    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
@@ -185,7 +187,7 @@ startData = () =>{
     let ayear = searchyear.toString()
     let url = `${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&empId=${empId}&mounth=${ayear}/${amonth}`
     console.log(url)
-    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err))
   }
 
   addBSdate = (date, dateString) =>{
@@ -317,8 +319,8 @@ render() {
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}

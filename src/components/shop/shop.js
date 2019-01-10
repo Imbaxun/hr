@@ -29,6 +29,7 @@ class Shop extends Component {
       depData: '',
       changeArea: '',
       totalLength: '',
+      currentPage: '',
       addAddress: '',
       addLongitude: '',
       addLatitude: '',
@@ -88,7 +89,8 @@ class Shop extends Component {
       choicelatitude: '',
       choicecode: '',
       selectaddData: [],
-      storeType:''
+      storeType:'',
+      pageSize: ''
     }
   }
 
@@ -112,7 +114,7 @@ class Shop extends Component {
         }
         newArr.push(item)
         // console.log(newArr)
-        this.setState({data: newArr,totalLength:res.totalElements})
+        this.setState({data: newArr,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})
       });
       // this.setState({data:res.content})
     }).catch(err => {
@@ -122,7 +124,15 @@ class Shop extends Component {
     getfun(newUrl).then(res =>{
       this.setState({selectaddData: res})
     }).catch(err =>console.log(err))
-
+    this.setState({
+      addName: '',
+      newShopCode: '',
+      addLongitude: '',
+      addLatitude: '',
+      addArea: '',
+      addAddress: '',
+      storeType: ''
+    })
   }
 
   searchData = () =>{
@@ -140,11 +150,11 @@ class Shop extends Component {
         }
         responseData.push(item)
         // console.log(newArr)
-        this.setState({data: responseData,totalLength:res.totalElements})
+        this.setState({data: responseData,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})
       });
       if(0 === responseData.length)
       {
-        this.setState({data: responseData,totalLength:res.totalElements})
+        this.setState({data: responseData,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})
       }
     }).catch(err => console.log(err))
 
@@ -166,7 +176,7 @@ class Shop extends Component {
         newArr.push(item)
         // console.log(newArr)
       });
-      this.setState({data: newArr,totalLength:res.totalElements})
+      this.setState({data: newArr,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})
     }).catch(err =>console.log(err.message))
   }
 
@@ -185,13 +195,16 @@ class Shop extends Component {
       code:newShopCode,
       storeType
     }
+    console.log(sendData)
     if(!addName||!addAddress||!depData.id ||!newShopCode ||!storeType){
       alert('请输入完整信息')
     }else{
       postfun2(url, sendData).then(res =>{
         console.log(res)
         this.startData()
-        this.setState({visible: false})
+        this.setState({
+          visible: false,      
+        })
       }).catch(err => console.log(err))
     }
   
@@ -285,7 +298,7 @@ class Shop extends Component {
         newArr.push(item)
         // console.log(newArr)
       });
-      this.setState({data: newArr,totalLength:res.totalElements})
+      this.setState({data: newArr,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
     }).catch(err => console.log(err))
   }
   addShopStart = () =>{
@@ -305,6 +318,8 @@ class Shop extends Component {
     const{choiceArr} = this.state 
     if(choiceArr.length === 0){
       alert('请勾选需要编辑的对象')
+    }else if(choiceArr.length >1){
+      alert('请勾选唯一门店')
     }else{
       console.log(choiceArr)
       this.setState({visible1: true, changeArea: ''})
@@ -322,6 +337,25 @@ class Shop extends Component {
   selectAdd = (item) =>{
     console.log(item)
     this.setState({storeType:item})
+  }
+
+  cancle =() =>{
+    const {choiceArr} = this.state
+    console.log(choiceArr)
+    if( choiceArr.length !== 0) {
+      this.setState({
+        choiceData:choiceArr[0],
+        changeName: choiceArr[0].name,
+        changeAddress: choiceArr[0].address,
+        chociedepartmentName: choiceArr[0].departmentName,
+        choicedepartmentcode: choiceArr[0].departmentCode,
+        changeLongitude: choiceArr[0].longitude,
+        changeLatitude: choiceArr[0].latitude,
+        changeShopCode: choiceArr[0].code,
+        visible1:false
+      })
+    }
+
   }
 
   render () {
@@ -405,8 +439,8 @@ class Shop extends Component {
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}
@@ -432,13 +466,13 @@ class Shop extends Component {
             <Col span="8">
               <div style={{display:'flex'}}>
                 <Button type='primary' >门店名称</Button>
-                <Input  onChange={(e) =>{this.setState({addName:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.addName}  onChange={(e) =>{this.setState({addName:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
             <Col span="8">
             <div style={{display:'flex'}}>
                 <Button type='primary' >新店编码</Button>
-                <Input  onChange={(e) =>{this.setState({newShopCode:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.newShopCode}  onChange={(e) =>{this.setState({newShopCode:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -460,13 +494,13 @@ class Shop extends Component {
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >经度</Button>
-                <Input onChange={(e) =>{this.setState({addLongitude:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.addLongitude} onChange={(e) =>{this.setState({addLongitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           <Col span="8">
           <div style={{display:'flex'}}>
                 <Button type='primary' >维度</Button>
-                <Input onChange={(e) =>{this.setState({addLatitude:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.addLatitude} onChange={(e) =>{this.setState({addLatitude:e.target.value})}} style={{width:"300px"}} />
               </div>
           </Col>
           </Row>
@@ -474,13 +508,13 @@ class Shop extends Component {
             <Col span="8">
             <div style={{display:'flex'}}>
             <Button type='primary' >区域</Button>
-            <Input onChange={(e) =>{this.setState({addArea:e.target.value})}} style={{width:"300px"}} />
+            <Input value={this.state.addArea} onChange={(e) =>{this.setState({addArea:e.target.value})}} style={{width:"300px"}} />
             </div>
             </Col>
             <Col span="10">
             <div style={{display:'flex'}}>
                 <Button type='primary' >地址</Button>
-                <Input  onChange={(e) =>{this.setState({addAddress:e.target.value})}} style={{width:"300px"}} />
+                <Input value={this.state.addAddress}  onChange={(e) =>{this.setState({addAddress:e.target.value})}} style={{width:"300px"}} />
               </div>
             </Col>
           </Row>
@@ -500,7 +534,7 @@ class Shop extends Component {
           title="编辑门店"
           visible={this.state.visible1}
           onOk={() =>this.changeShop()}
-          onCancel={() =>this.setState({visible1:false})}
+          onCancel={() =>this.cancle()}
           width={800}
           >
           <Row type="flex" justify="space-around" className="marbot">

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
 import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
 import './BurshCard.css'
-import moment from 'moment';
+// import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import PersonSearch from '../../common/searchPage/personSearch'
@@ -12,7 +12,7 @@ const { IP,BurshCardUrl} = API
 const { TextArea } = Input;
 const { MonthPicker } = DatePicker;
 const Option = Select.Option;
-const mydate = new Date()
+// const mydate = new Date()
 const monthFormat = 'YYYY/MM';
 
 class BurshCard extends Component{
@@ -24,6 +24,9 @@ constructor(props) {
     empId: '',
     totalLength: '',
     selectTree: '',
+    currentPage: '',
+    pageSize: '',
+
     //searchyear: mydate.getFullYear(),
     //searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
     searchyear: '',
@@ -100,8 +103,8 @@ componentDidMount() {
 }
 
 startData = () =>{
-  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=12&page=1&size=10`
-  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=12`
+  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err =>console.log(err.message))
 }
 
     //树桩查询的方法
@@ -120,7 +123,7 @@ startData = () =>{
       }else{
         searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=12`
       }
-      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err => console.log)
 
     }
 
@@ -160,14 +163,14 @@ startData = () =>{
       month=`${ayear}/${amonth}`
     }
 
-    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${month}`
-    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    let url =`${IP}${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page}&size=${pageSize}&empId=${empId}&month=${month}`
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements,currentPage:(res.number+1),pageSize:res.size})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
     const {tags} = this.state
-    let selectDate = item._d.getDate().toString()
-    let newArr = tags.push(selectDate)
+    // let selectDate = item._d.getDate().toString()
+    // let newArr = tags.push(selectDate)
     this.setState({tags: tags})
   }
   handleClose = (removedTag) => {
@@ -211,7 +214,7 @@ startData = () =>{
     }
     
     let url = ''
-    if(selectTree=='')
+    if(selectTree==='')
     {
       if(ayear||amonth)
       {
@@ -228,7 +231,7 @@ startData = () =>{
       }
     }
 
-    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err))
   }
 
   addBSdate = (date, dateString) =>{
@@ -258,7 +261,7 @@ startData = () =>{
       checkWorkTypeSonId:addbskType
     }
     let url =`${IP}/checkWorkHandle`
-    if(addDate === '' || addperData.empId === '') {
+    if(addDate === '' || addperData.empId === '' || addbskType === '') {
       alert('请填入完整信息')
     }else{
       postfun2(url, sendData).then(res =>{
@@ -359,8 +362,8 @@ render() {
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CompanyThree from '../../common/companyThree';
 import {Row, Col, Input, Button, DatePicker, Table, Modal, Select, notification } from 'antd'
 import './leave.css'
-import moment from 'moment';
+// import moment from 'moment';
 import {getfun, postfun2,deletefun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
 import PersonSearch from '../../common/searchPage/personSearch'
@@ -12,7 +12,7 @@ const { IP,FactoryBurshCardUrl} = API
 const { TextArea } = Input;
 const { MonthPicker, RangePicker } = DatePicker;
 const Option = Select.Option;
-const mydate = new Date()
+// const mydate = new Date()
 const monthFormat = 'YYYY/MM';
 
 class Leave extends Component{
@@ -23,6 +23,8 @@ constructor(props) {
     code: '',
     empId: '',
     totalLength: '',
+    currentPage: '',
+    pageSize: '',
     selectTree: '',
     searchyear: '',
     searchmonth: '',
@@ -100,7 +102,7 @@ componentDidMount() {
 
 startData = () =>{
   let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&page=0&size=10`
-  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err =>console.log(err.message))
 }
 
     //树桩查询的方法
@@ -115,7 +117,7 @@ startData = () =>{
       //点击查询的url
       let searchUrl = `${IP}${FactoryBurshCardUrl}?${item}&checkWorkTypeId=3&month=${ayear}/${amonth}`
       console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err => console.log)
 
     }
 
@@ -143,7 +145,7 @@ startData = () =>{
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
-    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
   }
 
   selectDate = (item) =>{
@@ -332,8 +334,8 @@ render() {
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}
