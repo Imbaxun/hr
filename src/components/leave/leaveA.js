@@ -142,7 +142,7 @@ startData = () =>{
     }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
   }
 
@@ -191,7 +191,7 @@ startData = () =>{
       month=`${ayear}/${amonth}`
     }
 
-    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${month}&${selectTree}`
+    let url = `${IP}${FactoryBurshCardUrl}?checkWorkTypeId=3&empId=${empId}&month=${month}&${selectTree}`
     console.log(url)
     getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
   }
