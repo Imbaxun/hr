@@ -99,7 +99,6 @@ class ChoicePerson extends Component{
             bordered
             size='small'
             rowKey='id'
-            pagination={{ pageSize: 5 }}
             columns={this.state.columns}
             dataSource={this.state.data}
             // 分页

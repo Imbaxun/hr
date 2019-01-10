@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Input, Button, Table, Modal, Cascader ,Select, DatePicker, Tree,   Radio ,message, Upload, Icon  } from 'antd';
+import { Row, Col, Input, Button, Table, Modal, Cascader ,Select, DatePicker, Tree,   Radio } from 'antd';
 import './person.css'
 import {API} from '../../common/axiosAPI'
 import {getfun, postfun, putfun,deletefun} from '../../common/axiosFun'
@@ -159,6 +159,7 @@ class Person extends Component {
       threeData:[],
       threeData1:[],
       totalLength: '',
+      pageSize: '',
       currentPage: '',
       addnum: 0,
     }
@@ -199,7 +200,7 @@ class Person extends Component {
     // console.log(url)
     getfun(url).then(res => {
       console.log(res)
-      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number)})
+      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       // this.setState({data:res.content})
     }).catch(err => {
       console.log(err)
@@ -221,11 +222,11 @@ class Person extends Component {
         }
         responseData.push(item)
         // console.log(newArr)
-        this.setState({data: responseData,totalLength:res.totalElements,currentPage:(1+res.number)})
+        this.setState({data: responseData,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       });
       if (0 === responseData.length)
       {
-        this.setState({data: responseData,totalLength:res.totalElements,currentPage:(1+res.number)})
+        this.setState({data: responseData,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       }
     }).catch(err => {
       console.log(err)
@@ -240,7 +241,7 @@ class Person extends Component {
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)
-      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number)})
+      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       console.log('执行到这里')
     }).catch(err => {
       console.log(err)
@@ -497,7 +498,7 @@ class Person extends Component {
     this.setState({dowloadUrl: newurl, searchUrl:url})
     getfun(url).then(res =>{
       console.log(res)
-      this.setState({data: res.content, totalLength:res.totalElements,currentPage:(1+res.number)})
+      this.setState({data: res.content, totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
     }).catch(err => console.log(err))
 
   }
@@ -621,24 +622,24 @@ class Person extends Component {
     }  
     const cityOptions = jobs.map(city => <Option value={city.id} key={city.id}>{city.positionName}</Option>)
     const papersOptions = papersArr.map(city => <Option value={city.dictValue} key={city.id}>{city.dictKey}</Option>)
-    const up = {
-      name: 'file',
-      action: `${IP}/employee/importEmployee`,
-      headers: {
-        authorization: 'authorization-text',
-      },
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
-          message.error(`${info.file.response.msg}`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
-        }
-      },
-    }
+    // const up = {
+    //   name: 'file',
+    //   action: `${IP}/employee/importEmployee`,
+    //   headers: {
+    //     authorization: 'authorization-text',
+    //   },
+    //   onChange(info) {
+    //     if (info.file.status !== 'uploading') {
+    //       console.log(info.file, info.fileList);
+    //     }
+    //     if (info.file.status === 'done') {
+    //       message.success(`${info.file.name} file uploaded successfully`);
+    //       message.error(`${info.file.response.msg}`);
+    //     } else if (info.file.status === 'error') {
+    //       message.error(`${info.file.name} file upload failed.`);
+    //     }
+    //   },
+    // }
     
     return (
       <div>
@@ -705,7 +706,7 @@ class Person extends Component {
                   rowSelection={rowSelection}
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
+                    pageSize: this.state.pageSize ,
                     current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,

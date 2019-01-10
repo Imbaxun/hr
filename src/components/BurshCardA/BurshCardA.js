@@ -23,6 +23,8 @@ constructor(props) {
     code: '',
     empId: '',
     totalLength: '',
+    currentPage: '',
+    pageSize: '',
     selectTree: '',
     searchyear: mydate.getFullYear(),
     searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
@@ -99,7 +101,7 @@ componentDidMount() {
 
 startData = () =>{
   let url = `${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&page=0&size=10`
-  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err =>console.log(err.message))
 }
 
     //树桩查询的方法
@@ -114,7 +116,7 @@ startData = () =>{
       //点击查询的url
       let searchUrl = `${IP}/factoryhr${BurshCardUrl}?${item}&checkWorkTypeId=12&month=${ayear}/${amonth}`
       console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err => console.log)
 
     }
 
@@ -139,8 +141,13 @@ startData = () =>{
     let ayear = searchyear.toString()
     console.log(page)
     console.log(pageSize)
+<<<<<<< HEAD
+    let url =`${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
+    getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
+=======
     let url =`${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&${selectTree}&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
     getfun(url).then(res => this.setState({data: res.content, totalLength:res.totalElements})).catch(err =>console.log(err.message))
+>>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   selectDate = (item) =>{
@@ -180,7 +187,7 @@ startData = () =>{
     let ayear = searchyear.toString()
     let url = selectTree === ''? `${IP}/factoryhr${BurshCardUrl}?checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}` : `${IP}/factoryhr${BurshCardUrl}?${selectTree}&checkWorkTypeId=12&empId=${empId}&month=${ayear}/${amonth}`
     console.log(url)
-    getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err))
   }
 
   addBSdate = (date, dateString) =>{
@@ -311,8 +318,8 @@ render() {
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}

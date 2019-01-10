@@ -36,7 +36,13 @@ class StoreJB extends Component {
           dataIndex: 'companyName',
         },
       ],
+      totalLength: '',
+      pageSize: '',
+      pageSize1: '',
+      current: '',
+      currentPage: '',
       totalElements: '',
+      totalElements1: '',
       data1: [],
       columns1: [
         {
@@ -89,7 +95,8 @@ class StoreJB extends Component {
     getfun(url).then(res =>{
       this.setState({
         data1: res.content,
-        totalElements: res.totalElements
+        totalLength:res.totalElements,
+        pageSize:res.size,
       })
     }).catch(err =>console.log(err))
   }
@@ -113,22 +120,22 @@ class StoreJB extends Component {
   serchData = () =>{
     const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
     let url = `${KQIp}${processViewUrl}?proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=销假申请单`
-    getfun(url).then(res => this.setState({data1:res.content, totalElements: res.totalElements})).catch(err => console.log(err))
+    getfun(url).then(res => this.setState({data1:res.content, totalLength:res.totalElements, pageSize:res.size,currentPage:(1+res.number)})).catch(err => console.log(err))
   }
 
   changePage = (page, pageSize) =>{
-    const {code, submissionDateStart, submissionDateEnd, stateVal} =this.state
-    let url =`${KQIp}${processViewUrl}?page=${page}&pageSize=${pageSize}&proposerId=${code}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=销假申请单`
+    const {Snaem, Scode} =this.state
+    let url =`${IP}${Employee}?page=${page}&pageSize=${pageSize}&empName=${Snaem}&empCode=${Scode}`
     getfun(url).then(res => {
       console.log(666)
-      this.setState({data1:res.content, totalElements: res.totalElements})   
+      this.setState({data:res.content,totalElements: res.totalElements1, pageSize1:res.size,current:(1+res.number)})   
     }).catch(err =>console.log(err.message))
   }
 
   changePage1 = (page, pageSize) =>{
     const{code, submissionDateStart, submissionDateEnd, stateVal} = this.state
     let url = `${KQIp}${processViewUrl}?proposerId=${code}&page=${page}&size=${pageSize}&submissionDateStart=${submissionDateStart}&submissionDateEnd=${submissionDateEnd}&state=${stateVal}&flowName=销假申请单`
-    getfun(url).then(res => this.setState({data1: res.content, totalElements:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data1: res.content, totalLength:res.totalElements, pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err.message))
   }
 
   toProcessContent = (url, flowId, flowCode) =>{
@@ -203,8 +210,9 @@ class StoreJB extends Component {
             rowKey='flowId'
             pagination={{  // 分页
               simple: false,
-              pageSize: 10 ,
-              total: this.state.totalElements,
+              pageSize: this.state.pageSize ,
+              current: this.state.currentPage,
+              total: this.state.totalLength,
               onChange: this.changePage1,
             }}
             onRow={(record) => {
@@ -234,7 +242,10 @@ class StoreJB extends Component {
             bordered
             size='small'
             rowKey='empCode'
-            pagination={{ pageSize: 5 }}
+            pagination={{ pageSize: this.state.pageSize1 ,
+              current: this.state.current,
+              total: this.state.totalElements1,
+              onChange: this.changePage,}}
             columns={this.state.columns}
             dataSource={this.state.data}
             onRow = {(record, index) =>{

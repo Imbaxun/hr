@@ -33,6 +33,8 @@ class Company extends Component {
       changeShow: false,
       checkperson: false,
       totalLength: '',
+      pageSize: '',
+      currentPage: '',
       perId:'',
       perName: '',
       choiceData:[],
@@ -93,7 +95,7 @@ class Company extends Component {
         // console.log(newArr)
         this.setState({data: newArr})
       });
-      this.setState({data:res.content,totalLength:res.totalElements})
+      this.setState({data:res.content,totalLength:res.totalElements, pageSize:res.size,currentPage:(1+res.number)})
     }).catch(err => {
       console.log(err)
     })
@@ -224,7 +226,7 @@ class Company extends Component {
             }
             newArr.push(item)
             // console.log(newArr)
-            this.setState({data: newArr,totalLength:res.totalElements})
+            this.setState({data: newArr,totalLength:res.totalElements, pageSize:res.size,currentPage:(1+res.number)})
           });
           // this.setState({data:res.content})
         }).catch(err => {
@@ -244,21 +246,7 @@ class Company extends Component {
     let url = `${IP}${searchcom}?name=${name}&code=${code}&bigArea=${bigArea}`
     getfun(url).then(res => {
       console.log(res)
-      let responseData = []
-      res.content.forEach(item=> {
-        if(item.state === '0') {
-          item.state = '未启用'
-        }else{
-          item.state = '已启用'
-        }
-        responseData.push(item)
-        this.setState({data: responseData})
-      });
-      if(0 === responseData.length)
-      {
-        this.setState({data: responseData})
-      }
-      this.setState({totalLength:res.totalElements})
+      this.setState({data:res.content, totalLength:res.totalElements, pageSize:res.size,currentPage:(1+res.number)})
     }).catch(err => {
       console.log(err)
     })  
@@ -364,17 +352,17 @@ class Company extends Component {
     console.log(page)
     console.log(pageSize)
     let url =`${IP}${searchcom}?page=${page-1}&size=${pageSize}&name=${name}&code=${code}&bigArea=${bigArea}`
-    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements, pageSize:res.size})).catch(err =>console.log(err.message))
   }
 
   render() {
     const Option = Select.Option;
-    const rowSelection = {
-      onChange: (selectedRowKeys,selectedRows) => {
-        console.log(selectedRows);
-        this.setState({choiceData:selectedRows})
-      }
-    }    
+    // const rowSelection = {
+    //   onChange: (selectedRowKeys,selectedRows) => {
+    //     console.log(selectedRows);
+    //     this.setState({choiceData:selectedRows})
+    //   }
+    // }    
     return (
       <div>
         <div style={{marginBottom:20}}>
@@ -404,8 +392,8 @@ class Company extends Component {
             */
             pagination={{  // 分页
               simple: false,
-              pageSize: 10 ,
-              // current: this.state.current,
+              pageSize: this.state.pageSize ,
+              current: this.state.currentPage,
               total: this.state.totalLength,
               onChange: this.changePage,
             }}

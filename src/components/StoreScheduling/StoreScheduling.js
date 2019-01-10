@@ -21,6 +21,8 @@ class StoreScheduling extends Component{
       name: '',
       code: '',
       totalLength: '',
+      currentPage: '',
+      pageSize: '',
       schedulingName: '',
       searchUrl: '',
       searchyear: mydate.getFullYear(),
@@ -93,13 +95,13 @@ class StoreScheduling extends Component{
   startData = () =>{
     const{searchyear,searchmonth}=this.state
     let url = `${IP}${ClassSearchUrl}?page=0&size=10&year=${searchyear}&month=${searchmonth}&recordType=store`
-    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements})).catch(err => console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err => console.log(err))
   }
 
   searchData = () =>{
     const{searchmonth,searchyear,name,code,schedulingName} = this.state
     let url = `${IP}${ClassSearchUrl}?page=0&size=10&empName=${name}&storeCode=${code}&schedulingName=${schedulingName}&year=${searchyear}&month=${searchmonth}&recordType=store`
-    getfun(url).then(res =>this.setState({data:res.content, totalLength:res.totalElements})).catch(err =>console.log(err))
+    getfun(url).then(res =>this.setState({data:res.content, totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err))
   }
 
   changePage = (page, pageSize) =>{
@@ -110,7 +112,7 @@ class StoreScheduling extends Component{
     let url = aa
     getfun(url).then(res => {
       console.log(res.content)
-      this.setState({data: res.content,totalLength:res.totalElements})
+      this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       console.log('执行到这里')
     }).catch(err => {
       console.log(err)
@@ -361,8 +363,8 @@ class StoreScheduling extends Component{
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}

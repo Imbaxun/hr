@@ -23,6 +23,8 @@ constructor(props) {
     code: '',
     empId: '',
     totalLength: '',
+    currentPage: '',
+    pageSize: '',
     selectTree: '',
     searchyear: mydate.getFullYear(),
     searchmonth: mydate.getMonth()+1<10 ? `${ mydate.getMonth()+1}`: mydate.getMonth()+1,
@@ -51,7 +53,7 @@ constructor(props) {
       },
       {
         title: '请假类型',
-        dataIndex: 'checkWorkTypeName'
+        dataIndex: 'checkWorkTypeSonName'
       }, 
       {
         title: '开始日期',
@@ -88,7 +90,7 @@ constructor(props) {
     addDateEnd: '',
     choiceTable: [],
     charDays: '',
-    clearDate: false
+    clearDate: false,
   }
 }
 
@@ -99,8 +101,8 @@ componentDidMount() {
 }
 
 startData = () =>{
-  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&page=0&size=10`
-  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+  let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3`
+  getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err =>console.log(err.message))
 }
 
     //树桩查询的方法
@@ -115,7 +117,7 @@ startData = () =>{
       //点击查询的url
       let searchUrl = `${IP}${BurshCardUrl}?${item}&checkWorkTypeId=3&month=${ayear}/${amonth}`
       console.log(searchUrl)
-      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err => console.log)
+      getfun(searchUrl).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size})).catch(err => console.log)
 
     }
 
@@ -140,8 +142,13 @@ startData = () =>{
     console.log(pageSize)
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
+<<<<<<< HEAD
+    let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
+=======
     let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
+>>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   selectDate = (item) =>{
@@ -181,8 +188,13 @@ startData = () =>{
     {
       empId=''
     }
+<<<<<<< HEAD
+    let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+    getfun(url).then(res =>this.setState({data:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err))
+=======
     let url = `${IP}${BurshCardUrl}?checkWorkTypeId=3&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res =>this.setState({data:res.content})).catch(err =>console.log(err))
+>>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   addBSdate = (date, dateString) =>{
@@ -203,7 +215,6 @@ startData = () =>{
     this.setState({addDateStart:start,addDateEnd:end,charDays:bb})
   }
   addBS = () =>{
-    this.setState({visible1:true})
     const {addDateStart,addDateEnd, charDays, addbqType ,addReason, addperData}= this.state
 
     let sendData ={
@@ -226,11 +237,12 @@ startData = () =>{
       let url =`${IP}/checkWorkHandle`
       postfun2(url, sendData).then(res =>{
         if(res ==='success'){
-          alert('新增成功')
-          this.startData()
+          // alert('新增成功')        
+          this.startData()        
         }
       }).catch(err => console.log(err))
     }
+    this.setState({visible1:false})
   }
 
   delTbale = () =>{
@@ -321,8 +333,8 @@ render() {
                   rowKey="id"
                   pagination={{  // 分页
                     simple: false,
-                    pageSize: 10 ,
-                    // current: this.state.current,
+                    pageSize: this.state.pageSize ,
+                    current: this.state.currentPage,
                     total: this.state.totalLength,
                     onChange: this.changePage,
                   }}

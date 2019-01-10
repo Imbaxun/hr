@@ -15,7 +15,9 @@ class FactorySchedulingManage extends Component{
       month: '',
       year: '',
       choiceData: '',
-      totalLength: '',  
+      totalLength: '',
+      currentPage: '',
+      pageSize: '',  
       tableData:[],
       columns: [
         {
@@ -117,7 +119,7 @@ class FactorySchedulingManage extends Component{
         item.resDate = `${item.year}/${item.month}`
       })
       console.log(arr)
-      this.setState({tableData:arr})
+      this.setState({tableData:arr,totalLength:res.totalElements,pageSize:res.size})
     }).catch(err =>console.log(err))
   }  
 
@@ -128,7 +130,7 @@ class FactorySchedulingManage extends Component{
     let url =`${IP}${ClassManageUrl}?page=${page-1}&size=${pageSize}&month=${month}&year=${year}&schedulingName=${schedulingName}&schedulingType=Administrative`
     getfun(url).then(res => {
       console.log(res.content)
-      this.setState({tableData: res.content,totalLength:res.totalElements})
+      this.setState({tableData: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       console.log('执行到这里')
     }).catch(err => {
       console.log(err)
@@ -156,7 +158,7 @@ class FactorySchedulingManage extends Component{
           let item=res.content[i]
           item["resDate"] = item.year+"/"+item.month
         }
-        this.setState({tableData:res.content})
+        this.setState({tableData:res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})
       }
     ).catch(err =>console.log(err))
 
@@ -415,8 +417,8 @@ class FactorySchedulingManage extends Component{
             rowKey='id'
             pagination={{  // 分页
               simple: false,
-              pageSize: 10 ,
-              // current: this.state.current,
+              pageSize: this.state.pageSize ,
+              current: this.state.currentPage,
               total: this.state.totalLength,
               onChange: this.changePage,
             }}
