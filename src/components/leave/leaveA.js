@@ -51,7 +51,7 @@ constructor(props) {
       },
       {
         title: '请假类型',
-        dataIndex: 'checkWorkTypeName'
+        dataIndex: 'checkWorkTypeSonName'
       }, 
       {
         title: '开始日期',
@@ -234,7 +234,7 @@ startData = () =>{
     if(addDateStart === '' || addperData.empId === '') {
       alert('请填入完整信息')
     }else{
-      let url =`${IP}/checkWorkHandle`
+      let url =`${IP}/factoryhr/checkWorkHandle`
       postfun2(url, sendData).then(res =>{
         if(res ==='success'){
           alert('新增成功')

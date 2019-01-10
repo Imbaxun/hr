@@ -51,7 +51,7 @@ constructor(props) {
       },
       {
         title: '加班类型',
-        dataIndex: 'checkWorkTypeName'
+        dataIndex: 'checkWorkTypeSonName'
       }, 
       {
         title: '开始日期',
