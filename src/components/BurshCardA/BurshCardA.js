@@ -266,7 +266,7 @@ render() {
     )
   })
   return(
-    <div>
+    <div> 
         <Row type="flex" justify="space-around">
           <Col span="5">
             <CompanyThree   getThreeData= {this.getThreeData}/>

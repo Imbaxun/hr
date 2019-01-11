@@ -53,7 +53,7 @@ constructor(props) {
       },
       {
         title: '请假类型',
-        dataIndex: 'checkWorkTypeName'
+        dataIndex: 'checkWorkTypeSonName'
       }, 
       {
         title: '开始日期',
@@ -144,7 +144,11 @@ startData = () =>{
     }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
+<<<<<<< HEAD
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
+=======
+    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=3&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
+>>>>>>> 427c7d31a95f462a47add08ab5429bd2ceafab28
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
   }
 
@@ -236,7 +240,7 @@ startData = () =>{
     if(addDateStart === '' || addperData.empId === '') {
       alert('请填入完整信息')
     }else{
-      let url =`${IP}/checkWorkHandle`
+      let url =`${IP}/factoryhr/checkWorkHandle`
       postfun2(url, sendData).then(res =>{
         if(res ==='success'){
           alert('新增成功')

@@ -53,7 +53,7 @@ constructor(props) {
       },
       {
         title: '加班类型',
-        dataIndex: 'checkWorkTypeName'
+        dataIndex: 'checkWorkTypeSonName'
       }, 
       {
         title: '开始日期',
@@ -144,7 +144,12 @@ startData = () =>{
     }
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
+<<<<<<< HEAD
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
+=======
+
+    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
+>>>>>>> 427c7d31a95f462a47add08ab5429bd2ceafab28
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err.message))
   }
 

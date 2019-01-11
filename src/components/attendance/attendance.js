@@ -269,11 +269,11 @@ class Attendance extends Component{
             </div>
             <div>
               {/* <Button onClick={this.downLoad}><a href={this.state.downLoad}>导出</a></Button> */}
-              <Upload {...up}>
+              {/* <Upload {...up}>
                 <Button>
                   <Icon type="upload" /> 上传
                 </Button>
-              </Upload>
+              </Upload> */}
             </div>
           </Col>
         </Row>
