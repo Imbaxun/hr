@@ -268,7 +268,7 @@ startData = () =>{
         if(res ==='success'){
           alert('新增成功')
           this.startData()
-          this.setState({visible1:true})
+          this.setState({visible1:true,selectTree: ''})
         }
       }).catch(err => console.log(err))
     }

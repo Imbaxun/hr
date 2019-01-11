@@ -162,9 +162,10 @@ class Shop extends Component {
 
   changePage = (page, pageSize) =>{
     const {name, code, selectData,queryRecordType} = this.state
-    console.log(page)
-    console.log(pageSize)
+    // console.log(page)
+    // console.log(selectData)
     let url =`${IP}${Store}/search?page=${page-1}&size=${pageSize}&${selectData}&code=${code}&name=${name}&storeType=${queryRecordType}`
+    console.log(url)
     getfun(url).then(res => {
       let newArr = []
       res.content.forEach(item => {
@@ -203,7 +204,8 @@ class Shop extends Component {
         console.log(res)
         this.startData()
         this.setState({
-          visible: false,      
+          visible: false, 
+          selectData: ''
         })
       }).catch(err => console.log(err))
     }

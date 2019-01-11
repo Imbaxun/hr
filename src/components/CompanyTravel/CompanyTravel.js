@@ -142,13 +142,8 @@ startData = () =>{
     console.log(pageSize)
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-<<<<<<< HEAD
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=4&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}&${selectTree}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err.message))
-=======
-    let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=4&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}&${selectTree}`
-    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements})).catch(err =>console.log(err.message))
->>>>>>> 06d92e8cfdae355363e36c3c3dc3e2e83d5d58b7
   }
 
   selectDate = (item) =>{
@@ -207,7 +202,6 @@ startData = () =>{
     this.setState({addDateStart:start,addDateEnd:end,charDays:bb})
   }
   addBS = () =>{
-    this.setState({visible1:true})
     const {addDateStart,addDateEnd, charDays, addbqType ,addReason, addperData}= this.state
 
     let sendData ={
@@ -235,6 +229,7 @@ startData = () =>{
         }
       }).catch(err => console.log(err))
     }
+    this.setState({visible1:true, selectTree: ''})
   }
 
   delTbale = () =>{
