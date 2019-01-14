@@ -144,14 +144,8 @@ startData = () =>{
     console.log(pageSize)
     let amonth =searchmonth<10? `0${searchmonth}` : `${searchmonth}`
     let ayear = searchyear.toString()
-<<<<<<< HEAD
-    let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
-    getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
-=======
     let url =`${IP}${BurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,currentPage:(1+res.number),pageSize:res.size})).catch(err =>console.log(err.message))
-
->>>>>>> 427c7d31a95f462a47add08ab5429bd2ceafab28
   }
 
   selectDate = (item) =>{
