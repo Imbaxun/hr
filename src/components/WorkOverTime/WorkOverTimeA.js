@@ -147,9 +147,8 @@ startData = () =>{
 <<<<<<< HEAD
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&mounth=${ayear}/${amonth}`
 =======
-
     let url =`${IP}${FactoryBurshCardUrl}?${selectTree}&checkWorkTypeId=5&page=${page-1}&size=${pageSize}&empId=${empId}&month=${ayear}/${amonth}`
->>>>>>> 427c7d31a95f462a47add08ab5429bd2ceafab28
+>>>>>>> 6565c14b6bb021b7fefe9e22c6c82ca3ad7717e2
     getfun(url).then(res => this.setState({data: res.content,totalLength:res.totalElements,pageSize:res.size,currentPage:(1+res.number)})).catch(err =>console.log(err.message))
   }
 

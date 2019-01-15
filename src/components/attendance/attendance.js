@@ -5,7 +5,7 @@ import ChoicePerson from '../../common/searchPage/choicePerson'
 import './attendance.css'
 import {getfun} from '../../common/axiosFun'
 import { API } from '../../common/axiosAPI'
-import {Row, Col, Button, DatePicker, Table, Select, Upload, message, Icon, } from 'antd'
+import {Row, Col, Button, DatePicker, Table, Select, } from 'antd'
 const { MonthPicker } = DatePicker;
 const Option = Select.Option;
 const monthFormat = 'YYYY/MM';
@@ -181,24 +181,24 @@ class Attendance extends Component{
   }
 
   render(){
-    const up = {
-      name: 'file',
-      action: `${IP}/basePunchRecord/importBasePunchRecord`,
-      headers: {
-        authorization: 'authorization-text',
-      },
-      onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} 上传成功`);
-          message.success(`${info.file.response.msg}`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} 上传失败.`);
-        }
-      },
-    }
+    // const up = {
+    //   name: 'file',
+    //   action: `${IP}/basePunchRecord/importBasePunchRecord`,
+    //   headers: {
+    //     authorization: 'authorization-text',
+    //   },
+    //   onChange(info) {
+    //     if (info.file.status !== 'uploading') {
+    //       console.log(info.file, info.fileList);
+    //     }
+    //     if (info.file.status === 'done') {
+    //       message.success(`${info.file.name} 上传成功`);
+    //       message.success(`${info.file.response.msg}`);
+    //     } else if (info.file.status === 'error') {
+    //       message.error(`${info.file.name} 上传失败.`);
+    //     }
+    //   },
+    // }
 
     return(
       <div>

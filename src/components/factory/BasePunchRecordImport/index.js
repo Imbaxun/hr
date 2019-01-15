@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Input, Button, Table, Modal, Select,DatePicker,Upload,message,Icon } from 'antd';
+import { Row, Col,  Button, Table, Upload,message,Icon } from 'antd';
 import { getfun } from '../../../common/axiosFun'
 import { API } from '../../../common/axiosAPI'
 const { IP } = API
@@ -11,6 +11,7 @@ export default class FactoryReport extends React.Component
         super(props)
         this.state = {
           uploadDisable:false,
+          disabled: '',
           columns:[
             {
               title: '同步类型',
@@ -60,13 +61,13 @@ export default class FactoryReport extends React.Component
     showSyncState = ()=>{
         let url = `${IP}/syncDataState/all`
         getfun(url).then(res =>{
-            if(!res.data||res.data.length==0)
+            if(!res.data||res.data.length === 0)
             {
                 this.state.disabled=false
             }
-            if(res.data&&res.data.length==1)
+            if(res.data&&res.data.length===1)
             {
-                if(res.data[0]["syncState"]=='运行中')
+                if(res.data[0]["syncState"]==='运行中')
                 {
                     this.state.disabled=true
                 }
